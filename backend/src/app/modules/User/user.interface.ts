@@ -5,7 +5,7 @@ export type TUser = {
   lastName: string;
   email: string;
   password: string;
-  unit: 'LMU' | 'EMU' | 'DSMM' | 'HR_FINANCE';
+  unit: 'LMU' | 'EMU' | 'DSMM' | 'HR_FINANCE' | 'ALL';
   role: (typeof USER_ROLE)[keyof typeof USER_ROLE];
   phone: string;
   dob: Date;

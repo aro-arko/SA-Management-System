@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
 import { USER_ROLE } from './user.constant';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userSchema = new Schema<TUser>(
   {
@@ -10,7 +12,7 @@ const userSchema = new Schema<TUser>(
     password: { type: String, required: true },
     unit: {
       type: String,
-      enum: ['LMU', 'EMU', 'DSMM', 'HR_FINANCE'],
+      enum: ['LMU', 'EMU', 'DSMM', 'HR_FINANCE', 'ALL'],
       required: true,
     },
     role: {
@@ -18,11 +20,12 @@ const userSchema = new Schema<TUser>(
       enum: Object.values(USER_ROLE),
       required: true,
     },
-    phone: { type: String, required: true },
+    phone: { type: String, unique: true, required: true },
     dob: { type: Date, required: true },
     status: {
       type: String,
       enum: ['active', 'inactive'],
+      default: 'active',
       required: true,
     },
     tasks: [{ type: String }],
@@ -31,5 +34,16 @@ const userSchema = new Schema<TUser>(
   },
   { timestamps: true, versionKey: false },
 );
+
+// Middleware to update the updatedAt field before saving
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(
+      this.password,
+      Number(config.bcrypt_salt_rounds),
+    );
+  }
+  next();
+});
 
 export const User = model<TUser>('User', userSchema);
