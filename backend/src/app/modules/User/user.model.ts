@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 import { USER_ROLE } from './user.constant';
 import bcrypt from 'bcrypt';
 import config from '../../config';
@@ -46,4 +46,12 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-export const User = model<TUser>('User', userSchema);
+// Static method to check if the password is correct
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassowrd,
+  hashedPassword,
+) {
+  return await bcrypt.compare(plainTextPassowrd, hashedPassword);
+};
+
+export const User = model<TUser, UserModel>('User', userSchema);
