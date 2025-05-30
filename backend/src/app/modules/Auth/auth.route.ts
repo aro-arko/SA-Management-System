@@ -2,11 +2,14 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import { authValidation } from './auth.validation';
 import { authController } from './auth.controller';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../User/user.constant';
 
 const router = express.Router();
 
 router.post(
   '/register',
+  auth(USER_ROLE.coordinator),
   validateRequest(authValidation.registerValidation),
   authController.createUser,
 );

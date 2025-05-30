@@ -38,7 +38,6 @@ const loginUser = async (payLoad: { email: string; password: string }) => {
   // jwt token generation
   const jwtPayload = {
     email: user.email,
-    unit: user.unit,
     role: user.role,
   };
 
