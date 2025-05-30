@@ -1,6 +1,8 @@
 import { ZodError } from 'zod';
+import { TGenericErrorResponse } from '../interface/error';
 
-const handleZodError = (err: ZodError) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleZodError = (err: ZodError): TGenericErrorResponse => {
   const statusCode = 400;
   return {
     statusCode,

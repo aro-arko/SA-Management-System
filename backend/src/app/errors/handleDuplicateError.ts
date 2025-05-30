@@ -1,6 +1,8 @@
 import { MongoServerError } from 'mongodb';
+import { TGenericErrorResponse } from '../interface/error';
 
-const handleDuplicateError = (err: MongoServerError) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleDuplicateError = (err: MongoServerError): TGenericErrorResponse => {
   const statusCode = 409;
 
   return {

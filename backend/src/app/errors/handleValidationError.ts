@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
+import { TGenericErrorResponse } from '../interface/error';
 
-const handleValidationError = (err: mongoose.Error.ValidationError) => {
+const handleValidationError = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  err: mongoose.Error.ValidationError,
+): TGenericErrorResponse => {
   const statusCode = 400;
 
   return {

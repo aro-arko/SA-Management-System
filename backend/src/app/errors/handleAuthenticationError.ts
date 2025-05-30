@@ -1,4 +1,7 @@
-const handleAuthenticationError = (err: Error) => {
+import { TGenericErrorResponse } from '../interface/error';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleAuthenticationError = (err: Error): TGenericErrorResponse => {
   const statusCode = 401;
 
   return {
