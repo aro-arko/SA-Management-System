@@ -46,6 +46,21 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// Middleware to update the updatedAt field before updating
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  if (update && typeof update === 'object' && !Array.isArray(update)) {
+    if (update.password) {
+      const hashed = await bcrypt.hash(
+        update.password,
+        Number(config.bcrypt_salt_rounds),
+      );
+      update.password = hashed;
+    }
+  }
+  next();
+});
+
 // Static method to check if the password is correct
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassowrd,
