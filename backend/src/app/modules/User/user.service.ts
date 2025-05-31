@@ -11,6 +11,7 @@ const userUpdate = async (
   if (!requestedEmail) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Email is required');
   }
+  // Check if the current user is trying to update their own role
   const { role } = updateData;
 
   if (currentUser.email === requestedEmail && role) {
