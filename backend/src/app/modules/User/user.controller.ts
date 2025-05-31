@@ -7,7 +7,10 @@ const userUpdate = catchAsync(async (req, res) => {
   const email = req.body.email;
   const newData = req.body.body;
 
-  const result = await UserService.userUpdate(email, newData);
+  const currentUser = req.user;
+  // console.log(currentUser);
+
+  const result = await UserService.userUpdate(currentUser, email, newData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

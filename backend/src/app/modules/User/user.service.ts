@@ -1,19 +1,32 @@
+import { JwtPayload } from 'jsonwebtoken';
 import { User } from './user.model';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const userUpdate = async (
-  email: string,
+  currentUser: JwtPayload,
+  requestedEmail: string,
   updateData: Partial<typeof User.prototype>,
 ) => {
-  if (!email) {
-    throw new Error('Email is required to update user');
+  if (!requestedEmail) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Email is required');
+  }
+  const { role } = updateData;
+
+  if (currentUser.email === requestedEmail && role) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You cannot change your own role');
   }
 
-  const updatedUser = await User.findOneAndUpdate({ email }, updateData, {
-    new: true,
-  });
+  const updatedUser = await User.findOneAndUpdate(
+    { email: requestedEmail },
+    updateData,
+    {
+      new: true,
+    },
+  );
 
   if (!updatedUser) {
-    throw new Error('User not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   return updatedUser;
