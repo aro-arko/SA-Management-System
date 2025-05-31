@@ -3,10 +3,20 @@ import { TLMU } from './lmu.interface';
 
 const lmuSchema = new Schema(
   {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ['whatsapp', 'email', 'calling'],
+    },
     unit: {
       type: String,
       required: true,
-      enum: ['LMU', 'EMU', 'DSMM', 'HR_FINANCE', 'ALL'],
+      default: 'LMU',
     },
     tasks: [
       {
