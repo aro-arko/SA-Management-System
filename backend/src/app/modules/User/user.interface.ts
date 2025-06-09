@@ -16,6 +16,11 @@ export type TUser = {
   updatedAt?: Date;
 };
 
+export type TChangePassword = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export interface UserModel extends Model<TUser> {
   isPasswordMatched(
     plainTextPassowrd: string,
