@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { AuthRoutes } from '../modules/Auth/auth.route';
 import { UserRoutes } from '../modules/User/user.route';
+import { LMUGoalsRoutes } from '../modules/LMU/LMUGoals/lmugoals.route';
 
 const router = Router();
 
@@ -12,6 +13,10 @@ const moduleRoutes = [
   {
     path: '/users',
     route: UserRoutes,
+  },
+  {
+    path: '/lmu-goals',
+    route: LMUGoalsRoutes,
   },
 ];
 
