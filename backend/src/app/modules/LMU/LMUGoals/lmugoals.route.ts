@@ -26,4 +26,11 @@ router.get(
   lmuGoalsController.getAllLmuGoals,
 );
 
+router.patch(
+  '/:id',
+  auth(USER_ROLE.lmuAdmin),
+  validateRequest(LMUGoalsValidation.updateLmuGoalValidation),
+  lmuGoalsController.updateLmuGoal,
+);
+
 export const LMUGoalsRoutes = router;

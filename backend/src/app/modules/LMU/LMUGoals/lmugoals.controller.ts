@@ -30,7 +30,22 @@ const getAllLmuGoals = catchAsync(async (req, res) => {
   });
 });
 
+const updateLmuGoal = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+
+  const result = await lmuGoalsService.updateLmuGoal(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Goal updated successfully',
+    data: result,
+  });
+});
+
 export const lmuGoalsController = {
   createLmuGoal,
   getAllLmuGoals,
+  updateLmuGoal,
 };

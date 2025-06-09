@@ -30,7 +30,15 @@ const getAllLmuGoals = async (query: Record<string, unknown>) => {
   return result;
 };
 
+const updateLmuGoal = async (id: string, data: TGoal) => {
+  const result = await LMUGoalModel.findByIdAndUpdate(id, data, {
+    new: true,
+  });
+  return result;
+};
+
 export const lmuGoalsService = {
   createLmuGoal,
   getAllLmuGoals,
+  updateLmuGoal,
 };
