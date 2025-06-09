@@ -14,4 +14,16 @@ router.post(
   lmuGoalsController.createLmuGoal,
 );
 
+router.get(
+  '/all',
+  auth(
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuMember,
+    USER_ROLE.lmuDataLeader,
+  ),
+  lmuGoalsController.getAllLmuGoals,
+);
+
 export const LMUGoalsRoutes = router;

@@ -3,6 +3,7 @@ import { TGoal } from './lmugoals.interface';
 import { User } from '../../User/user.model';
 import { LMUGoalModel } from './lmugoals.model';
 
+// Service for creating and fetching LMU goals
 const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
   const { email } = currentUser;
   const user = await User.findOne({ email });
@@ -17,6 +18,13 @@ const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
   return result;
 };
 
+// all goals will be fetched by the user
+const getAllLmuGoals = async () => {
+  const result = await LMUGoalModel.find();
+  return result;
+};
+
 export const lmuGoalsService = {
   createLmuGoal,
+  getAllLmuGoals,
 };
