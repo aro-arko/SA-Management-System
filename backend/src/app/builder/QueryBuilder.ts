@@ -51,9 +51,8 @@ class QueryBuilder<T> {
 
   sort() {
     const sortBy = (this.query.sortBy as string) || 'updatedAt';
-    const sortOrder = (this.query.sortOrder as string) || 'desc';
-    const sortString = `${sortOrder}${sortBy}`;
-    this.modelQuery = this.modelQuery.sort(sortString);
+    const sortOrder = (this.query.sortOrder as string) === 'asc' ? 1 : -1;
+    this.modelQuery = this.modelQuery.sort({ [sortBy]: sortOrder });
     return this;
   }
 

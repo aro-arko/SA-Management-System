@@ -20,7 +20,7 @@ const createLmuGoal = catchAsync(async (req, res) => {
 
 // This controller retrieves all LMU goals.
 const getAllLmuGoals = catchAsync(async (req, res) => {
-  const result = await lmuGoalsService.getAllLmuGoals();
+  const result = await lmuGoalsService.getAllLmuGoals(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
