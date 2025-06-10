@@ -73,8 +73,39 @@ const updateLMUMultitasking = async (
   return result;
 };
 
+const applyLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
+  const { email } = currentUser;
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'You are not authorized to perform this action',
+    );
+  }
+
+  const multitasking = await LMUMultiTasking.findById(id);
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
+  }
+  if (multitasking.status === 'inactive') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'This multi-tasking is currently inactive',
+    );
+  }
+  const updatedMultitasking = await LMUMultiTasking.findByIdAndUpdate(
+    id,
+    {
+      $addToSet: { manpower: { userId: user._id } },
+    },
+    { new: true },
+  );
+  return updatedMultitasking;
+};
+
 export const LMUMultiTaskingServices = {
   createLMUMultitasking,
   getLMUMultitaskings,
   updateLMUMultitasking,
+  applyLMUMultitasking,
 };

@@ -50,8 +50,23 @@ const updateLMUMultiTasking = catchAsync(async (req, res) => {
   });
 });
 
+const applyLMUMultiTasking = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const user = req.user;
+
+  const result = await LMUMultiTaskingServices.applyLMUMultitasking(id, user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking applied successfully',
+    data: result,
+  });
+});
+
 export const LMUMultiTaskingController = {
   createLMUMultiTasking,
   getLMUMultiTaskings,
   updateLMUMultiTasking,
+  applyLMUMultiTasking,
 };

@@ -36,4 +36,16 @@ router.patch(
   LMUMultiTaskingController.updateLMUMultiTasking,
 );
 
+router.patch(
+  '/apply-multitasking/:id',
+  auth(
+    USER_ROLE.head,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  LMUMultiTaskingController.applyLMUMultiTasking,
+);
+
 export const LMUMultiTaskingRoutes = router;
