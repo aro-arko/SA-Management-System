@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 type TActivity = {
   completedLeads: number;
   flaggedLeads: number;
-  message: string;
+  remarks: string;
 };
 
 export type TLeadsTask = {
