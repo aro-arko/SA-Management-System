@@ -6,5 +6,6 @@ export type TGoal = {
   completed: number;
   remaining: number;
   total: number;
+  isActive: boolean;
   createdBy: Types.ObjectId;
 };

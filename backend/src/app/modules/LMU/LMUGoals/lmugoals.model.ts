@@ -28,6 +28,11 @@ const lmuGoalSchema = new Schema<TGoal>(
       default: 0,
       required: true,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+      required: true,
+    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
