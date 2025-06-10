@@ -93,6 +93,15 @@ const applyLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
       'This multi-tasking is currently inactive',
     );
   }
+  const isAlreadyApplied = multitasking.manpower.some(
+    (manpower) => manpower.userId.toString() === user._id.toString(),
+  );
+  if (isAlreadyApplied) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'You have already applied for this multi-tasking',
+    );
+  }
   const updatedMultitasking = await LMUMultiTasking.findByIdAndUpdate(
     id,
     {
