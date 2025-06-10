@@ -14,6 +14,6 @@ router.post(
   LMUMultiTaskingController.createLMUMultiTasking,
 );
 
-router.patch('/update-multitasking/:id');
+// router.patch('/update-multitasking/:id');
 
 export const LMUMultiTaskingRoutes = router;

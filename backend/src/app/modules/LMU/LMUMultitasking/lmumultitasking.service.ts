@@ -9,7 +9,7 @@ const createLMUMultitasking = async (
   currentUser: JwtPayload,
   data: TLMUMultitasking,
 ) => {
-  const { email } = currentUser;
+  const { email, role } = currentUser;
   const user = await User.findOne({ email });
   if (!user) {
     throw new AppError(
@@ -17,6 +17,15 @@ const createLMUMultitasking = async (
       'You are not authorized to perform this action',
     );
   }
+
+  //   preventing data entry leader to create other types of multitasking
+  if (role === 'lmuDataLeader' && data.type !== 'data-entry') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'Data entry leader can only create data entry multitasking',
+    );
+  }
+
   data.createdBy = user._id;
 
   const result = await LMUMultiTasking.create(data);
