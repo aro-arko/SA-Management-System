@@ -14,6 +14,21 @@ router.post(
   LMUMultiTaskingController.createLMUMultiTasking,
 );
 
+router.get(
+  '/',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  LMUMultiTaskingController.getLMUMultiTaskings,
+);
+
 // router.patch('/update-multitasking/:id');
 
 export const LMUMultiTaskingRoutes = router;

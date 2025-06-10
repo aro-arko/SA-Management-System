@@ -32,6 +32,12 @@ const createLMUMultitasking = async (
   return result;
 };
 
+const getLMUMultitaskings = async () => {
+  const result = await LMUMultiTasking.find().sort({ createdAt: -1 });
+  return result;
+};
+
 export const LMUMultiTaskingServices = {
   createLMUMultitasking,
+  getLMUMultitaskings,
 };

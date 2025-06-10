@@ -28,6 +28,8 @@ const lmuMultiTaskingSchema = new Schema<TLMUMultitasking>(
     status: {
       type: String,
       enum: ['active', 'inactive'],
+      default: 'active',
+      required: true,
     },
   },
   {

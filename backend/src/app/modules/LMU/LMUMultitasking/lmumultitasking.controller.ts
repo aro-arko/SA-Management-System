@@ -20,6 +20,18 @@ const createLMUMultiTasking = catchAsync(async (req, res) => {
   });
 });
 
+const getLMUMultiTaskings = catchAsync(async (req, res) => {
+  const result = await LMUMultiTaskingServices.getLMUMultitaskings();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking retrieved successfully',
+    data: result,
+  });
+});
+
 export const LMUMultiTaskingController = {
   createLMUMultiTasking,
+  getLMUMultiTaskings,
 };
