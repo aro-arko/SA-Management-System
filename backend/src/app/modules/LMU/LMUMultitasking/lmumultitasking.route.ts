@@ -48,4 +48,23 @@ router.patch(
   LMUMultiTaskingController.applyLMUMultiTasking,
 );
 
+router.patch(
+  '/devote-multitasking/:id',
+  auth(
+    USER_ROLE.head,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  LMUMultiTaskingController.devoteLMUMultiTasking,
+);
+
+router.patch(
+  '/reject-multitasking/:id',
+  auth(USER_ROLE.lmuAdmin, USER_ROLE.lmuDataLeader),
+  validateRequest(LMUMultitaskingValidation.rejectLMUMultitaskingValidation),
+  LMUMultiTaskingController.rejectLMUMultiTasking,
+);
+
 export const LMUMultiTaskingRoutes = router;

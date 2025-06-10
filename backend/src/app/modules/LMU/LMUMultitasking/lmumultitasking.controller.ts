@@ -64,9 +64,41 @@ const applyLMUMultiTasking = catchAsync(async (req, res) => {
   });
 });
 
+const devoteLMUMultiTasking = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const user = req.user;
+
+  const result = await LMUMultiTaskingServices.devoteLMUMultitasking(id, user);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking devoted successfully',
+    data: result,
+  });
+});
+
+const rejectLMUMultiTasking = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const user = req.user;
+  const data = req.body;
+  const result = await LMUMultiTaskingServices.rejectLMUMultitasking(
+    id,
+    user,
+    data,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User is removed from multi-tasking successfully',
+    data: result,
+  });
+});
+
 export const LMUMultiTaskingController = {
   createLMUMultiTasking,
   getLMUMultiTaskings,
   updateLMUMultiTasking,
   applyLMUMultiTasking,
+  devoteLMUMultiTasking,
+  rejectLMUMultiTasking,
 };
