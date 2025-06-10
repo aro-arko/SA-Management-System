@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { TLMU } from './lmu.interface';
+import { TLMU } from './lmutasks.interface';
 
 const lmuSchema = new Schema(
   {
@@ -11,20 +11,17 @@ const lmuSchema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ['whatsapp', 'email', 'calling'],
+      enum: ['whatsapp', 'email', 'calling', 'data-entry', 'others'],
     },
     unit: {
       type: String,
       required: true,
       default: 'LMU',
     },
-    tasks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Task',
-        required: true,
-      },
-    ],
+    task: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -32,4 +29,4 @@ const lmuSchema = new Schema(
   },
 );
 
-export const LMUModel = model<TLMU>('LMU', lmuSchema);
+export const LMUTasks = model<TLMU>('LMUTasks', lmuSchema);
