@@ -7,6 +7,17 @@ const createLMUMultitaskingValidation = z.object({
   }),
 });
 
+const updateLMUMultitaskingValidation = z.object({
+  body: z.object({
+    title: z.string().min(1, 'Title is required').optional(),
+    type: z
+      .enum(['whatsapp', 'calling', 'email', 'data-entry', 'others'])
+      .optional(),
+    status: z.enum(['active', 'inactive']).optional(),
+  }),
+});
+
 export const LMUMultitaskingValidation = {
   createLMUMultitaskingValidation,
+  updateLMUMultitaskingValidation,
 };

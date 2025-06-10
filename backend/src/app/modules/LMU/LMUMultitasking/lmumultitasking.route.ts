@@ -29,6 +29,11 @@ router.get(
   LMUMultiTaskingController.getLMUMultiTaskings,
 );
 
-// router.patch('/update-multitasking/:id');
+router.patch(
+  '/update-multitasking/:id',
+  auth(USER_ROLE.lmuAdmin, USER_ROLE.lmuDataLeader),
+  validateRequest(LMUMultitaskingValidation.updateLMUMultitaskingValidation),
+  LMUMultiTaskingController.updateLMUMultiTasking,
+);
 
 export const LMUMultiTaskingRoutes = router;
