@@ -7,6 +7,11 @@ const lmuMultiTaskingSchema = new Schema<TLMUMultitasking>(
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      enum: ['whatsapp', 'calling', 'email', 'data-entry', 'others'],
+      required: true,
+    },
     manpower: [
       {
         userId: {

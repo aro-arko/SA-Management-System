@@ -9,8 +9,6 @@ const createLMUMultitasking = async (
   currentUser: JwtPayload,
   data: TLMUMultitasking,
 ) => {
-  //   console.log(currentUser, data);
-
   const { email } = currentUser;
   const user = await User.findOne({ email });
   if (!user) {
