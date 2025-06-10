@@ -7,5 +7,6 @@ export type TLMUMultitasking = {
       userId: Types.ObjectId;
     },
   ];
+  createdBy: Types.ObjectId;
   status: 'active' | 'inactive';
 };

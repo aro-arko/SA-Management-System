@@ -15,6 +15,11 @@ const lmuMultiTaskingSchema = new Schema<TLMUMultitasking>(
         },
       },
     ],
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     status: {
       type: String,
       enum: ['active', 'inactive'],

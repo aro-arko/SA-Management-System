@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { AuthRoutes } from '../modules/Auth/auth.route';
 import { UserRoutes } from '../modules/User/user.route';
 import { LMUGoalsRoutes } from '../modules/LMU/LMUGoals/lmugoals.route';
+import { LMUMultiTaskingRoutes } from '../modules/LMU/LMUMultitasking/lmumultitasking.route';
 
 const router = Router();
 
@@ -17,6 +18,10 @@ const moduleRoutes = [
   {
     path: '/lmu-goals',
     route: LMUGoalsRoutes,
+  },
+  {
+    path: '/lmu-multitaskings',
+    route: LMUMultiTaskingRoutes,
   },
 ];
 
