@@ -1,5 +1,11 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { USER_ROLE } from './user.constant';
+
+type TTask = {
+  taskId: Types.ObjectId;
+  unit: 'LMU' | 'EMU' | 'DSMM' | 'HR_FINANCE' | 'ALL';
+  type: string;
+};
 
 export type TUser = {
   firstName: string;
@@ -11,7 +17,7 @@ export type TUser = {
   phone: string;
   dob: Date;
   status: 'active' | 'inactive';
-  tasks?: string[];
+  tasks?: TTask[];
   createdAt?: Date;
   updatedAt?: Date;
 };

@@ -28,7 +28,19 @@ const userSchema = new Schema<TUser>(
       default: 'active',
       required: true,
     },
-    tasks: [{ type: String }],
+    tasks: {
+      type: [
+        {
+          taskId: { type: Schema.Types.ObjectId },
+          unit: {
+            type: String,
+            enum: ['LMU', 'EMU', 'DSMM', 'HR_FINANCE', 'ALL'],
+            required: true,
+          },
+          type: { type: String, required: true },
+        },
+      ],
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },

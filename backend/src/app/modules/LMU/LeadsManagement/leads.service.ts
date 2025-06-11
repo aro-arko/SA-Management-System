@@ -79,7 +79,7 @@ const leadsTaskCreate = async (
       );
     }
 
-    // Create the task
+    // Create the leads task
     const leadsTask = await LeadsTask.create(
       [
         {
@@ -91,27 +91,51 @@ const leadsTaskCreate = async (
       { session },
     );
 
-    // Only run goal-related logic if goalId is provided
+    // Update user tasks in parallel
+    const userUpdatePromise = User.findByIdAndUpdate(
+      assignedTo,
+      {
+        $push: {
+          tasks: {
+            taskId: leadsTask[0]._id,
+            unit: 'LMU',
+            type: payLoad.type,
+          },
+        },
+      },
+      { session },
+    );
+
+    // Update goal if goalId is provided
+    let goalUpdatePromise = Promise.resolve();
     if (goalId) {
-      const lmuGoal = await LMUGoalModel.findById(goalId).session(session);
-      if (!lmuGoal) {
-        throw new AppError(httpStatus.NOT_FOUND, 'Goal not found or inactive');
-      }
-      if (!lmuGoal.isActive) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Goal is not active');
-      }
-      if (lmuGoal.type !== payLoad.type) {
-        throw new AppError(
-          httpStatus.BAD_REQUEST,
-          'Goal type does not match with task type',
-        );
-      }
+      goalUpdatePromise = (async () => {
+        const lmuGoal = await LMUGoalModel.findById(goalId).session(session);
+        if (!lmuGoal) {
+          throw new AppError(
+            httpStatus.NOT_FOUND,
+            'Goal not found or inactive',
+          );
+        }
+        if (!lmuGoal.isActive) {
+          throw new AppError(httpStatus.BAD_REQUEST, 'Goal is not active');
+        }
+        if (lmuGoal.type !== payLoad.type) {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Goal type does not match with task type',
+          );
+        }
 
-      lmuGoal.total += payLoad.totalLeads;
-      lmuGoal.remaining += payLoad.totalLeads;
+        lmuGoal.total += payLoad.totalLeads;
+        lmuGoal.remaining += payLoad.totalLeads;
 
-      await lmuGoal.save({ session });
+        await lmuGoal.save({ session });
+      })();
     }
+
+    // Wait for both updates to finish
+    await Promise.all([userUpdatePromise, goalUpdatePromise]);
 
     await session.commitTransaction();
     return leadsTask[0];
