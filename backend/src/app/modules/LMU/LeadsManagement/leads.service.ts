@@ -12,7 +12,7 @@ const leadsTaskCreate = async (
   currentUser: JwtPayload,
   payLoad: TLeadsTask,
 ) => {
-  const { email } = currentUser;
+  const { email, role } = currentUser;
   const { goalId, assignedTo, multiTask, multiTaskId } = payLoad;
 
   const currentAdmin = await User.findOne({ email });
@@ -22,7 +22,12 @@ const leadsTaskCreate = async (
       'Please login again to continue',
     );
   }
-
+  if (role !== 'lmuAdmin') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'You do not have permission to create leads tasks',
+    );
+  }
   const session = await mongoose.startSession();
 
   try {
@@ -100,6 +105,7 @@ const leadsTaskCreate = async (
             taskId: leadsTask[0]._id,
             unit: 'LMU',
             type: payLoad.type,
+            category: 'LeadsTask',
           },
         },
       },

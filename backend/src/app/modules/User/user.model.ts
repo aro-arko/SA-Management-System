@@ -38,6 +38,7 @@ const userSchema = new Schema<TUser>(
             required: true,
           },
           type: { type: String, required: true },
+          category: { type: String, required: true },
         },
       ],
     },

@@ -5,6 +5,7 @@ type TTask = {
   taskId: Types.ObjectId;
   unit: 'LMU' | 'EMU' | 'DSMM' | 'HR_FINANCE' | 'ALL';
   type: string;
+  category: string;
 };
 
 export type TUser = {
