@@ -3,6 +3,7 @@ import { AuthRoutes } from '../modules/Auth/auth.route';
 import { UserRoutes } from '../modules/User/user.route';
 import { LMUGoalsRoutes } from '../modules/LMU/LMUGoals/lmugoals.route';
 import { LMUMultiTaskingRoutes } from '../modules/LMU/LMUMultitasking/lmumultitasking.route';
+import { LeadsManagementRoutes } from '../modules/LMU/LeadsManagement/leads.route';
 
 const router = Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: '/lmu-multitaskings',
     route: LMUMultiTaskingRoutes,
+  },
+  {
+    path: '/leads-management',
+    route: LeadsManagementRoutes,
   },
 ];
 

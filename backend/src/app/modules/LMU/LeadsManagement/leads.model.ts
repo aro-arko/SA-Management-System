@@ -14,6 +14,11 @@ const leadsTaskSchema = new Schema<TLeadsTask>(
       required: true,
       default: 'LMU',
     },
+    type: {
+      type: String,
+      enum: ['whatsapp', 'email', 'calling'],
+      required: true,
+    },
     goalId: {
       type: Schema.Types.ObjectId,
       ref: 'LMUGoal',
@@ -52,22 +57,16 @@ const leadsTaskSchema = new Schema<TLeadsTask>(
     message: {
       type: String,
     },
-    activities: [
-      {
-        completedLeads: {
-          type: Number,
-          required: true,
+    activities: {
+      type: [
+        {
+          completedLeads: { type: Number, required: true },
+          flaggedLeads: { type: Number, required: true },
+          remarks: { type: String, required: true },
         },
-        flaggedLeads: {
-          type: Number,
-          required: true,
-        },
-        remarks: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+      ],
+      default: [],
+    },
     completedAt: {
       type: Date,
     },
