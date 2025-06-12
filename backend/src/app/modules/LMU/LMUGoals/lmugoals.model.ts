@@ -28,6 +28,12 @@ const lmuGoalSchema = new Schema<TGoal>(
       default: 0,
       required: true,
     },
+    tasks: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'LeadsTask',
+      },
+    ],
     isActive: {
       type: Boolean,
       default: true,

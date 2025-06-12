@@ -6,6 +6,7 @@ export type TGoal = {
   completed: number;
   remaining: number;
   total: number;
+  tasks: Types.ObjectId[];
   isActive: boolean;
   createdBy: Types.ObjectId;
 };

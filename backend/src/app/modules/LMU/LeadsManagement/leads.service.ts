@@ -135,6 +135,7 @@ const leadsTaskCreate = async (
 
         lmuGoal.total += payLoad.totalLeads;
         lmuGoal.remaining += payLoad.totalLeads;
+        lmuGoal.tasks.push(leadsTask[0]._id);
 
         await lmuGoal.save({ session });
       })();
