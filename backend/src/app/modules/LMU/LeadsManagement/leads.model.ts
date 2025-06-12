@@ -50,6 +50,11 @@ const leadsTaskSchema = new Schema<TLeadsTask>(
       type: Number,
       required: true,
     },
+    completedLeads: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     remainingLeads: {
       type: Number,
       required: true,

@@ -17,6 +17,7 @@ export type TLeadsTask = {
   createdBy: Types.ObjectId;
   dueDate: Date;
   totalLeads: number;
+  completedLeads: number;
   remainingLeads: number;
   message: string;
   activities: TActivity[];
