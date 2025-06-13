@@ -4,6 +4,8 @@ import { User } from '../../User/user.model';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 import { LMUMultiTasking } from './lmumultitasking.model';
+import mongoose from 'mongoose';
+import { LeadsTask } from '../LeadsManagement/leads.model';
 
 const createLMUMultitasking = async (
   currentUser: JwtPayload,
@@ -145,6 +147,12 @@ const devoteLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
   return multitasking;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const categoryModelMap: Record<string, mongoose.Model<any>> = {
+  LeadsTask,
+  // Add other models here
+};
+
 const rejectLMUMultitasking = async (
   id: string,
   currentUser: JwtPayload,
@@ -152,39 +160,55 @@ const rejectLMUMultitasking = async (
 ) => {
   const { email, role } = currentUser;
   const user = await User.findOne({ email }, { _id: 1 });
-
   if (!user) {
-    throw new AppError(
-      httpStatus.UNAUTHORIZED,
-      'You are not authorized to perform this action',
-    );
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Unauthorized');
   }
+
   const multitasking = await LMUMultiTasking.findById(id);
   if (!multitasking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
   }
+
   if (role === 'lmuDataLeader' && multitasking.type !== 'data-entry') {
     throw new AppError(
       httpStatus.FORBIDDEN,
-      'Data entry leader can only work with data entry multitasking',
+      'Data entry leader can only remove users from data entry multitasking',
     );
   }
-  const manpowerIndex = multitasking.manpower.findIndex(
-    (manpower) => manpower.userId.toString() === data.userId,
-  );
-  if (manpowerIndex === -1) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      'User is not part of this multi-tasking',
-    );
-  } else {
-    multitasking.manpower = multitasking.manpower.filter(
-      (manpower) => manpower.userId.toString() !== data.userId,
-    );
 
-    await multitasking.save();
-    return multitasking;
+  const targetUser = await User.findById(data.userId, { tasks: 1 });
+  if (!targetUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Target user not found');
   }
+
+  // ✅ Check if user has task linked to this multitasking
+  for (const task of targetUser.tasks || []) {
+    const { category, taskId } = task;
+    if (!category || !taskId) continue;
+
+    const Model = categoryModelMap[category];
+    if (!Model) continue;
+
+    const matchedTask = await Model.findOne({
+      _id: taskId,
+      multiTaskId: multitasking._id,
+    }).lean();
+
+    if (matchedTask) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'User is already assigned to a task linked with this multi-tasking',
+      );
+    }
+  }
+
+  // Proceed to remove from multitasking
+  multitasking.manpower = multitasking.manpower.filter(
+    (manpower) => manpower.userId.toString() !== data.userId,
+  );
+  await multitasking.save();
+
+  return multitasking;
 };
 
 export const LMUMultiTaskingServices = {
