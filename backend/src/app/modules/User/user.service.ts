@@ -36,45 +36,6 @@ const userUpdate = async (
   return updatedUser;
 };
 
-// get user whatsapp tasks
-const getUserWhatsappTasks = async (
-  user: JwtPayload,
-  query: Record<string, unknown>,
-) => {
-  const userData = await User.findOne({ email: user.email });
-  if (!userData) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-  }
-
-  // Extract whatsapp taskIds from user's task list
-  const whatsappTaskIds =
-    userData.tasks
-      ?.filter(
-        (task) =>
-          task.type === 'whatsapp' &&
-          task.category === 'LeadsTask' &&
-          task.taskId,
-      )
-      .map((task) => new Types.ObjectId(task.taskId)) || [];
-
-  if (!whatsappTaskIds.length) return [];
-
-  // Build the base query (default to in-progress)
-  const statusFilter =
-    query.showAll === 'true' ? {} : { status: 'in-progress' };
-
-  const baseQuery = LeadsTask.find({
-    _id: { $in: whatsappTaskIds },
-    ...statusFilter,
-  });
-
-  // Apply pagination using your reusable QueryBuilder
-  const queryBuilder = new QueryBuilder(baseQuery, query).paginate().sort();
-  const paginatedTasks = await queryBuilder.modelQuery.lean();
-
-  return paginatedTasks;
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const categoryModelMap: Record<string, mongoose.Model<any>> = {
   LeadsTask,
@@ -127,6 +88,5 @@ const getUserTasks = async (
 
 export const UserService = {
   userUpdate,
-  getUserWhatsappTasks,
   getUserTasks,
 };

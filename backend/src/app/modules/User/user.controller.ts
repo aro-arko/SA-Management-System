@@ -20,20 +20,6 @@ const userUpdate = catchAsync(async (req, res) => {
   });
 });
 
-// get user whatsapp tasks
-const getUserWhatsappTasks = catchAsync(async (req, res) => {
-  const user = req.user;
-  const query = req.query;
-  const result = await UserService.getUserWhatsappTasks(user, query);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User WhatsApp tasks fetched successfully',
-    data: result,
-  });
-});
-
 // get user tasks
 const getUserTasks = catchAsync(async (req, res) => {
   const user = req.user;
@@ -50,6 +36,5 @@ const getUserTasks = catchAsync(async (req, res) => {
 
 export const UserController = {
   userUpdate,
-  getUserWhatsappTasks,
   getUserTasks,
 };
