@@ -14,4 +14,21 @@ router.patch(
   UserController.userUpdate,
 );
 
+// get user whatsapp tasks
+router.get(
+  '/leads-whatsapp-tasks',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  UserController.getUserWhatsappTasks,
+);
+
 export const UserRoutes = router;
