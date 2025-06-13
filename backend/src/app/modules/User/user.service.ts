@@ -75,7 +75,36 @@ const getUserWhatsappTasks = async (
   return paginatedTasks;
 };
 
+const getLeadsTaskDetails = async (user: JwtPayload, id: string) => {
+  if (!Types.ObjectId.isValid(id)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  const userData = await User.findOne(
+    {
+      email: user.email,
+      'tasks.taskId': new Types.ObjectId(id),
+    },
+    { _id: 1 },
+  );
+
+  if (!userData) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'You are not the owner of this task',
+    );
+  }
+
+  const taskDetails = await LeadsTask.findById(id).lean();
+  if (!taskDetails) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+  }
+
+  return taskDetails;
+};
+
 export const UserService = {
   userUpdate,
   getUserWhatsappTasks,
+  getLeadsTaskDetails,
 };

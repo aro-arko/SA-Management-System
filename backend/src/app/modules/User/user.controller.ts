@@ -34,7 +34,22 @@ const getUserWhatsappTasks = catchAsync(async (req, res) => {
   });
 });
 
+// get user task details
+const getLeadsTaskDetails = catchAsync(async (req, res) => {
+  const user = req.user;
+  const id = req.params.id;
+  const result = await UserService.getLeadsTaskDetails(user, id as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Leads task details fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   userUpdate,
   getUserWhatsappTasks,
+  getLeadsTaskDetails,
 };
