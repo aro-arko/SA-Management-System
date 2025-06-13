@@ -10,7 +10,7 @@ const createLMUMultitasking = async (
   data: TLMUMultitasking,
 ) => {
   const { email, role } = currentUser;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, { _id: 1 });
   if (!user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
@@ -43,7 +43,7 @@ const updateLMUMultitasking = async (
   data: Partial<TLMUMultitasking>,
 ) => {
   const { email, role } = currentUser;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, { _id: 1 });
   if (!user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
@@ -75,7 +75,7 @@ const updateLMUMultitasking = async (
 
 const applyLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
   const { email } = currentUser;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, { _id: 1 });
   if (!user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
@@ -114,7 +114,7 @@ const applyLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
 
 const devoteLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
   const { email } = currentUser;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, { _id: 1 });
   if (!user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
@@ -151,7 +151,7 @@ const rejectLMUMultitasking = async (
   data: { userId: string },
 ) => {
   const { email, role } = currentUser;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, { _id: 1 });
 
   if (!user) {
     throw new AppError(

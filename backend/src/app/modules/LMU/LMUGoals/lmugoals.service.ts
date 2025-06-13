@@ -9,7 +9,7 @@ import httpStatus from 'http-status';
 // Service for creating and fetching LMU goals
 const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
   const { email } = currentUser;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }, { _id: 1 });
 
   //   assigning the user to the createdBy field
   if (!user) {

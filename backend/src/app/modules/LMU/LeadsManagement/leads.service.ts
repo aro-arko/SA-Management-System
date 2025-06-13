@@ -15,7 +15,7 @@ const leadsTaskCreate = async (
   const { email, role } = currentUser;
   const { goalId, assignedTo, multiTask, multiTaskId } = payLoad;
 
-  const currentAdmin = await User.findOne({ email });
+  const currentAdmin = await User.findOne({ email }, { _id: 1 });
   if (!currentAdmin) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
@@ -184,7 +184,58 @@ const getLeadsTaskDetails = async (user: JwtPayload, id: string) => {
 
 // add activity to leads task
 const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
-  return 'Not implemented yet';
+  // Validate task ID
+  if (!Types.ObjectId.isValid(id)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  // Verify user exists
+  const userData = await User.findOne({ email: user.email }, { _id: 1 });
+  if (!userData) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'Please login again to continue',
+    );
+  }
+
+  // Get task with activities and lead fields
+  const task = await LeadsTask.findById(id);
+  if (!task) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+  }
+
+  if (typeof task.remainingLeads !== 'number') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Task remainingLeads is not defined',
+    );
+  }
+
+  const currentTotalLeads = data.completedLeads + data.flaggedLeads;
+
+  if (currentTotalLeads > task.remainingLeads) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Total completed and flagged leads cannot exceed remaining leads',
+    );
+  }
+
+  // Update task counts
+  task.remainingLeads -= currentTotalLeads;
+  task.completedLeads += currentTotalLeads;
+
+  // Update status if done
+  if (task.remainingLeads === 0) {
+    task.status = 'completed';
+  }
+
+  // Add activity
+  task.activities.push(data);
+
+  // Save updated task
+  const result = await task.save();
+
+  return result;
 };
 
 export const leadsServices = {
