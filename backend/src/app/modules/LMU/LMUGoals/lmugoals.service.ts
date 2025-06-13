@@ -3,6 +3,8 @@ import { TGoal } from './lmugoals.interface';
 import { User } from '../../User/user.model';
 import { LMUGoalModel } from './lmugoals.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import AppError from '../../../errors/AppError';
+import httpStatus from 'http-status';
 
 // Service for creating and fetching LMU goals
 const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
@@ -31,9 +33,23 @@ const getAllLmuGoals = async (query: Record<string, unknown>) => {
 };
 
 const updateLmuGoal = async (id: string, data: TGoal) => {
+  const existingGoal = await LMUGoalModel.findById(id);
+  if (!existingGoal) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Goal not found');
+  }
+
+  // If trying to update the type, ensure the goal has no tasks
+  if (data.type && existingGoal.tasks.length > 0) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Cannot update goal type when tasks are associated',
+    );
+  }
+
   const result = await LMUGoalModel.findByIdAndUpdate(id, data, {
     new: true,
   });
+
   return result;
 };
 
