@@ -184,12 +184,10 @@ const getLeadsTaskDetails = async (user: JwtPayload, id: string) => {
 
 // add activity to leads task
 const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
-  // Validate task ID
   if (!Types.ObjectId.isValid(id)) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
   }
 
-  // Verify user exists
   const userData = await User.findOne({ email: user.email }, { _id: 1 });
   if (!userData) {
     throw new AppError(
@@ -198,44 +196,73 @@ const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
     );
   }
 
-  // Get task with activities and lead fields
-  const task = await LeadsTask.findById(id);
-  if (!task) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Find task in session
+    const task = await LeadsTask.findById(id).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    // Confirm task ownership
+    if (task.assignedTo.toString() !== userData._id.toString()) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'You are not assigned to this task',
+      );
+    }
+
+    const currentTotalLeads = data.completedLeads + data.flaggedLeads;
+
+    if (currentTotalLeads > task.remainingLeads) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Total completed and flagged leads cannot exceed remaining leads',
+      );
+    }
+
+    // Goal update
+    if (task.goalId) {
+      const goal = await LMUGoalModel.findById(task.goalId).session(session);
+      if (!goal) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Associated goal not found');
+      }
+
+      goal.completed += currentTotalLeads;
+      goal.remaining -= currentTotalLeads;
+
+      if (goal.remaining < 0) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'Total completed leads cannot exceed goal remaining leads',
+        );
+      }
+
+      await goal.save({ session });
+    }
+
+    // Task update
+    task.remainingLeads -= currentTotalLeads;
+    task.completedLeads += currentTotalLeads;
+
+    if (task.remainingLeads === 0) {
+      task.status = 'completed';
+    }
+
+    task.activities.push(data);
+    const result = await task.save({ session });
+
+    await session.commitTransaction();
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
-
-  if (typeof task.remainingLeads !== 'number') {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Task remainingLeads is not defined',
-    );
-  }
-
-  const currentTotalLeads = data.completedLeads + data.flaggedLeads;
-
-  if (currentTotalLeads > task.remainingLeads) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Total completed and flagged leads cannot exceed remaining leads',
-    );
-  }
-
-  // Update task counts
-  task.remainingLeads -= currentTotalLeads;
-  task.completedLeads += currentTotalLeads;
-
-  // Update status if done
-  if (task.remainingLeads === 0) {
-    task.status = 'completed';
-  }
-
-  // Add activity
-  task.activities.push(data);
-
-  // Save updated task
-  const result = await task.save();
-
-  return result;
 };
 
 export const leadsServices = {
