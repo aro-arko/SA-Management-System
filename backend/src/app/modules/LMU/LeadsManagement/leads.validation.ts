@@ -20,6 +20,19 @@ const leadsCreationValidationSchema = z.object({
   }),
 });
 
+// add activity validation schema
+const addActivityValidationSchema = z.object({
+  body: z.object({
+    completedLeads: z.number().min(1, 'Completed leads must be at least 1'),
+    flaggedLeads: z
+      .number()
+      .min(0, 'Flagged leads cannot be negative')
+      .optional(),
+    remarks: z.string().min(1, 'Remarks are required'),
+  }),
+});
+
 export const LeadsManagementValidation = {
   leadsCreationValidationSchema,
+  addActivityValidationSchema,
 };

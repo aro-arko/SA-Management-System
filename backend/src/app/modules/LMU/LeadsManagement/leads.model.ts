@@ -66,7 +66,7 @@ const leadsTaskSchema = new Schema<TLeadsTask>(
       type: [
         {
           completedLeads: { type: Number, required: true },
-          flaggedLeads: { type: Number, required: true },
+          flaggedLeads: { type: Number, default: 0, required: true },
           remarks: { type: String, required: true },
         },
       ],

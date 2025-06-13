@@ -1,7 +1,7 @@
 import mongoose, { Types } from 'mongoose';
 import AppError from '../../../errors/AppError';
 import { User } from '../../User/user.model';
-import { TLeadsTask } from './leads.interface';
+import { TActivity, TLeadsTask } from './leads.interface';
 import httpStatus from 'http-status';
 import { LeadsTask } from './leads.model';
 import { JwtPayload } from 'jsonwebtoken';
@@ -182,7 +182,13 @@ const getLeadsTaskDetails = async (user: JwtPayload, id: string) => {
   return taskDetails;
 };
 
+// add activity to leads task
+const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
+  return 'Not implemented yet';
+};
+
 export const leadsServices = {
   leadsTaskCreate,
   getLeadsTaskDetails,
+  addActivity,
 };

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-type TActivity = {
+export type TActivity = {
   completedLeads: number;
   flaggedLeads: number;
   remarks: string;

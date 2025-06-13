@@ -34,7 +34,24 @@ const getLeadsTaskDetails = catchAsync(async (req, res) => {
   });
 });
 
+// add activity to leads task
+const addActivity = catchAsync(async (req, res) => {
+  const user = req.user;
+  const taskId = req.params.taskId;
+  const data = req.body;
+
+  const result = await leadsServices.addActivity(user, taskId as string, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Activity added successfully',
+    data: result,
+  });
+});
+
 export const leadsController = {
   leadsTaskCreate,
   getLeadsTaskDetails,
+  addActivity,
 };
