@@ -17,7 +17,7 @@ const moduleRoutes = [
     route: UserRoutes,
   },
   {
-    path: '/lmu-goals',
+    path: '/lmu-leads-goals',
     route: LMUGoalsRoutes,
   },
   {

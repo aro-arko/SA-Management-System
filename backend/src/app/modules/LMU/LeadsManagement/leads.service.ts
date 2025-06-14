@@ -7,6 +7,7 @@ import { LeadsTask } from './leads.model';
 import { JwtPayload } from 'jsonwebtoken';
 import { LMULeadsGoal } from '../LMULeadsGoals/lmuleadsgoals.model';
 import { LMUMultiTasking } from '../LMUMultitasking/lmumultitasking.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const leadsTaskCreate = async (
   currentUser: JwtPayload,
@@ -152,6 +153,26 @@ const leadsTaskCreate = async (
   } finally {
     session.endSession();
   }
+};
+
+// get all leads tasks
+const getAllLeadsTasks = async (query: Record<string, unknown>) => {
+  const baseQuery = LeadsTask.find()
+    .populate('assignedTo', 'lastName')
+    .populate('goalId', 'title type status');
+
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .sort()
+    .paginate()
+    .fields();
+
+  const tasks = await queryBuilder.modelQuery.lean();
+
+  if (!tasks.length) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No leads tasks found');
+  }
+
+  return tasks;
 };
 
 // add activity to leads task
@@ -381,4 +402,5 @@ export const leadsServices = {
   addActivity,
   updateTask,
   deleteTask,
+  getAllLeadsTasks,
 };

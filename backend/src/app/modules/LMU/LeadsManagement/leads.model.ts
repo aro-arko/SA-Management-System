@@ -21,7 +21,7 @@ const leadsTaskSchema = new Schema<TLeadsTask>(
     },
     goalId: {
       type: Schema.Types.ObjectId,
-      ref: 'LMUGoal',
+      ref: 'LMULeadsGoal',
     },
     multiTask: {
       type: Boolean,

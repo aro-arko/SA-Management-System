@@ -17,6 +17,19 @@ const leadsTaskCreate = catchAsync(async (req, res) => {
   });
 });
 
+// get all leads tasks
+const getAllLeadsTasks = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await leadsServices.getAllLeadsTasks(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Leads tasks fetched successfully',
+    data: result,
+  });
+});
+
 // add activity to leads task
 const addActivity = catchAsync(async (req, res) => {
   const user = req.user;
@@ -68,4 +81,5 @@ export const leadsController = {
   addActivity,
   updateTask,
   deleteTask,
+  getAllLeadsTasks,
 };

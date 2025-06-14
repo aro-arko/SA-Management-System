@@ -14,6 +14,12 @@ router.post(
   leadsController.leadsTaskCreate,
 );
 
+router.get(
+  '/all-tasks',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.lmuAdmin),
+  leadsController.getAllLeadsTasks,
+);
+
 router.post(
   '/add-activity/:taskId',
   auth(
