@@ -78,6 +78,10 @@ const dataManagementSchema = new Schema({
     type: Number,
     default: 0,
   },
+  missingOrExtraLeads: {
+    type: Number,
+    default: 0,
+  },
   message: {
     type: String,
     default: '',

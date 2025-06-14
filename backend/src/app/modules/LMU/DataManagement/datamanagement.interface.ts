@@ -25,6 +25,7 @@ export type TDataEntryTask = {
   schoolLevel: string; // Form 5
   schoolName: string;
   totalLeads: number;
+  missingOrExtraLeads?: number;
   message: string;
   report: TDataEntryReport;
   completedAt?: Date;

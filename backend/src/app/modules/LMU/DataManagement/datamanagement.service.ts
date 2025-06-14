@@ -14,7 +14,6 @@ const createDataEntryTask = async (
 ) => {
   const { email } = currentUser;
   const { assignedTo, multiTask, multiTaskId } = payLoad;
-  console.log(assignedTo, multiTask, multiTaskId);
 
   const currentAdmin = await User.findOne({ email }, { _id: 1 }).lean();
   if (!currentAdmin) {
