@@ -10,7 +10,7 @@ export type TLeadsTask = {
   title: string;
   unit: string;
   type: 'whatsapp' | 'email' | 'calling';
-  goalId: Types.ObjectId;
+  goalId?: Types.ObjectId;
   multiTask: boolean;
   multiTaskId?: Types.ObjectId;
   assignedTo: Types.ObjectId;
