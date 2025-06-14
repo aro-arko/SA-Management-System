@@ -316,8 +316,69 @@ const updateTask = async (
   }
 };
 
+// delete task
+const deleteTask = async (id: string) => {
+  if (!Types.ObjectId.isValid(id)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const task = await LeadsTask.findById(id).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    // Remove task reference from the assigned user
+    const userUpdatePromise = User.updateOne(
+      { _id: task.assignedTo },
+      { $pull: { tasks: { taskId: task._id } } },
+      { session },
+    );
+
+    // Remove task reference from the goal (if exists)
+    const goalUpdatePromise = task.goalId
+      ? LMUGoalModel.findByIdAndUpdate(
+          task.goalId,
+          {
+            $inc: {
+              completed: -task.completedLeads,
+              remaining: -task.remainingLeads,
+              total: -task.totalLeads,
+            },
+            $pull: { tasks: task._id },
+          },
+          { session },
+        )
+      : Promise.resolve();
+
+    // Delete the task
+    const deleteTaskPromise = LeadsTask.deleteOne(
+      { _id: task._id },
+      { session },
+    );
+
+    // Run all in parallel
+    await Promise.all([
+      userUpdatePromise,
+      goalUpdatePromise,
+      deleteTaskPromise,
+    ]);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const leadsServices = {
   leadsTaskCreate,
   addActivity,
   updateTask,
+  deleteTask,
 };

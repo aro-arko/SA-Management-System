@@ -49,8 +49,23 @@ const updateTask = catchAsync(async (req, res) => {
   });
 });
 
+// delete leads task
+const deleteTask = catchAsync(async (req, res) => {
+  const taskId = req.params.taskId;
+
+  const result = await leadsServices.deleteTask(taskId as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Leads task deleted successfully',
+    data: result,
+  });
+});
+
 export const leadsController = {
   leadsTaskCreate,
   addActivity,
   updateTask,
+  deleteTask,
 };

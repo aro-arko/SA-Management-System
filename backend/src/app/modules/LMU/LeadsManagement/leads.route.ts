@@ -38,4 +38,11 @@ router.patch(
   leadsController.updateTask,
 );
 
+// delete task
+router.delete(
+  '/delete-task/:taskId',
+  auth(USER_ROLE.lmuAdmin),
+  leadsController.deleteTask,
+);
+
 export const LeadsManagementRoutes = router;
