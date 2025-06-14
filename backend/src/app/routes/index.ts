@@ -4,6 +4,7 @@ import { UserRoutes } from '../modules/User/user.route';
 import { LMUGoalsRoutes } from '../modules/LMU/LMULeadsGoals/lmuleadsgoals.route';
 import { LMUMultiTaskingRoutes } from '../modules/LMU/LMUMultitasking/lmumultitasking.route';
 import { LeadsManagementRoutes } from '../modules/LMU/LeadsManagement/leads.route';
+import { dataManagementRoutes } from '../modules/LMU/DataManagement/datamanagement.route';
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/leads-management',
     route: LeadsManagementRoutes,
+  },
+  {
+    path: '/data-management',
+    route: dataManagementRoutes,
   },
 ];
 
