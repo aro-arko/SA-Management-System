@@ -33,7 +33,24 @@ const addActivity = catchAsync(async (req, res) => {
   });
 });
 
+// update leads task
+const updateTask = catchAsync(async (req, res) => {
+  const user = req.user;
+  const taskId = req.params.taskId;
+  const data = req.body;
+
+  const result = await leadsServices.updateTask(user, taskId as string, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Leads task updated successfully',
+    data: result,
+  });
+});
+
 export const leadsController = {
   leadsTaskCreate,
   addActivity,
+  updateTask,
 };

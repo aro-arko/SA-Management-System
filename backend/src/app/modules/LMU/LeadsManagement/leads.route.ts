@@ -31,4 +31,11 @@ router.post(
   leadsController.addActivity,
 );
 
+router.patch(
+  '/update-task/:taskId',
+  auth(USER_ROLE.lmuAdmin),
+  validateRequest(LeadsManagementValidation.updateTaskValidationSchema),
+  leadsController.updateTask,
+);
+
 export const LeadsManagementRoutes = router;

@@ -237,7 +237,87 @@ const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
   }
 };
 
+const updateTask = async (
+  currentUser: JwtPayload,
+  taskId: string,
+  data: Partial<TLeadsTask>,
+) => {
+  if (!Types.ObjectId.isValid(taskId)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  const userData = await User.findOne({ email: currentUser.email }, { _id: 1 });
+  if (!userData) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'Please login again to continue',
+    );
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const task = await LeadsTask.findById(taskId).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    // Handle reassignment
+    if (
+      data.assignedTo &&
+      data.assignedTo.toString() !== task.assignedTo?.toString()
+    ) {
+      const [prevUser, newUser] = await Promise.all([
+        User.findById(task.assignedTo).session(session),
+        User.findById(data.assignedTo).session(session),
+      ]);
+
+      // Remove from previous user
+      if (prevUser) {
+        prevUser.tasks =
+          prevUser.tasks?.filter((t) => t.taskId.toString() !== taskId) || [];
+        await prevUser.save({ session });
+      }
+
+      // Add to new user
+      if (newUser) {
+        const alreadyAssigned = newUser.tasks?.some(
+          (t) => t.taskId.toString() === taskId,
+        );
+        if (!alreadyAssigned) {
+          newUser.tasks = newUser.tasks || [];
+          newUser.tasks.push({
+            taskId: task._id,
+            unit: 'LMU',
+            type: task.type,
+            category: 'LeadsTask',
+          });
+          await newUser.save({ session });
+        }
+      }
+
+      // Update task assignedTo field
+      task.assignedTo = data.assignedTo;
+    }
+
+    // Apply other updates to the task
+    Object.assign(task, data);
+    const updatedTask = await task.save({ session });
+
+    await session.commitTransaction();
+    return updatedTask;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const leadsServices = {
   leadsTaskCreate,
   addActivity,
+  updateTask,
 };

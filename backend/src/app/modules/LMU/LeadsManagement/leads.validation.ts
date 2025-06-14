@@ -32,7 +32,21 @@ const addActivityValidationSchema = z.object({
   }),
 });
 
+// update task validation schema
+const updateTaskValidationSchema = z.object({
+  body: z
+    .object({
+      title: z.string().min(1, 'Title is required').optional(),
+      assignedTo: z.string().min(1, 'User not found').optional(),
+      message: z.string().optional(),
+    })
+    .strict({
+      message: 'This field can not be updated',
+    }),
+});
+
 export const LeadsManagementValidation = {
   leadsCreationValidationSchema,
   addActivityValidationSchema,
+  updateTaskValidationSchema,
 };
