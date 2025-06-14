@@ -6,6 +6,11 @@ import mongoose, { Types } from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { LeadsTask } from '../LMU/LeadsManagement/leads.model';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const categoryModelMap: Record<string, mongoose.Model<any>> = {
+  LeadsTask,
+};
+
 const userUpdate = async (
   currentUser: JwtPayload,
   requestedEmail: string,
@@ -34,11 +39,6 @@ const userUpdate = async (
   }
 
   return updatedUser;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const categoryModelMap: Record<string, mongoose.Model<any>> = {
-  LeadsTask,
 };
 
 const getUserTasks = async (
@@ -86,7 +86,62 @@ const getUserTasks = async (
   return allTasks;
 };
 
+const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
+  if (!Types.ObjectId.isValid(taskId)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  const privilegedRoles = ['coordinator', 'head', 'lmuAdmin'];
+
+  let category: string | undefined;
+  let type: string | undefined;
+
+  // Try to get task from user's task list
+  const user = await User.findOne(
+    { email: currentUser.email, 'tasks.taskId': taskId },
+    { 'tasks.$': 1 },
+  );
+
+  if (user?.tasks?.length) {
+    // Task found in user profile
+    ({ category, type } = user.tasks[0]);
+  } else if (privilegedRoles.includes(currentUser.role)) {
+    // Search across all models if privileged
+    for (const [cat, Model] of Object.entries(categoryModelMap)) {
+      const task = await Model.findById(taskId).lean();
+      if (task && !Array.isArray(task)) {
+        category = cat;
+        type = (task as { type?: string }).type;
+        break;
+      }
+    }
+  }
+
+  if (!category || !type) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'You are not allowed to access this task',
+    );
+  }
+
+  const Model = categoryModelMap[category];
+  if (!Model) {
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      `No model found for category: ${category}`,
+    );
+  }
+
+  const task = await Model.findOne({ _id: taskId, type }).lean();
+  if (!task) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+  }
+
+  return task;
+};
+
 export const UserService = {
   userUpdate,
   getUserTasks,
+  getTaskDetails,
 };

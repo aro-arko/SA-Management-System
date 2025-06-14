@@ -34,7 +34,23 @@ const getUserTasks = catchAsync(async (req, res) => {
   });
 });
 
+// get task details by taskId
+const getTaskDetails = catchAsync(async (req, res) => {
+  const user = req.user;
+  const taskId = req.params.taskId;
+
+  const result = await UserService.getTaskDetails(user, taskId as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Task details fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   userUpdate,
   getUserTasks,
+  getTaskDetails,
 };
