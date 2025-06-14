@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthRoutes } from '../modules/Auth/auth.route';
 import { UserRoutes } from '../modules/User/user.route';
-import { LMUGoalsRoutes } from '../modules/LMU/LMUGoals/lmugoals.route';
+import { LMUGoalsRoutes } from '../modules/LMU/LMULeadsGoals/lmuleadsgoals.route';
 import { LMUMultiTaskingRoutes } from '../modules/LMU/LMUMultitasking/lmumultitasking.route';
 import { LeadsManagementRoutes } from '../modules/LMU/LeadsManagement/leads.route';
 

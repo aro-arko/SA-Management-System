@@ -1,7 +1,7 @@
 import catchAsync from '../../../utils/catchAsync';
 import sendResponse from '../../../utils/sendReponse';
 import httpStatus from 'http-status';
-import { lmuGoalsService } from './lmugoals.service';
+import { lmuGoalsService } from './lmuleadsgoals.service';
 
 // This controller handles the creation and retrieval of LMU goals.
 const createLmuGoal = catchAsync(async (req, res) => {

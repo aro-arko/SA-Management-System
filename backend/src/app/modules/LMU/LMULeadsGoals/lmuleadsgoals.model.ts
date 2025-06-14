@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
-import { TGoal } from './lmugoals.interface';
+import { TGoal } from './lmuleadsgoals.interface';
 
-const lmuGoalSchema = new Schema<TGoal>(
+const lmuLeadsGoalSchema = new Schema<TGoal>(
   {
     title: {
       type: String,
@@ -51,4 +51,4 @@ const lmuGoalSchema = new Schema<TGoal>(
   },
 );
 
-export const LMUGoalModel = model<TGoal>('LMUGoal', lmuGoalSchema);
+export const LMULeadsGoal = model<TGoal>('LMULeadsGoal', lmuLeadsGoalSchema);

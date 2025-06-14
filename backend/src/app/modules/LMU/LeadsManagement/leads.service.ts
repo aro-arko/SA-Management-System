@@ -5,7 +5,7 @@ import { TActivity, TLeadsTask } from './leads.interface';
 import httpStatus from 'http-status';
 import { LeadsTask } from './leads.model';
 import { JwtPayload } from 'jsonwebtoken';
-import { LMUGoalModel } from '../LMUGoals/lmugoals.model';
+import { LMULeadsGoal } from '../LMULeadsGoals/lmuleadsgoals.model';
 import { LMUMultiTasking } from '../LMUMultitasking/lmumultitasking.model';
 
 const leadsTaskCreate = async (
@@ -116,7 +116,7 @@ const leadsTaskCreate = async (
     let goalUpdatePromise = Promise.resolve();
     if (goalId) {
       goalUpdatePromise = (async () => {
-        const lmuGoal = await LMUGoalModel.findById(goalId).session(session);
+        const lmuGoal = await LMULeadsGoal.findById(goalId).session(session);
         if (!lmuGoal) {
           throw new AppError(
             httpStatus.NOT_FOUND,
@@ -198,7 +198,7 @@ const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
 
     // Goal update
     if (task.goalId) {
-      const goal = await LMUGoalModel.findById(task.goalId).session(session);
+      const goal = await LMULeadsGoal.findById(task.goalId).session(session);
       if (!goal) {
         throw new AppError(httpStatus.NOT_FOUND, 'Associated goal not found');
       }
@@ -340,7 +340,7 @@ const deleteTask = async (id: string) => {
 
     // Remove task reference from the goal (if exists)
     const goalUpdatePromise = task.goalId
-      ? LMUGoalModel.findByIdAndUpdate(
+      ? LMULeadsGoal.findByIdAndUpdate(
           task.goalId,
           {
             $inc: {

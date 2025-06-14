@@ -1,7 +1,7 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { TGoal } from './lmugoals.interface';
+import { TGoal } from './lmuleadsgoals.interface';
 import { User } from '../../User/user.model';
-import { LMUGoalModel } from './lmugoals.model';
+import { LMULeadsGoal } from './lmuleadsgoals.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
@@ -17,13 +17,13 @@ const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
   }
   data.createdBy = user._id;
 
-  const result = await LMUGoalModel.create(data);
+  const result = await LMULeadsGoal.create(data);
   return result;
 };
 
 // all goals will be fetched by the user
 const getAllLmuGoals = async (query: Record<string, unknown>) => {
-  const modelQuery = LMUGoalModel.find();
+  const modelQuery = LMULeadsGoal.find();
   const queryBuilder = new QueryBuilder(modelQuery, query);
   queryBuilder.sort().paginate();
 
@@ -33,7 +33,7 @@ const getAllLmuGoals = async (query: Record<string, unknown>) => {
 };
 
 const updateLmuGoal = async (id: string, data: TGoal) => {
-  const existingGoal = await LMUGoalModel.findById(id);
+  const existingGoal = await LMULeadsGoal.findById(id);
   if (!existingGoal) {
     throw new AppError(httpStatus.NOT_FOUND, 'Goal not found');
   }
@@ -46,7 +46,7 @@ const updateLmuGoal = async (id: string, data: TGoal) => {
     );
   }
 
-  const result = await LMUGoalModel.findByIdAndUpdate(id, data, {
+  const result = await LMULeadsGoal.findByIdAndUpdate(id, data, {
     new: true,
   });
 
