@@ -28,5 +28,5 @@ export type TDataEntryTask = {
   message: string;
   report: TDataEntryReport;
   completedAt?: Date;
-  status: 'in-progress' | 'completed';
+  status: 'in-progress' | 'in-checking' | 'completed';
 };

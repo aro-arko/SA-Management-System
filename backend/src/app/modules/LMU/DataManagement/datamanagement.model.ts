@@ -105,7 +105,7 @@ const dataManagementSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['in-progress', 'completed'],
+    enum: ['in-progress', 'in-checking', 'completed'],
     default: 'in-progress',
   },
 });
