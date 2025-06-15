@@ -17,14 +17,17 @@ const LMUDataBatchSchema = new Schema<TLMUDataBatch>(
     assignedSets: {
       type: Number,
       required: true,
+      default: 0,
     },
     expectedTotalLeads: {
       type: Number,
       required: true,
+      default: 0,
     },
     completedLeads: {
       type: Number,
       required: true,
+      default: 0,
     },
     tasks: [
       {
