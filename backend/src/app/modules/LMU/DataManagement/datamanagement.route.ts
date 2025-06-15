@@ -28,6 +28,11 @@ router.get(
 );
 
 // update a data entry task
-// router.patch('/update-data-entry-task/:id')
+router.patch(
+  '/update-data-entry-task/:id',
+  auth(USER_ROLE.lmuDataLeader, USER_ROLE.lmuAdmin),
+  validateRequest(DataManagementValidation.updateDataEntryTask),
+  DataManagementController.updateDataEntryTask,
+);
 
 export const dataManagementRoutes = router;

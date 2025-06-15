@@ -161,7 +161,17 @@ const getAllDataEntryTasks = async (query: Record<string, unknown>) => {
   return tasks;
 };
 
+// update a data entry task
+
+const updateDataEntryTask = async (
+  id: string,
+  payLoad: Partial<TDataEntryTask>,
+) => {
+  return 'not implemented yet';
+};
+
 export const DataManagementService = {
   createDataEntryTask,
   getAllDataEntryTasks,
+  updateDataEntryTask,
 };

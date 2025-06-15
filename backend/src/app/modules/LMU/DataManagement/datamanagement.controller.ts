@@ -29,7 +29,23 @@ const getAllDataEntryTasks = catchAsync(async (req, res) => {
   });
 });
 
+// update a data entry task
+const updateDataEntryTask = catchAsync(async (req, res) => {
+  const data = req.body;
+  const id = req.params.id;
+
+  const result = await DataManagementService.updateDataEntryTask(id, data);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Data entry task updated successfully',
+    data: result,
+  });
+});
+
 export const DataManagementController = {
   createDataEntryTask,
   getAllDataEntryTasks,
+  updateDataEntryTask,
 };
