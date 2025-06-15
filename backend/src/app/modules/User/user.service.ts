@@ -94,6 +94,7 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
   }
 
   const privilegedRoles = ['coordinator', 'head', 'lmuAdmin'];
+  const dataLeaderRole = 'lmuDataLeader';
 
   let category: string | undefined;
   let type: string | undefined;
@@ -107,14 +108,24 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
   if (user?.tasks?.length) {
     // Task found in user profile
     ({ category, type } = user.tasks[0]);
-  } else if (privilegedRoles.includes(currentUser.role)) {
-    // Search across all models if privileged
+  } else if (
+    privilegedRoles.includes(currentUser.role) ||
+    currentUser.role === dataLeaderRole
+  ) {
+    // Search across all models
     for (const [cat, Model] of Object.entries(categoryModelMap)) {
       const task = await Model.findById(taskId).lean();
       if (task && !Array.isArray(task)) {
-        category = cat;
-        type = (task as { type?: string }).type;
-        break;
+        const taskType = (task as { type?: string }).type;
+
+        if (
+          privilegedRoles.includes(currentUser.role) ||
+          (currentUser.role === dataLeaderRole && taskType === 'data-entry')
+        ) {
+          category = cat;
+          type = taskType;
+          break;
+        }
       }
     }
   }
