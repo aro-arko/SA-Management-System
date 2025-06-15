@@ -18,6 +18,20 @@ const createDataBatch = catchAsync(async (req, res) => {
   });
 });
 
+// get all LMU Data Batches
+const getAllDataBatches = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await LMUDataBatchService.getAllDataBatches(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'LMU Data Batches fetched successfully',
+    data: result,
+  });
+});
+
 export const LMUDataBatchController = {
   createDataBatch,
+  getAllDataBatches,
 };

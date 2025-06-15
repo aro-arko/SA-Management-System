@@ -2,6 +2,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { TLMUDataBatch } from './lmudatabatch.interface';
 import { User } from '../../User/user.model';
 import { LMUDataBatch } from './lmudatabatch.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 // create a new LMU Data Batch
 const createDataBatch = async (
@@ -21,6 +22,17 @@ const createDataBatch = async (
   return result;
 };
 
+// get all LMU Data Batches
+const getAllDataBatches = async (query: Record<string, unknown>) => {
+  const modelQuery = LMUDataBatch.find();
+  const queryBuilder = new QueryBuilder(modelQuery, query);
+  queryBuilder.sort().paginate();
+
+  const result = await queryBuilder.modelQuery;
+  return result;
+};
+
 export const LMUDataBatchService = {
   createDataBatch,
+  getAllDataBatches,
 };

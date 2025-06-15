@@ -15,4 +15,16 @@ router.post(
   LMUDataBatchController.createDataBatch,
 );
 
+// access LMU Data Batches
+router.get(
+  '/all',
+  auth(
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+  ),
+  LMUDataBatchController.getAllDataBatches,
+);
+
 export const LMUDataBatchRoutes = router;
