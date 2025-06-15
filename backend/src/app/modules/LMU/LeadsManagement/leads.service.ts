@@ -286,44 +286,79 @@ const updateTask = async (
     }
 
     // Handle reassignment
-    if (
+    const isReassigned =
       data.assignedTo &&
-      data.assignedTo.toString() !== task.assignedTo?.toString()
-    ) {
+      data.assignedTo.toString() !== task.assignedTo?.toString();
+
+    if (isReassigned) {
       const [prevUser, newUser] = await Promise.all([
         User.findById(task.assignedTo).session(session),
         User.findById(data.assignedTo).session(session),
       ]);
 
-      // Remove from previous user
+      if (!newUser) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Assigned user not found');
+      }
+
+      // Validate new user is LMU or multitasking member
+      const isLMUMember = newUser.unit === 'LMU';
+      let isValidMultiTaskMember = false;
+
+      if (task.multiTaskId) {
+        const multitask = await LMUMultiTasking.findById(
+          task.multiTaskId,
+        ).session(session);
+        if (!multitask || multitask.status !== 'active') {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Cannot assign task from inactive multitasking',
+          );
+        }
+
+        const isInTeam = multitask.manpower.some(
+          (m) => m.userId.toString() === data.assignedTo?.toString(),
+        );
+
+        isValidMultiTaskMember = isInTeam;
+      }
+
+      if (!isLMUMember && !isValidMultiTaskMember) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'Assigned user must be an LMU member or part of the multitasking team',
+        );
+      }
+
+      // Remove task from previous user
       if (prevUser) {
         prevUser.tasks =
           prevUser.tasks?.filter((t) => t.taskId.toString() !== taskId) || [];
         await prevUser.save({ session });
       }
 
-      // Add to new user
-      if (newUser) {
-        const alreadyAssigned = newUser.tasks?.some(
-          (t) => t.taskId.toString() === taskId,
-        );
-        if (!alreadyAssigned) {
-          newUser.tasks = newUser.tasks || [];
-          newUser.tasks.push({
-            taskId: task._id,
-            unit: 'LMU',
-            type: task.type,
-            category: 'LeadsTask',
-          });
-          await newUser.save({ session });
-        }
+      // Add task to new user
+      const alreadyAssigned = newUser.tasks?.some(
+        (t) => t.taskId.toString() === taskId,
+      );
+
+      if (!alreadyAssigned) {
+        newUser.tasks = newUser.tasks || [];
+        newUser.tasks.push({
+          taskId: task._id,
+          unit: 'LMU',
+          type: task.type,
+          category: 'LeadsTask',
+        });
+        await newUser.save({ session });
       }
 
-      // Update task assignedTo field
-      task.assignedTo = data.assignedTo;
+      // Update assignedTo
+      if (data.assignedTo) {
+        task.assignedTo = data.assignedTo;
+      }
     }
 
-    // Apply other updates to the task
+    // Apply other updates
     Object.assign(task, data);
     const updatedTask = await task.save({ session });
 
