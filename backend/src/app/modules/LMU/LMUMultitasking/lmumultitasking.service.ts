@@ -176,7 +176,7 @@ const rejectLMUMultitasking = async (
     );
   }
 
-  const targetUser = await User.findById(data.userId, { tasks: 1 });
+  const targetUser = await User.findById(data.userId, { _id: 1 });
   if (!targetUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'Target user not found');
   }

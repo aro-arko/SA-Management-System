@@ -19,6 +19,16 @@ const LMUDataBatchSchema = new Schema<TLMUDataBatch>(
       required: true,
       default: 0,
     },
+    submittedSets: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    completedSets: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     expectedTotalLeads: {
       type: Number,
       required: true,

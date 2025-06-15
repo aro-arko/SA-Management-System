@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import { LMUMultiTasking } from '../LMUMultitasking/lmumultitasking.model';
 import { DataEntryTask } from './datamanagement.model';
+import { LMUDataBatch } from '../LMUDataBatch/lmudatabatch.model';
 
 // create a data entry task
 const createDataEntryTask = async (
@@ -13,7 +14,7 @@ const createDataEntryTask = async (
   payLoad: TDataEntryTask,
 ) => {
   const { email } = currentUser;
-  const { assignedTo, multiTask, multiTaskId } = payLoad;
+  const { batchId, assignedTo, multiTask, multiTaskId } = payLoad;
 
   const currentAdmin = await User.findOne({ email }, { _id: 1 }).lean();
   if (!currentAdmin) {
@@ -42,7 +43,7 @@ const createDataEntryTask = async (
       if (!multiTask || !multiTaskId) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
-          'Assigned user is not LMU and multitasking details are missing',
+          'Assigned user is not part of LMU and multitasking details are missing',
         );
       }
 
@@ -72,7 +73,7 @@ const createDataEntryTask = async (
     }
 
     // Create the task
-    const [createdTask] = await DataEntryTask.create(
+    const createdTask = await DataEntryTask.create(
       [
         {
           ...payLoad,
@@ -83,12 +84,12 @@ const createDataEntryTask = async (
     );
 
     // Update user's tasks
-    await User.findByIdAndUpdate(
+    const userUpdatePromise = await User.findByIdAndUpdate(
       assignedTo,
       {
         $push: {
           tasks: {
-            taskId: createdTask._id,
+            taskId: createdTask[0]._id,
             unit: 'LMU',
             type: 'data-entry',
             category: 'DataEntryTask',
@@ -98,8 +99,39 @@ const createDataEntryTask = async (
       { session },
     );
 
+    // update batchId if provided
+    let batchUpdatePromise = Promise.resolve();
+    if (batchId) {
+      batchUpdatePromise = (async () => {
+        const dataBatch = await LMUDataBatch.findById(batchId).session(session);
+        if (!dataBatch) {
+          throw new AppError(
+            httpStatus.NOT_FOUND,
+            'Data batch not found or inactive',
+          );
+        }
+        if (!dataBatch.isActive) {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Data batch is not active',
+          );
+        }
+        if (dataBatch.type !== 'data-entry') {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Data batch type does not match with task type',
+          );
+        }
+
+        dataBatch.expectedTotalLeads += payLoad.schoolTeamTotalLeads;
+        dataBatch.tasks.push(createdTask[0]._id);
+        dataBatch.assignedSets = dataBatch.tasks.length;
+        await dataBatch.save({ session });
+      })();
+    }
+    await Promise.all([userUpdatePromise, batchUpdatePromise]);
     await session.commitTransaction();
-    return createdTask;
+    return createdTask[0];
   } catch (error) {
     await session.abortTransaction();
     throw error;
