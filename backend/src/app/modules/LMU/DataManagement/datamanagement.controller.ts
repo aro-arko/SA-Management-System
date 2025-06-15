@@ -16,6 +16,20 @@ const createDataEntryTask = catchAsync(async (req, res) => {
   });
 });
 
+// get all data entry tasks
+const getAllDataEntryTasks = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await DataManagementService.getAllDataEntryTasks(query);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Data entry tasks retrieved successfully',
+    data: result,
+  });
+});
+
 export const DataManagementController = {
   createDataEntryTask,
+  getAllDataEntryTasks,
 };

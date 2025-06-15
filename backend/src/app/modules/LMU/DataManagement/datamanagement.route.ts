@@ -15,4 +15,16 @@ router.post(
   DataManagementController.createDataEntryTask,
 );
 
+// get all data entry tasks
+router.get(
+  '/all-tasks',
+  auth(
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+  ),
+  DataManagementController.getAllDataEntryTasks,
+);
+
 export const dataManagementRoutes = router;

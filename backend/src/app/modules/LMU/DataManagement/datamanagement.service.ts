@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import { LMUMultiTasking } from '../LMUMultitasking/lmumultitasking.model';
 import { DataEntryTask } from './datamanagement.model';
 import { LMUDataBatch } from '../LMUDataBatch/lmudatabatch.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 // create a data entry task
 const createDataEntryTask = async (
@@ -140,6 +141,27 @@ const createDataEntryTask = async (
   }
 };
 
+// get all data entry tasks
+const getAllDataEntryTasks = async (query: Record<string, unknown>) => {
+  const baseQuery = DataEntryTask.find()
+    .populate('assignedTo', 'lastName')
+    .populate('batchId', 'title type status');
+
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .sort()
+    .paginate()
+    .fields();
+
+  const tasks = await queryBuilder.modelQuery.lean();
+
+  if (!tasks.length) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No data entry tasks found');
+  }
+
+  return tasks;
+};
+
 export const DataManagementService = {
   createDataEntryTask,
+  getAllDataEntryTasks,
 };
