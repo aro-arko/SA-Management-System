@@ -27,4 +27,7 @@ router.get(
   DataManagementController.getAllDataEntryTasks,
 );
 
+// update a data entry task
+// router.patch('/update-data-entry-task/:id')
+
 export const dataManagementRoutes = router;
