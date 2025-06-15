@@ -31,7 +31,22 @@ const getAllDataBatches = catchAsync(async (req, res) => {
   });
 });
 
+// update data batch
+const updateDataBatch = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  const result = await LMUDataBatchService.updateDataBatch(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'LMU Data Batch updated successfully',
+    data: result,
+  });
+});
+
 export const LMUDataBatchController = {
   createDataBatch,
   getAllDataBatches,
+  updateDataBatch,
 };

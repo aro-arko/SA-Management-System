@@ -3,6 +3,8 @@ import { TLMUDataBatch } from './lmudatabatch.interface';
 import { User } from '../../User/user.model';
 import { LMUDataBatch } from './lmudatabatch.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
+import AppError from '../../../errors/AppError';
+import httpStatus from 'http-status';
 
 // create a new LMU Data Batch
 const createDataBatch = async (
@@ -32,7 +34,22 @@ const getAllDataBatches = async (query: Record<string, unknown>) => {
   return result;
 };
 
+// update data batch
+const updateDataBatch = async (id: string, payLoad: Partial<TLMUDataBatch>) => {
+  const existingDataBatch = await LMUDataBatch.findById(id);
+  if (!existingDataBatch) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Data Batch not found');
+  }
+
+  const result = await LMUDataBatch.findByIdAndUpdate(id, payLoad, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const LMUDataBatchService = {
   createDataBatch,
   getAllDataBatches,
+  updateDataBatch,
 };
