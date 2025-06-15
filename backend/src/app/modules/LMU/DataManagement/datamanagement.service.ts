@@ -164,10 +164,103 @@ const getAllDataEntryTasks = async (query: Record<string, unknown>) => {
 // update a data entry task
 
 const updateDataEntryTask = async (
-  id: string,
+  taskId: string,
   payLoad: Partial<TDataEntryTask>,
 ) => {
-  return 'not implemented yet';
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const task = await DataEntryTask.findById(taskId).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Data entry task not found');
+    }
+
+    // Validate reassignment
+    const isReassigned =
+      payLoad.assignedTo &&
+      payLoad.assignedTo.toString() !== task.assignedTo?.toString();
+
+    if (isReassigned) {
+      const [prevUser, newUser] = await Promise.all([
+        User.findById(task.assignedTo).session(session),
+        User.findById(payLoad.assignedTo).session(session),
+      ]);
+
+      if (!newUser) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Assigned user not found');
+      }
+
+      // Check if new user is LMU or valid multitasking member
+      const isLMUMember = newUser.unit === 'LMU';
+      let isValidMultiTaskMember = false;
+
+      if (task.multiTaskId) {
+        const multiTask = await LMUMultiTasking.findById(
+          task.multiTaskId,
+        ).session(session);
+        if (!multiTask || multiTask.status !== 'active') {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Cannot update task from inactive multitasking',
+          );
+        }
+
+        const isInTeam = multiTask.manpower.some(
+          (m) => m.userId.toString() === payLoad.assignedTo?.toString(),
+        );
+        isValidMultiTaskMember = isInTeam;
+      }
+
+      if (!isLMUMember && !isValidMultiTaskMember) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'Assigned user must be an LMU member or valid multitasking participant',
+        );
+      }
+
+      // Remove from previous user
+      if (prevUser) {
+        prevUser.tasks =
+          prevUser.tasks?.filter((t) => t.taskId.toString() !== taskId) || [];
+        await prevUser.save({ session });
+      }
+
+      // Add to new user
+      const alreadyAssigned = newUser.tasks?.some(
+        (t) => t.taskId.toString() === taskId,
+      );
+
+      if (!alreadyAssigned) {
+        newUser.tasks = newUser.tasks || [];
+        newUser.tasks.push({
+          taskId: task._id,
+          unit: 'LMU',
+          type: 'data-entry',
+          category: 'DataEntryTask',
+        });
+        await newUser.save({ session });
+      }
+
+      if (payLoad.assignedTo) {
+        task.assignedTo = payLoad.assignedTo;
+      }
+    }
+
+    // Apply remaining updates (even if reassignment didn’t happen)
+    Object.assign(task, payLoad);
+
+    const updatedTask = await task.save({ session });
+
+    await session.commitTransaction();
+    return updatedTask;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 export const DataManagementService = {
