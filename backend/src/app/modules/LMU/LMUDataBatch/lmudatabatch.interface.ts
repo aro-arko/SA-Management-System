@@ -1,6 +1,12 @@
+import { Types } from 'mongoose';
+
 export type TLMUDataBatch = {
   title: string;
   type: string; // 'data-entry'
   assignedSets: number;
-  totalLeads: number;
+  expectedTotalLeads: number;
+  completedLeads: number;
+  tasks: Types.ObjectId[];
+  isActive: boolean;
+  createdBy: Types.ObjectId;
 };
