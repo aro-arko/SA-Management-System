@@ -35,4 +35,7 @@ router.patch(
   DataManagementController.updateDataEntryTask,
 );
 
+// add report to a data entry task
+// router.post('/submit-report');
+
 export const dataManagementRoutes = router;

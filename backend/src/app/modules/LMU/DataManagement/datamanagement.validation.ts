@@ -65,7 +65,18 @@ const updateDataEntryTaskValidationSchema = z.object({
     .strict(),
 });
 
+// submit report validation schema
+const submitReportValidationSchema = z.object({
+  body: z.object({
+    completedLeads: z.number().min(0, 'Completed leads must be at least 0'),
+    flaggedLeads: z.number(),
+    fileLink: z.string().url(),
+    remarks: z.string(),
+  }),
+});
+
 export const DataManagementValidation = {
   createDataEntryTask: createDataEntryTaskValidationSchema,
   updateDataEntryTask: updateDataEntryTaskValidationSchema,
+  submitReport: submitReportValidationSchema,
 };
