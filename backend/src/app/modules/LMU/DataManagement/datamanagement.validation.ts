@@ -61,6 +61,7 @@ const updateDataEntryTaskValidationSchema = z.object({
       schoolLevel: z.string().min(1, 'School level is required').optional(),
       schoolName: z.string().min(1, 'School name is required').optional(),
       message: z.string().optional(),
+      status: z.enum(['in-progress', 'in-checking', 'completed']).optional(),
     })
     .strict(),
 });

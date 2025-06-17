@@ -257,6 +257,19 @@ const updateDataEntryTask = async (
       );
       if (dataBatch) {
         dataBatch.expectedTotalLeads += newSchoolTotal - prevSchoolTotal;
+        if (payLoad.status) {
+          if (
+            (task.status === 'in-progress' || task.status === 'in-checking') &&
+            payLoad.status === 'completed'
+          ) {
+            dataBatch.completedSets += 1;
+          } else if (
+            task.status === 'completed' &&
+            payLoad.status !== 'completed'
+          ) {
+            dataBatch.completedSets -= 1;
+          }
+        }
         await dataBatch.save({ session });
       }
     }
@@ -361,7 +374,7 @@ const editReport = async (
     const task = await DataEntryTask.findById(taskId)
       .session(session)
       .select(
-        'report assignedTo batchId totalLeads missingOrExtraLeads schoolTeamTotalLeads',
+        'report assignedTo batchId totalLeads missingOrExtraLeads schoolTeamTotalLeads status',
       );
 
     if (!task) {
@@ -372,6 +385,13 @@ const editReport = async (
       throw new AppError(
         httpStatus.FORBIDDEN,
         'You are not authorized to edit report for this task',
+      );
+    }
+
+    if (task.status === 'completed') {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Cannot edit report for a completed task',
       );
     }
 
