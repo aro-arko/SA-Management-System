@@ -6,6 +6,7 @@ import { LMUMultiTaskingRoutes } from '../modules/LMU/LMUMultitasking/lmumultita
 import { LeadsManagementRoutes } from '../modules/LMU/LeadsManagement/leads.route';
 import { dataManagementRoutes } from '../modules/LMU/DataManagement/datamanagement.route';
 import { LMUDataBatchRoutes } from '../modules/LMU/LMUDataBatch/lmudatabatch.route';
+import { LMUOthersRoutes } from '../modules/LMU/LMUOthers/lmuothers.route';
 
 const router = Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/lmu-data-batch',
     route: LMUDataBatchRoutes,
+  },
+  {
+    path: '/lmu-others',
+    route: LMUOthersRoutes,
   },
 ];
 

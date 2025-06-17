@@ -5,8 +5,8 @@ export type TLMUOthersTask = {
   unit: string;
   type: string;
   details: string;
-  mulitTask: boolean;
+  multiTask: boolean;
   multiTaskId: Types.ObjectId;
   assignedTo: Types.ObjectId[];
-  cretedBy: Types.ObjectId;
+  createdBy: Types.ObjectId;
 };
