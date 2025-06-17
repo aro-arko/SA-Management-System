@@ -60,9 +60,26 @@ const submitReport = catchAsync(async (req, res) => {
   });
 });
 
+// edit report for a data entry task
+const editReport = catchAsync(async (req, res) => {
+  const user = req.user;
+  const data = req.body;
+  const id = req.params.taskId;
+
+  const result = await DataManagementService.editReport(user, data, id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Report edited successfully',
+    data: result,
+  });
+});
+
 export const DataManagementController = {
   createDataEntryTask,
   getAllDataEntryTasks,
   updateDataEntryTask,
   submitReport,
+  editReport,
 };

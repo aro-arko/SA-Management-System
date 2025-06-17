@@ -53,4 +53,22 @@ router.post(
   DataManagementController.submitReport,
 );
 
+// edit report of a data entry task
+router.patch(
+  '/edit-report/:taskId',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  validateRequest(DataManagementValidation.editReport),
+  DataManagementController.editReport,
+);
+
 export const dataManagementRoutes = router;

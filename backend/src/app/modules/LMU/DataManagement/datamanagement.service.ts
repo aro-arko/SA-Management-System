@@ -327,9 +327,84 @@ const submitReport = async (
   }
 };
 
+// edit report for a data entry task
+const editReport = async (
+  currentUser: JwtPayload,
+  payLoad: TDataEntryReport,
+  taskId: string,
+) => {
+  const { email } = currentUser;
+
+  const userData = await User.findOne({ email }, { _id: 1 }).lean();
+  if (!userData) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User not found');
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    // Fetch task in transaction
+    const task = await DataEntryTask.findById(taskId)
+      .session(session)
+      .select(
+        'report assignedTo batchId totalLeads missingOrExtraLeads schoolTeamTotalLeads',
+      );
+
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Data entry task not found');
+    }
+
+    if (task.assignedTo.toString() !== userData._id.toString()) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'You are not authorized to edit report for this task',
+      );
+    }
+
+    // Adjust batch.completedLeads if applicable
+    const batch = await LMUDataBatch.findById(task.batchId).session(session);
+    if (batch) {
+      batch.completedLeads -= task.report?.completedLeads || 0;
+    }
+
+    // Update task fields directly
+    const newCompleted = payLoad.completedLeads || 0;
+    const newFlagged = payLoad.flaggedLeads || 0;
+
+    task.report = {
+      completedLeads: newCompleted,
+      flaggedLeads: newFlagged,
+      fileLink: payLoad.fileLink,
+      remarks: payLoad.remarks,
+    };
+
+    task.totalLeads = newCompleted;
+    task.missingOrExtraLeads = Math.abs(
+      newCompleted + newFlagged - (task.schoolTeamTotalLeads || 0),
+    );
+    await task.save({ session });
+
+    // Re-add new completed leads
+    if (batch) {
+      batch.completedLeads += newCompleted;
+      await batch.save({ session });
+    }
+
+    await session.commitTransaction();
+    return task;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const DataManagementService = {
   createDataEntryTask,
   getAllDataEntryTasks,
   updateDataEntryTask,
   submitReport,
+  editReport,
 };

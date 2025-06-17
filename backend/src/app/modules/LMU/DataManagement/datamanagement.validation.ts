@@ -75,8 +75,22 @@ const submitReportValidationSchema = z.object({
   }),
 });
 
+// edit report validation schema
+const editReportValidationSchema = z.object({
+  body: z.object({
+    completedLeads: z
+      .number()
+      .min(0, 'Completed leads must be at least 0')
+      .optional(),
+    flaggedLeads: z.number().optional().default(0),
+    fileLink: z.string().url().optional(),
+    remarks: z.string().optional(),
+  }),
+});
+
 export const DataManagementValidation = {
   createDataEntryTask: createDataEntryTaskValidationSchema,
   updateDataEntryTask: updateDataEntryTaskValidationSchema,
   submitReport: submitReportValidationSchema,
+  editReport: editReportValidationSchema,
 };
