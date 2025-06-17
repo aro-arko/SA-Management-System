@@ -177,22 +177,22 @@ const updateDataEntryTask = async (
       throw new AppError(httpStatus.NOT_FOUND, 'Data entry task not found');
     }
 
-    // Validate reassignment
-    const isReassigned =
-      payLoad.assignedTo &&
-      payLoad.assignedTo.toString() !== task.assignedTo?.toString();
+    const originalAssignedTo = task.assignedTo?.toString();
+    const newAssignedTo = payLoad.assignedTo?.toString();
+
+    const isReassigned = newAssignedTo && newAssignedTo !== originalAssignedTo;
 
     if (isReassigned) {
       const [prevUser, newUser] = await Promise.all([
-        User.findById(task.assignedTo).session(session),
-        User.findById(payLoad.assignedTo).session(session),
+        User.findById(originalAssignedTo).session(session),
+        User.findById(newAssignedTo).session(session),
       ]);
 
       if (!newUser) {
         throw new AppError(httpStatus.NOT_FOUND, 'Assigned user not found');
       }
 
-      // Check if new user is LMU or valid multitasking member
+      // Validate new assignee: LMU or multitasking team member
       const isLMUMember = newUser.unit === 'LMU';
       let isValidMultiTaskMember = false;
 
@@ -203,14 +203,13 @@ const updateDataEntryTask = async (
         if (!multiTask || multiTask.status !== 'active') {
           throw new AppError(
             httpStatus.BAD_REQUEST,
-            'Cannot update task from inactive multitasking',
+            'Cannot reassign task from inactive multitasking group',
           );
         }
 
-        const isInTeam = multiTask.manpower.some(
-          (m) => m.userId.toString() === payLoad.assignedTo?.toString(),
+        isValidMultiTaskMember = multiTask.manpower.some(
+          (m) => m.userId.toString() === newAssignedTo,
         );
-        isValidMultiTaskMember = isInTeam;
       }
 
       if (!isLMUMember && !isValidMultiTaskMember) {
@@ -220,19 +219,16 @@ const updateDataEntryTask = async (
         );
       }
 
-      // Remove from previous user
+      // Update previous user's task list
       if (prevUser) {
-        prevUser.tasks =
-          prevUser.tasks?.filter((t) => t.taskId.toString() !== taskId) || [];
+        prevUser.tasks = (prevUser.tasks || []).filter(
+          (t) => t.taskId.toString() !== taskId,
+        );
         await prevUser.save({ session });
       }
 
-      // Add to new user
-      const alreadyAssigned = newUser.tasks?.some(
-        (t) => t.taskId.toString() === taskId,
-      );
-
-      if (!alreadyAssigned) {
+      // Add task to new user's task list if not already assigned
+      if (!newUser.tasks?.some((t) => t.taskId.toString() === taskId)) {
         newUser.tasks = newUser.tasks || [];
         newUser.tasks.push({
           taskId: task._id,
@@ -243,12 +239,29 @@ const updateDataEntryTask = async (
         await newUser.save({ session });
       }
 
-      if (payLoad.assignedTo) {
-        task.assignedTo = payLoad.assignedTo;
+      task.assignedTo = payLoad.assignedTo!;
+    }
+
+    // Handle schoolTeamTotalLeads and related logic
+    const newSchoolTotal = payLoad.schoolTeamTotalLeads;
+    if (typeof newSchoolTotal === 'number') {
+      const prevSchoolTotal = task.schoolTeamTotalLeads || 0;
+      const leadCount = payLoad.totalLeads ?? task.totalLeads;
+
+      task.missingOrExtraLeads = Math.abs(leadCount - newSchoolTotal);
+      task.schoolTeamTotalLeads = newSchoolTotal;
+
+      // Update batch lead counts accordingly
+      const dataBatch = await LMUDataBatch.findById(task.batchId).session(
+        session,
+      );
+      if (dataBatch) {
+        dataBatch.expectedTotalLeads += newSchoolTotal - prevSchoolTotal;
+        await dataBatch.save({ session });
       }
     }
 
-    // Apply remaining updates (even if reassignment didn’t happen)
+    // Apply any remaining updates to the task
     Object.assign(task, payLoad);
 
     const updatedTask = await task.save({ session });
