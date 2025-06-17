@@ -1,5 +1,5 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { TDataEntryTask } from './datamanagement.interface';
+import { TDataEntryReport, TDataEntryTask } from './datamanagement.interface';
 import { User } from '../../User/user.model';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
@@ -263,8 +263,73 @@ const updateDataEntryTask = async (
   }
 };
 
+// submit report for a data entry task
+const submitReport = async (
+  currentUser: JwtPayload,
+  payLoad: TDataEntryReport,
+  taskId: string,
+) => {
+  const { email } = currentUser;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const userData = await User.findOne({ email }, { _id: 1 }).lean();
+
+    const task = await DataEntryTask.findById(taskId).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Data entry task not found');
+    }
+
+    if (task.assignedTo.toString() !== userData?._id.toString()) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'You are not authorized to submit report for this task',
+      );
+    }
+
+    const receivedLeads = payLoad.completedLeads + (payLoad.flaggedLeads ?? 0);
+    task.missingOrExtraLeads = Math.abs(
+      receivedLeads - task.schoolTeamTotalLeads,
+    );
+    task.status = 'in-checking';
+    task.totalLeads = payLoad.completedLeads;
+    task.report = {
+      completedLeads: payLoad.completedLeads,
+      flaggedLeads: payLoad.flaggedLeads ?? 0,
+      fileLink: payLoad.fileLink,
+      remarks: payLoad.remarks,
+    };
+    await task.save({ session });
+
+    const dataBatch = await LMUDataBatch.findById(task.batchId).session(
+      session,
+    );
+    if (!dataBatch) {
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'Data batch not found or inactive',
+      );
+    }
+
+    dataBatch.submittedSets += 1;
+    dataBatch.completedLeads += payLoad.completedLeads;
+    await dataBatch.save({ session });
+
+    await session.commitTransaction();
+    return task.report;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const DataManagementService = {
   createDataEntryTask,
   getAllDataEntryTasks,
   updateDataEntryTask,
+  submitReport,
 };

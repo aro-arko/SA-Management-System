@@ -36,6 +36,21 @@ router.patch(
 );
 
 // add report to a data entry task
-// router.post('/submit-report');
+router.post(
+  '/submit-report/:taskId',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  validateRequest(DataManagementValidation.submitReport),
+  DataManagementController.submitReport,
+);
 
 export const dataManagementRoutes = router;

@@ -69,7 +69,7 @@ const updateDataEntryTaskValidationSchema = z.object({
 const submitReportValidationSchema = z.object({
   body: z.object({
     completedLeads: z.number().min(0, 'Completed leads must be at least 0'),
-    flaggedLeads: z.number(),
+    flaggedLeads: z.number().optional().default(0),
     fileLink: z.string().url(),
     remarks: z.string(),
   }),

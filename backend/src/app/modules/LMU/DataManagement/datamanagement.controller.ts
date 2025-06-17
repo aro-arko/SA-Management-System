@@ -1,6 +1,7 @@
 import catchAsync from '../../../utils/catchAsync';
 import sendResponse from '../../../utils/sendReponse';
 import { DataManagementService } from './datamanagement.service';
+import httpStatus from 'http-status';
 
 const createDataEntryTask = catchAsync(async (req, res) => {
   const user = req.user;
@@ -44,8 +45,24 @@ const updateDataEntryTask = catchAsync(async (req, res) => {
   });
 });
 
+// submit report for a data entry task
+const submitReport = catchAsync(async (req, res) => {
+  const user = req.user;
+  const data = req.body;
+  const id = req.params.taskId;
+  const result = await DataManagementService.submitReport(user, data, id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Report submitted successfully',
+    data: result,
+  });
+});
+
 export const DataManagementController = {
   createDataEntryTask,
   getAllDataEntryTasks,
   updateDataEntryTask,
+  submitReport,
 };
