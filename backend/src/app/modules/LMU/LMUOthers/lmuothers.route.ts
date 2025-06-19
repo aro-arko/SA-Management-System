@@ -15,4 +15,12 @@ router.post(
   LMUOthersController.createOthersTask,
 );
 
+// update others task
+router.put(
+  '/update/:id',
+  auth(USER_ROLE.lmuAdmin),
+  validateRequest(LMUOthersValidation.UpdateLMUOthersTaskValidationSchema),
+  LMUOthersController.updateOthersTask,
+);
+
 export const LMUOthersRoutes = router;

@@ -17,6 +17,22 @@ const createOthersTask = catchAsync(async (req, res) => {
   });
 });
 
+// update others task
+const updateOthersTask = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+
+  const result = await LMUOthersService.updateOthersTask(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'LMU Others Task updated successfully',
+    data: result,
+  });
+});
+
 export const LMUOthersController = {
   createOthersTask,
+  updateOthersTask,
 };

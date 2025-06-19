@@ -125,6 +125,130 @@ const createOthersTask = async (
   }
 };
 
+// Update others task
+const updateOthersTask = async (id: string, payLoad: TLMUOthersTask) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const task = await LMUOthersTask.findById(id).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    const currentUsers = task.assignedTo.map((user) => user.toString());
+    const updatedUsers = payLoad.assignedTo?.map(String) || [];
+
+    // Handle removed users
+    const removedUsers = currentUsers.filter(
+      (user) => !updatedUsers.includes(user),
+    );
+    if (removedUsers.length) {
+      await LMUOthersTask.updateOne(
+        { _id: id },
+        { $pull: { assignedTo: { $in: removedUsers } } },
+        { session },
+      );
+
+      await User.updateMany(
+        { _id: { $in: removedUsers } },
+        {
+          $pull: {
+            tasks: {
+              taskId: id,
+              unit: 'LMU',
+              type: 'Others',
+              category: 'LMUOthersTask',
+            },
+          },
+        },
+        { session },
+      );
+    }
+
+    // Handle new users
+    const newUsers = updatedUsers.filter(
+      (user) => !currentUsers.includes(user),
+    );
+    const validUserIds: mongoose.Types.ObjectId[] = [];
+
+    if (newUsers.length) {
+      const assignedUsers = await User.find({ _id: { $in: newUsers } }).session(
+        session,
+      );
+
+      for (const user of assignedUsers) {
+        const isLMUMember = user.unit === 'LMU';
+
+        if (!isLMUMember) {
+          if (!payLoad.multiTask || !payLoad.multiTaskId) {
+            throw new AppError(
+              httpStatus.BAD_REQUEST,
+              'Non-LMU users must be part of multitasking',
+            );
+          }
+
+          const multiTaskGroup = await LMUMultiTasking.findById(
+            payLoad.multiTaskId,
+          ).session(session);
+          if (!multiTaskGroup || multiTaskGroup.status !== 'active') {
+            throw new AppError(
+              httpStatus.BAD_REQUEST,
+              'Invalid or inactive multitasking group',
+            );
+          }
+
+          const isInTeam = multiTaskGroup.manpower.some(
+            (m) => m.userId.toString() === user._id.toString(),
+          );
+
+          if (!isInTeam) {
+            throw new AppError(
+              httpStatus.BAD_REQUEST,
+              'User is not in multitasking group',
+            );
+          }
+        }
+
+        validUserIds.push(user._id);
+      }
+
+      // Add unique valid users to task
+      task.assignedTo.push(...validUserIds);
+
+      // Update users' task list in one go
+      await User.updateMany(
+        { _id: { $in: validUserIds } },
+        {
+          $push: {
+            tasks: {
+              taskId: task._id,
+              unit: 'LMU',
+              type: 'Others',
+              category: 'LMUOthersTask',
+            },
+          },
+        },
+        { session },
+      );
+    }
+
+    // Update task details
+    Object.assign(task, payLoad);
+    await task.save({ session });
+
+    await session.commitTransaction();
+    return task;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const LMUOthersService = {
   createOthersTask,
+  updateOthersTask,
 };
