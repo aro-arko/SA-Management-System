@@ -71,7 +71,7 @@ const createOthersTask = async (
         if (!isInTeam) {
           throw new AppError(
             httpStatus.BAD_REQUEST,
-            `User ${user._id} is not in multitasking group`,
+            `User is not in multitasking group`,
           );
         }
 
