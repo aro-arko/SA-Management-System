@@ -248,7 +248,13 @@ const updateOthersTask = async (id: string, payLoad: TLMUOthersTask) => {
   }
 };
 
+// delete others task
+const deleteOthersTask = async (id: string) => {
+  return 'not implemented yet';
+};
+
 export const LMUOthersService = {
   createOthersTask,
   updateOthersTask,
+  deleteOthersTask,
 };

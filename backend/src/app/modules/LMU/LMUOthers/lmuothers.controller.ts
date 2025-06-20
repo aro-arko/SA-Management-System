@@ -32,7 +32,22 @@ const updateOthersTask = catchAsync(async (req, res) => {
   });
 });
 
+// delete others task
+const deleteOthersTask = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await LMUOthersService.deleteOthersTask(id as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    data: result,
+    message: 'LMU Others Task deleted successfully',
+  });
+});
+
 export const LMUOthersController = {
   createOthersTask,
   updateOthersTask,
+  deleteOthersTask,
 };

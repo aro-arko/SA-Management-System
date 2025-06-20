@@ -53,7 +53,9 @@ const getUserTasks = async (
   }
 
   const showAll = query.showAll === 'true';
-  const statusFilter = showAll ? {} : { status: 'in-progress' };
+  const statusFilter = showAll
+    ? {}
+    : { status: { $in: ['in-progress', 'in-checking'] } };
 
   const groupedTaskIds: Record<string, Types.ObjectId[]> = {};
 

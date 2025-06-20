@@ -23,4 +23,11 @@ router.put(
   LMUOthersController.updateOthersTask,
 );
 
+// delete others task
+router.delete(
+  '/delete/:id',
+  auth(USER_ROLE.lmuAdmin),
+  LMUOthersController.deleteOthersTask,
+);
+
 export const LMUOthersRoutes = router;
