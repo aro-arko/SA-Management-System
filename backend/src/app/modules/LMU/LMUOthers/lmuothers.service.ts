@@ -250,7 +250,39 @@ const updateOthersTask = async (id: string, payLoad: TLMUOthersTask) => {
 
 // delete others task
 const deleteOthersTask = async (id: string) => {
-  return 'not implemented yet';
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const task = await LMUOthersTask.findById(id).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+    // Remove task from users' task lists
+    await User.updateMany(
+      { _id: { $in: task.assignedTo } },
+      {
+        $pull: {
+          tasks: {
+            taskId: id,
+            unit: 'LMU',
+            type: 'Others',
+            category: 'LMUOthersTask',
+          },
+        },
+      },
+      { session },
+    );
+    // Delete the task
+    await LMUOthersTask.deleteOne({ _id: id }).session(session);
+    await session.commitTransaction();
+    return { message: 'Task deleted successfully' };
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
 
 export const LMUOthersService = {
