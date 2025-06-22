@@ -30,4 +30,11 @@ router.delete(
   LMUOthersController.deleteOthersTask,
 );
 
+// get all others tasks
+router.get(
+  '/all',
+  auth(USER_ROLE.lmuAdmin, USER_ROLE.head, USER_ROLE.coordinator),
+  LMUOthersController.getAllOthersTasks,
+);
+
 export const LMUOthersRoutes = router;

@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import { LMUMultiTasking } from '../LMUMultitasking/lmumultitasking.model';
 import { LMUOthersTask } from './lmuothers.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createOthersTask = async (
   currentUser: JwtPayload,
@@ -285,8 +286,19 @@ const deleteOthersTask = async (id: string) => {
   }
 };
 
+// get all others tasks
+const getAllOthersTasks = async (query: Record<string, unknown>) => {
+  const modelQuery = LMUOthersTask.find();
+  const queryBuilder = new QueryBuilder(modelQuery, query);
+  queryBuilder.sort().paginate();
+
+  const result = await queryBuilder.modelQuery;
+  return result;
+};
+
 export const LMUOthersService = {
   createOthersTask,
   updateOthersTask,
   deleteOthersTask,
+  getAllOthersTasks,
 };

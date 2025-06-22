@@ -46,8 +46,22 @@ const deleteOthersTask = catchAsync(async (req, res) => {
   });
 });
 
+// get all others tasks
+const getAllOthersTasks = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await LMUOthersService.getAllOthersTasks(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'LMU Others Tasks retrieved successfully',
+    data: result,
+  });
+});
+
 export const LMUOthersController = {
   createOthersTask,
   updateOthersTask,
   deleteOthersTask,
+  getAllOthersTasks,
 };
