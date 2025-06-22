@@ -33,6 +33,12 @@ const auth = (...requiredRoles: TUserRole[]) => {
       if (!user) {
         throw new AppError(httpStatus.UNAUTHORIZED, 'User not found');
       }
+      if (user.status === 'inactive') {
+        throw new AppError(
+          httpStatus.UNAUTHORIZED,
+          'Your account is inactive. Please contact support.',
+        );
+      }
       // check if the user role is valid
       if (requiredRoles.length && !requiredRoles.includes(role)) {
         throw new AppError(

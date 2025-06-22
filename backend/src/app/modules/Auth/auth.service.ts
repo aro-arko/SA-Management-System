@@ -29,6 +29,12 @@ const loginUser = async (payLoad: { email: string; password: string }) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
+  if (user.status === 'inactive') {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'Your account is inactive. Please contact support.',
+    );
+  }
   if (
     !(await User.isPasswordMatched(userData.password as string, user.password))
   ) {

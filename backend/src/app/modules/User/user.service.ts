@@ -6,11 +6,13 @@ import mongoose, { Types } from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { LeadsTask } from '../LMU/LeadsManagement/leads.model';
 import { DataEntryTask } from '../LMU/DataManagement/datamanagement.model';
+import { LMUOthersTask } from '../LMU/LMUOthers/lmuothers.model';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const categoryModelMap: Record<string, mongoose.Model<any>> = {
   LeadsTask,
   DataEntryTask,
+  LMUOthersTask,
 };
 
 const userUpdate = async (
