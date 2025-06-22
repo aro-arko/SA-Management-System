@@ -200,6 +200,14 @@ const addActivity = async (user: JwtPayload, id: string, data: TActivity) => {
       throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
     }
 
+    // confirm the deadline
+    if (task.dueDate && task.dueDate < new Date()) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Task deadline has already passed',
+      );
+    }
+
     // Confirm task ownership
     if (task.assignedTo.toString() !== userData._id.toString()) {
       throw new AppError(

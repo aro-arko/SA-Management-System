@@ -38,6 +38,12 @@ const updateTaskValidationSchema = z.object({
     .object({
       title: z.string().min(1, 'Title is required').optional(),
       assignedTo: z.string().min(1, 'User not found').optional(),
+      dueDate: z
+        .string({ invalid_type_error: 'Due date must be a string' })
+        .refine((date) => !isNaN(Date.parse(date)), {
+          message: 'Invalid date format',
+        })
+        .optional(),
       message: z.string().optional(),
     })
     .strict({
