@@ -315,6 +315,20 @@ const submitReport = async (
       );
     }
 
+    if (task.dueDate && new Date(task.dueDate) < new Date()) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Task is overdue, cannot submit report',
+      );
+    }
+
+    if (task.status === 'completed') {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Task is already completed, cannot submit report',
+      );
+    }
+
     const receivedLeads = payLoad.completedLeads + (payLoad.flaggedLeads ?? 0);
     task.missingOrExtraLeads = Math.abs(
       receivedLeads - task.schoolTeamTotalLeads,
@@ -332,16 +346,11 @@ const submitReport = async (
     const dataBatch = await LMUDataBatch.findById(task.batchId).session(
       session,
     );
-    if (!dataBatch) {
-      throw new AppError(
-        httpStatus.NOT_FOUND,
-        'Data batch not found or inactive',
-      );
+    if (dataBatch) {
+      dataBatch.submittedSets += 1;
+      dataBatch.completedLeads += payLoad.completedLeads;
+      await dataBatch.save({ session });
     }
-
-    dataBatch.submittedSets += 1;
-    dataBatch.completedLeads += payLoad.completedLeads;
-    await dataBatch.save({ session });
 
     await session.commitTransaction();
     return task.report;
