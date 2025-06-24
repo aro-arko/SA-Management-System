@@ -17,6 +17,19 @@ const createEmuMultitasking = catchAsync(async (req, res) => {
   });
 });
 
+// get all EMU multi-taskings
+const getEMUMultiTaskings = catchAsync(async (req, res) => {
+  const result = await EMUMultiTaskingService.getEMUMultiTaskings();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking retrieved successfully',
+    data: result,
+  });
+});
+
 export const EMUMultiTaskingController = {
   createEmuMultitasking,
+  getEMUMultiTaskings,
 };

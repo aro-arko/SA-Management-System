@@ -35,7 +35,9 @@ const createLMUMultitasking = async (
 };
 
 const getLMUMultitaskings = async () => {
-  const result = await LMUMultiTasking.find().sort({ createdAt: -1 });
+  const result = await LMUMultiTasking.find({ status: 'active' }).sort({
+    createdAt: -1,
+  });
   return result;
 };
 
