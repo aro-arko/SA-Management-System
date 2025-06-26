@@ -32,4 +32,13 @@ router.get(
   EMUMultiTaskingController.getEMUMultiTaskings,
 );
 
+// update multitasking
+router.patch(
+  '/update-multitasking/:id',
+  auth(USER_ROLE.emuAdmin),
+  validateRequest(
+    EMUMultitaskingValidation.updateEMUMultitaskingValidationSchema,
+  ),
+);
+
 export const EMUMultiTaskingRoutes = router;
