@@ -59,9 +59,25 @@ const applyEMUMultiTasking = catchAsync(async (req, res) => {
   });
 });
 
+// devote emu multitasking
+const devoteEMUMultiTasking = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const user = req.user;
+
+  const result = await EMUMultiTaskingService.devoteEMUMultiTasking(id, user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking devoted successfully',
+    data: result,
+  });
+});
+
 export const EMUMultiTaskingController = {
   createEmuMultitasking,
   getEMUMultiTaskings,
   updateEMUMultiTaskings,
   applyEMUMultiTasking,
+  devoteEMUMultiTasking,
 };

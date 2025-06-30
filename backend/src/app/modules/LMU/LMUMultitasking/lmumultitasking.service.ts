@@ -134,16 +134,16 @@ const devoteLMUMultitasking = async (id: string, currentUser: JwtPayload) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
   }
 
-  const isAlreadyDevoted = multitasking.manpower.some(
+  const isInManpowerList = multitasking.manpower.some(
     (manpower) => manpower.userId.toString() === user._id.toString(),
   );
-  if (!isAlreadyDevoted) {
+  if (!isInManpowerList) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      'You have not applied for this multi-tasking',
+      'You are not assigned to this multi-tasking',
     );
   }
-  if (isAlreadyDevoted) {
+  if (isInManpowerList) {
     multitasking.manpower = multitasking.manpower.filter(
       (manpower) => manpower.userId.toString() !== user._id.toString(),
     );
@@ -187,7 +187,7 @@ const rejectLMUMultitasking = async (
     throw new AppError(httpStatus.NOT_FOUND, 'Target user not found');
   }
 
-  // ✅ Check if user has task linked to this multitasking
+  // Check if user has task linked to this multitasking
   for (const task of targetUser.tasks || []) {
     const { category, taskId } = task;
     if (!category || !taskId) continue;

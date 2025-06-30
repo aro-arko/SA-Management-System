@@ -101,9 +101,43 @@ const applyEMUMultitasking = async (id: string, currentUser: JwtPayload) => {
   return updatedMultitasking;
 };
 
+// devote emu multitasking
+const devoteEMUMultiTasking = async (id: string, currentUser: JwtPayload) => {
+  const { email } = currentUser;
+  const user = await User.findOne({ email }, { _id: 1 });
+  if (!user) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'You are not authorized to perform this action',
+    );
+  }
+  const multitasking = await EMUMultiTasking.findById(id);
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
+  }
+  const isInManpowerList = multitasking.manpower.some(
+    (manpower) => manpower.userId.toString() === user._id.toString(),
+  );
+  if (!isInManpowerList) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'You are not assigned to this multi-tasking',
+    );
+  }
+
+  if (isInManpowerList) {
+    multitasking.manpower = multitasking.manpower.filter(
+      (manpower) => manpower.userId.toString() !== user._id.toString(),
+    );
+    await multitasking.save();
+  }
+  return multitasking;
+};
+
 export const EMUMultiTaskingService = {
   createEmuMultitasking,
   getEMUMultiTaskings,
   updateEMUMultiTaskings,
   applyEMUMultitasking,
+  devoteEMUMultiTasking,
 };
