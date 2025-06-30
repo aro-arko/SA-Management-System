@@ -46,7 +46,15 @@ const updateEMUMultitaskingValidationSchema = z.object({
   }),
 });
 
+// remove someone from multitasking validation schema
+const removeFromEMUMultitaskingValidationSchema = z.object({
+  body: z.object({
+    userId: z.string().min(1, 'User ID is required'),
+  }),
+});
+
 export const EMUMultitaskingValidation = {
   createEMUMultitaskingValidationSchema,
   updateEMUMultitaskingValidationSchema,
+  removeFromEMUMultitaskingValidationSchema,
 };

@@ -5,6 +5,12 @@ import { EMUMultiTasking } from './emumultitasking.model';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 
+// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// const categoryModelMap: Record<string, mongoose.Model<any>> = {
+//   LeadsTask,
+//   // Add other models here
+// };
+
 // Create a new EMU multitasking
 const createEmuMultitasking = async (
   currentUser: JwtPayload,
@@ -133,6 +139,40 @@ const devoteEMUMultiTasking = async (id: string, currentUser: JwtPayload) => {
   }
   return multitasking;
 };
+
+// remove someone from multitasking
+// const rejectFromEMUMultiTasking = async (
+//   id: string,
+//   currentUser: JwtPayload,
+//   data: { userId: string },
+// ) => {
+//   const { email } = currentUser;
+//   const user = await User.findOne({ email }, { _id: 1 });
+//   if (!user) {
+//     throw new AppError(
+//       httpStatus.UNAUTHORIZED,
+//       'You are not authorized to perform this action',
+//     );
+//   }
+
+//   const multitasking = await EMUMultiTasking.findById(id);
+//   if (!multitasking) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
+//   }
+
+//   const targetUser = await User.findById(data.userId, { _id: 1 });
+//   if (!targetUser) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'Target user not found');
+//   }
+
+//   // Check if user has task linked to this multitasking
+//   for (const task of targetUser.tasks || []) {
+//     const { category, taskId } = task;
+//     if (!category || !taskId) continue;
+
+//     const Model = categoryModelMap[category];
+//   }
+// };
 
 export const EMUMultiTaskingService = {
   createEmuMultitasking,

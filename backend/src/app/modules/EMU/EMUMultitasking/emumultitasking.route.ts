@@ -70,4 +70,14 @@ router.patch(
   EMUMultiTaskingController.devoteEMUMultiTasking,
 );
 
+// reject someone from multitasking
+// router.patch(
+//   '/reject-multitasking/:id',
+//   auth(USER_ROLE.emuAdmin),
+//   validateRequest(
+//     EMUMultitaskingValidation.removeFromEMUMultitaskingValidationSchema,
+//   ),
+//   EMUMultiTaskingController.rejectFromEMUMultiTasking,
+// );
+
 export const EMUMultiTaskingRoutes = router;

@@ -74,10 +74,31 @@ const devoteEMUMultiTasking = catchAsync(async (req, res) => {
   });
 });
 
+// remove someone from multitasking
+// const rejectFromEMUMultiTasking = catchAsync(async (req, res) => {
+//   const id = req.params.id;
+//   const { userId } = req.body;
+//   const data = req.body;
+
+//   const result = await EMUMultiTaskingService.rejectFromEMUMultiTasking(
+//     id,
+//     userId,
+//     data,
+//   );
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'User removed from multi-tasking successfully',
+//     data: result,
+//   });
+// });
+
 export const EMUMultiTaskingController = {
   createEmuMultitasking,
   getEMUMultiTaskings,
   updateEMUMultiTaskings,
   applyEMUMultiTasking,
   devoteEMUMultiTasking,
+  // rejectFromEMUMultiTasking,
 };

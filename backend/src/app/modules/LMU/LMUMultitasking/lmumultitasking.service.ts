@@ -167,7 +167,10 @@ const rejectLMUMultitasking = async (
   const { email, role } = currentUser;
   const user = await User.findOne({ email }, { _id: 1 });
   if (!user) {
-    throw new AppError(httpStatus.UNAUTHORIZED, 'Unauthorized');
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'You are not authorized to perform this action',
+    );
   }
 
   const multitasking = await LMUMultiTasking.findById(id);
