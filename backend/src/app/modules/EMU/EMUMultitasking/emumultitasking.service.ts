@@ -2,6 +2,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import { TEMUMultitasking } from './emumultitasking.interface';
 import { User } from '../../User/user.model';
 import { EMUMultiTasking } from './emumultitasking.model';
+import AppError from '../../../errors/AppError';
+import httpStatus from 'http-status';
 
 // Create a new EMU multitasking
 const createEmuMultitasking = async (
@@ -29,7 +31,30 @@ const getEMUMultiTaskings = async () => {
   return result;
 };
 
+// update EMU multitaskings
+const updateEMUMultiTaskings = async (
+  id: string,
+  payLoad: TEMUMultitasking,
+) => {
+  const multitasking = await EMUMultiTasking.findById(id);
+
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multitasking not found');
+  }
+
+  const result = await EMUMultiTasking.findByIdAndUpdate(
+    id,
+    {
+      ...payLoad,
+    },
+    { new: true },
+  );
+
+  return result;
+};
+
 export const EMUMultiTaskingService = {
   createEmuMultitasking,
   getEMUMultiTaskings,
+  updateEMUMultiTaskings,
 };

@@ -39,6 +39,7 @@ router.patch(
   validateRequest(
     EMUMultitaskingValidation.updateEMUMultitaskingValidationSchema,
   ),
+  EMUMultiTaskingController.updateEMUMultiTaskings,
 );
 
 export const EMUMultiTaskingRoutes = router;

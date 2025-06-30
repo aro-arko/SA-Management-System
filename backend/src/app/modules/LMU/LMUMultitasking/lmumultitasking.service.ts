@@ -57,6 +57,10 @@ const updateLMUMultitasking = async (
 
   const multitasking = await LMUMultiTasking.findById(id);
 
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multitasking not found');
+  }
+
   //   preventing data entry leader to update other types of multitasking
   if (
     role === 'lmuDataLeader' &&
@@ -70,7 +74,7 @@ const updateLMUMultitasking = async (
   }
   const result = await LMUMultiTasking.findByIdAndUpdate(
     id,
-    { ...data, updatedBy: user._id },
+    { ...data },
     { new: true },
   );
 

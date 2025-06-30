@@ -29,7 +29,23 @@ const getEMUMultiTaskings = catchAsync(async (req, res) => {
   });
 });
 
+// update EMU multitaskings
+const updateEMUMultiTaskings = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+
+  const result = await EMUMultiTaskingService.updateEMUMultiTaskings(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking updated successfully',
+    data: result,
+  });
+});
+
 export const EMUMultiTaskingController = {
   createEmuMultitasking,
   getEMUMultiTaskings,
+  updateEMUMultiTaskings,
 };
