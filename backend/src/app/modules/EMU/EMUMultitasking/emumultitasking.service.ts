@@ -53,8 +53,57 @@ const updateEMUMultiTaskings = async (
   return result;
 };
 
+// apply for emu multitasking
+const applyEMUMultitasking = async (id: string, currentUser: JwtPayload) => {
+  const { email } = currentUser;
+
+  const user = await User.findOne({ email }, { _id: 1 });
+
+  if (!user) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'You are not authorized to perform this actoin',
+    );
+  }
+
+  const multitasking = await EMUMultiTasking.findById(id);
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
+  }
+  if (multitasking.status === 'inactive') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'This multi-tasking is currently inactive',
+    );
+  }
+
+  const isAlreadyApplied = multitasking.manpower.some(
+    (manpower) => manpower.userId.toString() === user._id.toString(),
+  );
+
+  if (isAlreadyApplied) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'You have already applied for this multi-tasking',
+    );
+  }
+
+  const updatedMultitasking = await EMUMultiTasking.findByIdAndUpdate(
+    id,
+    {
+      $addToSet: { manpower: { userId: user._id } },
+    },
+    {
+      new: true,
+    },
+  );
+
+  return updatedMultitasking;
+};
+
 export const EMUMultiTaskingService = {
   createEmuMultitasking,
   getEMUMultiTaskings,
   updateEMUMultiTaskings,
+  applyEMUMultitasking,
 };

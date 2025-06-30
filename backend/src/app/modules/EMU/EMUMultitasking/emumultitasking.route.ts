@@ -42,4 +42,18 @@ router.patch(
   EMUMultiTaskingController.updateEMUMultiTaskings,
 );
 
+// apply for multitasking
+router.patch(
+  '/apply-multitasking/:id',
+  auth(
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  EMUMultiTaskingController.applyEMUMultiTasking,
+);
+
 export const EMUMultiTaskingRoutes = router;

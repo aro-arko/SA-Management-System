@@ -44,8 +44,24 @@ const updateEMUMultiTaskings = catchAsync(async (req, res) => {
   });
 });
 
+// apply for emu multitasking
+const applyEMUMultiTasking = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const user = req.user;
+
+  const result = await EMUMultiTaskingService.applyEMUMultitasking(id, user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking applied successfully',
+    data: result,
+  });
+});
+
 export const EMUMultiTaskingController = {
   createEmuMultitasking,
   getEMUMultiTaskings,
   updateEMUMultiTaskings,
+  applyEMUMultiTasking,
 };
