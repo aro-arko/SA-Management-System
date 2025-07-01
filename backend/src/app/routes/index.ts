@@ -8,6 +8,7 @@ import { dataManagementRoutes } from '../modules/LMU/DataManagement/datamanageme
 import { LMUDataBatchRoutes } from '../modules/LMU/LMUDataBatch/lmudatabatch.route';
 import { LMUOthersRoutes } from '../modules/LMU/LMUOthers/lmuothers.route';
 import { EMUMultiTaskingRoutes } from '../modules/EMU/EMUMultitasking/emumultitasking.route';
+import { FixedTimeEventRoutes } from '../modules/EMU/FixedTimeEvent/fixedtimeevent.route';
 
 const router = Router();
 
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: '/emu-multitaskings',
     route: EMUMultiTaskingRoutes,
+  },
+  {
+    path: '/fixed-time-events',
+    route: FixedTimeEventRoutes,
   },
 ];
 
