@@ -53,6 +53,10 @@ const moduleRoutes = [
     path: '/fixed-time-events',
     route: FixedTimeEventRoutes,
   },
+  {
+    path: '/signin-data',
+    route: FixedTimeEventRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

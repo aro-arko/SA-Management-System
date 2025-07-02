@@ -3,6 +3,11 @@ import { TSignInData } from './signindata.intereface';
 
 const SignInDataSchema = new Schema<TSignInData>(
   {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     taskId: {
       type: Types.ObjectId,
       required: true,
