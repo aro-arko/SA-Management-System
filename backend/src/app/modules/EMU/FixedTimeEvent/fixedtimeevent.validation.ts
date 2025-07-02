@@ -54,6 +54,11 @@ const updateFixedTimeEventValidation = z.object({
       })
       .optional(),
     selectedManpower: z.array(z.string()).optional(),
+    status: z
+      .enum(['completed', 'in-progress'], {
+        required_error: 'Status is required',
+      })
+      .optional(),
   }),
 });
 

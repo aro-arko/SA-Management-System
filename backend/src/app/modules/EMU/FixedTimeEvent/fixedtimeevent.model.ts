@@ -42,8 +42,8 @@ const fixedTimeEventSchema = new Schema<TFixedTimeEvent>(
     },
     status: {
       type: String,
-      enum: ['active', 'inactive'],
-      default: 'active',
+      enum: ['completed', 'in-progress'],
+      default: 'in-progress',
     },
   },
   {

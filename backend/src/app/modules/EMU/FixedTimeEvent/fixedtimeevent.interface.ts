@@ -9,5 +9,5 @@ export type TFixedTimeEvent = {
   selectedManpower: Types.ObjectId[];
   startTime: string;
   endTime: string;
-  status: 'active' | 'inactive';
+  status: 'completed' | 'in-progress';
 };

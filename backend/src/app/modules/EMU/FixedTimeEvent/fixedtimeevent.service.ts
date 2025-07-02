@@ -5,6 +5,7 @@ import { User } from '../../User/user.model';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
+import { Types } from 'mongoose';
 
 const createFixedTimeEvent = async (
   currentUser: JwtPayload,
@@ -42,12 +43,138 @@ const updateFixedTimeEvent = async (
   id: string,
   payLoad: Partial<TFixedTimeEvent>,
 ) => {
-  const event = await FixedTimeEvent.findById(id);
-  if (!event) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Event not found');
-  }
+  const session = await FixedTimeEvent.startSession();
+  session.startTransaction();
 
-  return 'function to update event not implemented yet';
+  try {
+    const event = await FixedTimeEvent.findById(id).session(session);
+    if (!event) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Event not found');
+    }
+
+    const { selectedManpower = [], multiTask, multiTaskId } = payLoad;
+
+    // --- Always compute removed manpower ---
+    const previousIds = new Set(
+      event.selectedManpower.map((id) => id.toString()),
+    );
+    const currentIds = new Set(selectedManpower.map((id) => id.toString()));
+    const removedIds = [...previousIds].filter((id) => !currentIds.has(id));
+
+    if (removedIds.length > 0) {
+      await User.updateMany(
+        { _id: { $in: removedIds } },
+        {
+          $pull: {
+            tasks: {
+              taskId: id,
+            },
+          },
+        },
+        { session },
+      );
+    }
+
+    // --- If there are new manpowers, validate and update ---
+    if (selectedManpower.length > 0) {
+      const manpowerUsers = await User.find({
+        _id: { $in: selectedManpower },
+      }).session(session);
+
+      if (manpowerUsers.length !== selectedManpower.length) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'One or more selected manpower users do not exist',
+        );
+      }
+
+      // Multitask role exception
+      const multitaskManpowerSet = new Set<string>();
+      if (multiTask && multiTaskId) {
+        const multitaskEvent =
+          await FixedTimeEvent.findById(multiTaskId).session(session);
+        if (!multitaskEvent) {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Provided multitask event does not exist',
+          );
+        }
+
+        multitaskEvent.selectedManpower?.forEach((id) =>
+          multitaskManpowerSet.add(id.toString()),
+        );
+      }
+
+      // Role validation
+      for (const user of manpowerUsers) {
+        const isAllowed =
+          user.role === 'emuAdmin' ||
+          user.role === 'emuMember' ||
+          multitaskManpowerSet.has(user._id.toString());
+
+        if (!isAllowed) {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            `User ${user.lastName} must be emuAdmin or emuMember unless included in multitask manpower`,
+          );
+        }
+      }
+
+      // Split users based on whether they already have the task
+      const usersToAddTask = manpowerUsers
+        .filter(
+          (user) => !user.tasks?.some((task) => task.taskId.toString() === id),
+        )
+        .map((user) => user._id);
+
+      if (usersToAddTask.length > 0) {
+        await User.updateMany(
+          { _id: { $in: usersToAddTask } },
+          {
+            $addToSet: {
+              tasks: {
+                taskId: id,
+                unit: 'EMU',
+                type: 'Event',
+                category: 'FixedTimeEvent',
+              },
+            },
+          },
+          { session },
+        );
+      }
+
+      event.selectedManpower = selectedManpower as Types.ObjectId[];
+    } else {
+      event.selectedManpower = [];
+    }
+
+    // --- Update event fields ---
+    Object.assign(event, {
+      title: payLoad.title ?? event.title,
+      eventDate: payLoad.eventDate ?? event.eventDate,
+      startTime: payLoad.startTime ?? event.startTime,
+      endTime: payLoad.endTime ?? event.endTime,
+      multiTask: payLoad.multiTask ?? event.multiTask,
+      multiTaskId: payLoad.multiTaskId ?? event.multiTaskId,
+      status: payLoad.status ?? event.status,
+    });
+
+    const updatedEvent = await event.save({ session });
+
+    await session.commitTransaction();
+    return updatedEvent;
+  } catch (error) {
+    await session.abortTransaction();
+    console.error('Transaction error:', error);
+    if (error instanceof AppError) throw error;
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update event',
+    );
+  } finally {
+    session.endSession();
+  }
 };
 
 export const FixedTimeEventService = {
