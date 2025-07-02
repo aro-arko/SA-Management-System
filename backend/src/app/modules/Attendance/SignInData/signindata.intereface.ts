@@ -1,5 +1,7 @@
+import { ObjectId } from 'mongoose';
+
 export type TSignInData = {
-  taskId: string;
+  taskId: ObjectId;
   attendanceRecord: [
     {
       userId: string;
