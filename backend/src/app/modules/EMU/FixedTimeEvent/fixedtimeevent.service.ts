@@ -101,10 +101,11 @@ const updateFixedTimeEvent = async (
           );
         }
 
-        multitaskEvent.manpower?.forEach((id) =>
-          multitaskManpowerSet.add(id.toString()),
+        multitaskEvent.manpower?.forEach((user) =>
+          multitaskManpowerSet.add(user.userId.toString()),
         );
       }
+      // console.log(multitaskManpowerSet);
 
       // Role validation
       for (const user of manpowerUsers) {
@@ -178,8 +179,49 @@ const updateFixedTimeEvent = async (
   }
 };
 
+// Delete a fixed time event
+const deleteFixedTimeEvent = async (id: string) => {
+  const event = await FixedTimeEvent.findById(id);
+  if (!event) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Event not found');
+  }
+
+  const session = await FixedTimeEvent.startSession();
+  try {
+    session.startTransaction();
+
+    // Remove event from all selected manpower users
+    await User.updateMany(
+      { _id: { $in: event.selectedManpower } },
+      {
+        $pull: {
+          tasks: {
+            taskId: id,
+          },
+        },
+      },
+      { session },
+    );
+
+    // Delete the event
+    await FixedTimeEvent.deleteOne({ _id: id }).session(session);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    if (error instanceof AppError) throw error;
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to delete event',
+    );
+  } finally {
+    session.endSession();
+  }
+};
+
 export const FixedTimeEventService = {
   createFixedTimeEvent,
   getAllFixedTimeEvents,
+  deleteFixedTimeEvent,
   updateFixedTimeEvent,
 };

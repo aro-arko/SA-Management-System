@@ -34,4 +34,11 @@ router.patch(
   FixedTimeEventController.updateFixedTimeEvent,
 );
 
+// delete a fixed time event
+router.delete(
+  '/delete/:id',
+  auth(USER_ROLE.emuAdmin),
+  FixedTimeEventController.deleteFixedTimeEvent,
+);
+
 export const FixedTimeEventRoutes = router;

@@ -46,8 +46,23 @@ const updateFixedTimeEvent = catchAsync(async (req, res) => {
   });
 });
 
+// delete a fixed time event
+const deleteFixedTimeEvent = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await FixedTimeEventService.deleteFixedTimeEvent(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Fixed time event deleted successfully',
+    data: result,
+  });
+});
+
 export const FixedTimeEventController = {
   createFixedTimeEvent,
   getAllFixedTimeEvents,
   updateFixedTimeEvent,
+  deleteFixedTimeEvent,
 };
