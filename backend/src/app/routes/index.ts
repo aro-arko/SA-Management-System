@@ -9,6 +9,7 @@ import { LMUDataBatchRoutes } from '../modules/LMU/LMUDataBatch/lmudatabatch.rou
 import { LMUOthersRoutes } from '../modules/LMU/LMUOthers/lmuothers.route';
 import { EMUMultiTaskingRoutes } from '../modules/EMU/EMUMultitasking/emumultitasking.route';
 import { FixedTimeEventRoutes } from '../modules/EMU/FixedTimeEvent/fixedtimeevent.route';
+import { SignInDataRoutes } from '../modules/Attendance/SignInData/signindata.route';
 
 const router = Router();
 
@@ -55,7 +56,7 @@ const moduleRoutes = [
   },
   {
     path: '/signin-data',
-    route: FixedTimeEventRoutes,
+    route: SignInDataRoutes,
   },
 ];
 
