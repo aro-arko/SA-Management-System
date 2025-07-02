@@ -14,4 +14,10 @@ router.post(
   SignInDataController.createSignInData,
 );
 
+router.patch(
+  '/sign-in/:taskId/:id',
+  validateRequest(SignInDataValidation.signInAttendanceValidationSchema),
+  SignInDataController.signInAttendance,
+);
+
 export const SignInDataRoutes = router;

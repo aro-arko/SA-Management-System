@@ -16,6 +16,23 @@ const createSignInData = catchAsync(async (req, res) => {
   });
 });
 
+// sign in attendance
+const signInAttendance = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { taskId } = req.params;
+  const data = req.body;
+
+  const result = await SignInDataService.signInAttendance(id, taskId, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Sign-in successful',
+    data: result,
+  });
+});
+
 export const SignInDataController = {
   createSignInData,
+  signInAttendance,
 };
