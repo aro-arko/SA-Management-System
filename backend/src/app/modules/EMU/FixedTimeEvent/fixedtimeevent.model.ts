@@ -32,11 +32,11 @@ const fixedTimeEventSchema = new Schema<TFixedTimeEvent>({
     },
   ],
   startTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   endTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   status: {

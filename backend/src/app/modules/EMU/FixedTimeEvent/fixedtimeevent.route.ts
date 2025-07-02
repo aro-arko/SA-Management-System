@@ -3,6 +3,7 @@ import validateRequest from '../../../middlewares/validateRequest';
 import { FixedTimeEventValidationSchema } from './fixedtimeevent.validation';
 import auth from '../../../middlewares/auth';
 import { USER_ROLE } from '../../User/user.constant';
+import { FixedTimeEventController } from './fixedtimeevent.controller';
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.post(
   validateRequest(
     FixedTimeEventValidationSchema.createFixedTimeEventValidation,
   ),
+  FixedTimeEventController.createFixedTimeEvent,
 );
 
 export const FixedTimeEventRoutes = router;

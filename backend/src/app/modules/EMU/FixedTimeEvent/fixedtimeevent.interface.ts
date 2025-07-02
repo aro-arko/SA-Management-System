@@ -7,7 +7,7 @@ export type TFixedTimeEvent = {
   eventDate: Date;
   createdBy: Types.ObjectId;
   selectedManpower: Types.ObjectId[];
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   status: 'active' | 'inactive';
 };
