@@ -36,7 +36,22 @@ const getAllFixedTimeEvents = async (query: Record<string, unknown>) => {
   }
   return events;
 };
+
+// update a fixed time event
+const updateFixedTimeEvent = async (
+  id: string,
+  payLoad: Partial<TFixedTimeEvent>,
+) => {
+  const event = await FixedTimeEvent.findById(id);
+  if (!event) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Event not found');
+  }
+
+  return 'function to update event not implemented yet';
+};
+
 export const FixedTimeEventService = {
   createFixedTimeEvent,
   getAllFixedTimeEvents,
+  updateFixedTimeEvent,
 };

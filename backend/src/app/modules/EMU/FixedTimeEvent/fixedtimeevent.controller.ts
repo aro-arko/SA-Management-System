@@ -31,7 +31,23 @@ const getAllFixedTimeEvents = catchAsync(async (req, res) => {
   });
 });
 
+// update a fixed time event
+const updateFixedTimeEvent = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+
+  const result = await FixedTimeEventService.updateFixedTimeEvent(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Fixed time event updated successfully',
+    data: result,
+  });
+});
+
 export const FixedTimeEventController = {
   createFixedTimeEvent,
   getAllFixedTimeEvents,
+  updateFixedTimeEvent,
 };

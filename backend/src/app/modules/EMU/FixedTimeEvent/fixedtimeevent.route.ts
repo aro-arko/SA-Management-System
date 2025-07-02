@@ -24,4 +24,14 @@ router.get(
   FixedTimeEventController.getAllFixedTimeEvents,
 );
 
+// update a fixed time event
+router.patch(
+  '/update/:id',
+  auth(USER_ROLE.emuAdmin),
+  validateRequest(
+    FixedTimeEventValidationSchema.updateFixedTimeEventValidation,
+  ),
+  FixedTimeEventController.updateFixedTimeEvent,
+);
+
 export const FixedTimeEventRoutes = router;

@@ -60,19 +60,19 @@ const applyEMUMultiTasking = catchAsync(async (req, res) => {
 });
 
 // devote emu multitasking
-const devoteEMUMultiTasking = catchAsync(async (req, res) => {
-  const id = req.params.id;
-  const user = req.user;
+// const devoteEMUMultiTasking = catchAsync(async (req, res) => {
+//   const id = req.params.id;
+//   const user = req.user;
 
-  const result = await EMUMultiTaskingService.devoteEMUMultiTasking(id, user);
+//   const result = await EMUMultiTaskingService.devoteEMUMultiTasking(id, user);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Multi-tasking devoted successfully',
-    data: result,
-  });
-});
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Multi-tasking devoted successfully',
+//     data: result,
+//   });
+// });
 
 // remove someone from multitasking
 // const rejectFromEMUMultiTasking = catchAsync(async (req, res) => {
@@ -99,6 +99,6 @@ export const EMUMultiTaskingController = {
   getEMUMultiTaskings,
   updateEMUMultiTaskings,
   applyEMUMultiTasking,
-  devoteEMUMultiTasking,
+  // devoteEMUMultiTasking,
   // rejectFromEMUMultiTasking,
 };
