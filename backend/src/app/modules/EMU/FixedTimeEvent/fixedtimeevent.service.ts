@@ -6,6 +6,7 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 import { Types } from 'mongoose';
+import { EMUMultiTasking } from '../EMUMultitasking/emumultitasking.model';
 
 const createFixedTimeEvent = async (
   currentUser: JwtPayload,
@@ -92,7 +93,7 @@ const updateFixedTimeEvent = async (
       const multitaskManpowerSet = new Set<string>();
       if (multiTask && multiTaskId) {
         const multitaskEvent =
-          await FixedTimeEvent.findById(multiTaskId).session(session);
+          await EMUMultiTasking.findById(multiTaskId).session(session);
         if (!multitaskEvent) {
           throw new AppError(
             httpStatus.BAD_REQUEST,
@@ -100,7 +101,7 @@ const updateFixedTimeEvent = async (
           );
         }
 
-        multitaskEvent.selectedManpower?.forEach((id) =>
+        multitaskEvent.manpower?.forEach((id) =>
           multitaskManpowerSet.add(id.toString()),
         );
       }
@@ -115,7 +116,7 @@ const updateFixedTimeEvent = async (
         if (!isAllowed) {
           throw new AppError(
             httpStatus.BAD_REQUEST,
-            `User ${user.lastName} must be emuAdmin or emuMember unless included in multitask manpower`,
+            `User ${user.firstName} must be EMU member or in multitask event`,
           );
         }
       }
@@ -166,7 +167,7 @@ const updateFixedTimeEvent = async (
     return updatedEvent;
   } catch (error) {
     await session.abortTransaction();
-    console.error('Transaction error:', error);
+    // console.error('Transaction error:', error);
     if (error instanceof AppError) throw error;
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
