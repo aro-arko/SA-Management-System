@@ -12,6 +12,7 @@ const SignInDataSchema = new Schema<TSignInData>(
       type: Types.ObjectId,
       required: true,
       ref: 'FixedTimeEvent',
+      unique: true,
     },
     attendanceRecord: [
       {
