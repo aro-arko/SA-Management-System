@@ -17,6 +17,21 @@ const createFixedTimeEvent = catchAsync(async (req, res) => {
   });
 });
 
+// get all fixed time events
+const getAllFixedTimeEvents = catchAsync(async (req, res) => {
+  const query = req.query;
+
+  const result = await FixedTimeEventService.getAllFixedTimeEvents(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Fixed time events fetched successfully',
+    data: result,
+  });
+});
+
 export const FixedTimeEventController = {
   createFixedTimeEvent,
+  getAllFixedTimeEvents,
 };

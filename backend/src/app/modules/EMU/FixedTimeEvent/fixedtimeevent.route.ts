@@ -17,4 +17,11 @@ router.post(
   FixedTimeEventController.createFixedTimeEvent,
 );
 
+// get all fixed time events
+router.get(
+  '/all',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.emuAdmin),
+  FixedTimeEventController.getAllFixedTimeEvents,
+);
+
 export const FixedTimeEventRoutes = router;
