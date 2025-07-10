@@ -10,6 +10,7 @@ import { LMUOthersRoutes } from '../modules/LMU/LMUOthers/lmuothers.route';
 import { EMUMultiTaskingRoutes } from '../modules/EMU/EMUMultitasking/emumultitasking.route';
 import { FixedTimeEventRoutes } from '../modules/EMU/FixedTimeEvent/fixedtimeevent.route';
 import { SignInDataRoutes } from '../modules/Attendance/SignInData/signindata.route';
+import { SignOutDataRoutes } from '../modules/Attendance/SignOutData/signoutdata.route';
 
 const router = Router();
 
@@ -57,6 +58,10 @@ const moduleRoutes = [
   {
     path: '/signin-data',
     route: SignInDataRoutes,
+  },
+  {
+    path: '/signout-data',
+    route: SignOutDataRoutes,
   },
 ];
 
