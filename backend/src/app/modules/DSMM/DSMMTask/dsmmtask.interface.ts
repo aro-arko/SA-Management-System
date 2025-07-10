@@ -5,7 +5,7 @@ export type TDSMMTask = {
   unit: string;
   details: string;
   multiTask: boolean;
-  multiTaskId: string;
+  multiTaskId: Types.ObjectId;
   selectedManpower: Types.ObjectId[];
   status: 'completed' | 'in-progress';
 };
