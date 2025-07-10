@@ -8,6 +8,7 @@ import httpStatus from 'http-status';
 import { Types } from 'mongoose';
 import { EMUMultiTasking } from '../EMUMultitasking/emumultitasking.model';
 import { SignInDataModel } from '../../Attendance/SignInData/signindata.model';
+import { SignOutDataModel } from '../../Attendance/SignOutData/signoutdata.model';
 
 const createFixedTimeEvent = async (
   currentUser: JwtPayload,
@@ -43,24 +44,13 @@ const createFixedTimeEvent = async (
       );
     }
 
-    // ✅ 2️⃣ Create the SignInData
-    const existingSignInData = await SignInDataModel.findOne(
-      { taskId: createdEvent._id },
-      null,
-      { session },
-    );
+    const taskId = createdEvent._id;
 
-    if (existingSignInData) {
-      throw new AppError(
-        httpStatus.CONFLICT,
-        'Sign-in data for this task already exists',
-      );
-    }
-
+    // ✅ 2️⃣ Create SignInData
     const [createdSignIn] = await SignInDataModel.create(
       [
         {
-          taskId: createdEvent._id,
+          taskId,
           title: `${createdEvent.title} Sign-in Data`,
           attendanceRecord: [],
         },
@@ -75,8 +65,28 @@ const createFixedTimeEvent = async (
       );
     }
 
-    // ✅ 3️⃣ Update event with signInData ref
+    // ✅ 3️⃣ Create SignOutData
+    const [createdSignOut] = await SignOutDataModel.create(
+      [
+        {
+          taskId,
+          title: `${createdEvent.title} Sign-out Data`,
+          attendanceRecord: [],
+        },
+      ],
+      { session },
+    );
+
+    if (!createdSignOut?._id) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to create sign-out data',
+      );
+    }
+
+    // ✅ 4️⃣ Update event with signInData & signOutData refs
     createdEvent.signInData = createdSignIn._id;
+    createdEvent.signOutData = createdSignOut._id;
     await createdEvent.save({ session });
 
     await session.commitTransaction();
@@ -84,12 +94,15 @@ const createFixedTimeEvent = async (
     return {
       event: createdEvent,
       signInData: createdSignIn,
+      signOutData: createdSignOut,
     };
   } catch (error) {
     await session.abortTransaction();
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
-      `Failed to create fixed time event: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Failed to create fixed time event: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
     );
   } finally {
     session.endSession();
