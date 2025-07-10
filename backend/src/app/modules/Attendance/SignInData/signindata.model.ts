@@ -1,5 +1,5 @@
 import { model, Schema, Types } from 'mongoose';
-import { TSignInData } from './signindata.intereface';
+import { TSignInData } from './signindata.interface';
 
 const SignInDataSchema = new Schema<TSignInData>(
   {

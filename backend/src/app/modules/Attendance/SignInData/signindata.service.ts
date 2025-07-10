@@ -1,7 +1,7 @@
 import AppError from '../../../errors/AppError';
 import { FixedTimeEvent } from '../../EMU/FixedTimeEvent/fixedtimeevent.model';
 import { User } from '../../User/user.model';
-import { TSignInData } from './signindata.intereface';
+import { TSignInData } from './signindata.interface';
 import { SignInDataModel } from './signindata.model';
 import httpStatus from 'http-status';
 
