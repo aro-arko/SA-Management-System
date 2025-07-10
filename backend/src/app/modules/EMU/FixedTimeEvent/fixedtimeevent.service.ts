@@ -7,20 +7,93 @@ import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 import { Types } from 'mongoose';
 import { EMUMultiTasking } from '../EMUMultitasking/emumultitasking.model';
+import { SignInDataModel } from '../../Attendance/SignInData/signindata.model';
 
 const createFixedTimeEvent = async (
   currentUser: JwtPayload,
   payLoad: TFixedTimeEvent,
 ) => {
   const { email } = currentUser;
+
   const user = await User.findOne({ email }, { _id: 1 });
+  if (!user?._id) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
 
-  const result = await FixedTimeEvent.create({
-    ...payLoad,
-    createdBy: user?._id,
-  });
+  const session = await FixedTimeEvent.startSession();
 
-  return result;
+  try {
+    session.startTransaction();
+
+    // ✅ 1️⃣ Create the event
+    const [createdEvent] = await FixedTimeEvent.create(
+      [
+        {
+          ...payLoad,
+          createdBy: user._id,
+        },
+      ],
+      { session },
+    );
+
+    if (!createdEvent?._id) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to create event',
+      );
+    }
+
+    // ✅ 2️⃣ Create the SignInData
+    const existingSignInData = await SignInDataModel.findOne(
+      { taskId: createdEvent._id },
+      null,
+      { session },
+    );
+
+    if (existingSignInData) {
+      throw new AppError(
+        httpStatus.CONFLICT,
+        'Sign-in data for this task already exists',
+      );
+    }
+
+    const [createdSignIn] = await SignInDataModel.create(
+      [
+        {
+          taskId: createdEvent._id,
+          title: `${createdEvent.title} Sign-in Data`,
+          attendanceRecord: [],
+        },
+      ],
+      { session },
+    );
+
+    if (!createdSignIn?._id) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to create sign-in data',
+      );
+    }
+
+    // ✅ 3️⃣ Update event with signInData ref
+    createdEvent.signInData = createdSignIn._id;
+    await createdEvent.save({ session });
+
+    await session.commitTransaction();
+
+    return {
+      event: createdEvent,
+      signInData: createdSignIn,
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      `Failed to create fixed time event: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+  } finally {
+    session.endSession();
+  }
 };
 
 const getAllFixedTimeEvents = async (query: Record<string, unknown>) => {

@@ -107,6 +107,10 @@ const signOutAttendance = async (
     },
     { upsert: true },
   );
+
+  return {
+    message: 'User attendance signed out successfully',
+  };
 };
 
 export const SignOutDataService = {

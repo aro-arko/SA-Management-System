@@ -40,6 +40,16 @@ const fixedTimeEventSchema = new Schema<TFixedTimeEvent>(
       type: String,
       required: true,
     },
+    signInData: {
+      type: Schema.Types.ObjectId,
+      ref: 'SignInData',
+      // required: true,
+    },
+    signOutData: {
+      type: Schema.Types.ObjectId,
+      ref: 'SignOutData',
+      // required: true,
+    },
     status: {
       type: String,
       enum: ['completed', 'in-progress'],
