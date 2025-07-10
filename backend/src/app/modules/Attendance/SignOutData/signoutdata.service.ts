@@ -3,6 +3,7 @@ import { FixedTimeEvent } from '../../EMU/FixedTimeEvent/fixedtimeevent.model';
 import { TSignOutData } from './signoutdata.interface';
 import httpStatus from 'http-status';
 import { SignOutDataModel } from './signoutdata.model';
+import { User } from '../../User/user.model';
 
 const createSignOutData = async (payLoad: TSignOutData) => {
   const { taskId } = payLoad;
@@ -32,6 +33,83 @@ const createSignOutData = async (payLoad: TSignOutData) => {
   return result;
 };
 
+// sign out attendance
+const signOutAttendance = async (
+  id: string,
+  taskId: string,
+  payLoad: { email: string; password: string },
+) => {
+  const { email, password } = payLoad;
+
+  // 1. Find and validate user
+  const user = await User.findOne({ email }).select('+password').lean();
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  if (user.status === 'inactive') {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'Your account is inactive. Please contact support.',
+    );
+  }
+
+  const isPasswordValid = await User.isPasswordMatched(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid password');
+  }
+
+  //   2. Find and validate event
+  const event = await FixedTimeEvent.findById(taskId).lean();
+  if (!event) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Event not found');
+  }
+  if (event.status === 'completed') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Event is already completed');
+  }
+
+  const isUserInEvent = event.selectedManpower.some(
+    (manpower) => manpower.toString() === user._id.toString(),
+  );
+
+  if (!isUserInEvent) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'User is not part of the event manpower',
+    );
+  }
+
+  //   3. check sign-out status
+  const existingSignOut = await SignOutDataModel.findOne({
+    taskId,
+    'attendanceRecord.userId': user._id,
+  }).lean();
+
+  if (existingSignOut) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'User has already signed out for this task',
+    );
+  }
+
+  //   4. Push sign-out record (create document if needed)
+  await SignOutDataModel.updateOne(
+    { taskId },
+    {
+      $push: {
+        attendanceRecord: {
+          userId: user._id,
+          signInTime: new Date(),
+        },
+      },
+    },
+    { upsert: true },
+  );
+};
+
 export const SignOutDataService = {
   createSignOutData,
+  signOutAttendance,
 };

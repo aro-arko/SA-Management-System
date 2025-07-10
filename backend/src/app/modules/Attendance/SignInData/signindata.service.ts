@@ -99,7 +99,7 @@ const signInAttendance = async (
   );
 
   return {
-    message: 'User signed in successfully',
+    message: 'User attendance signed in successfully',
     userId: user._id,
     taskId,
   };

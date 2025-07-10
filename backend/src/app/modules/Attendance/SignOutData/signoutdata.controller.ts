@@ -16,6 +16,23 @@ const createSignInData = catchAsync(async (req, res) => {
   });
 });
 
+// sign out attendance
+const signOutData = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { taskId } = req.params;
+  const data = req.body;
+
+  const result = await SignOutDataService.signOutAttendance(id, taskId, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Sign-out successful',
+    data: result,
+  });
+});
+
 export const SignOutDataController = {
   createSignInData,
+  signOutData,
 };
