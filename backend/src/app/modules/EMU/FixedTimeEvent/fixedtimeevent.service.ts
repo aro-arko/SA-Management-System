@@ -26,7 +26,7 @@ const createFixedTimeEvent = async (
   try {
     session.startTransaction();
 
-    // ✅ 1️⃣ Create the event
+    // Create the event
     const [createdEvent] = await FixedTimeEvent.create(
       [
         {
@@ -46,7 +46,7 @@ const createFixedTimeEvent = async (
 
     const taskId = createdEvent._id;
 
-    // ✅ 2️⃣ Create SignInData
+    // Create SignInData
     const [createdSignIn] = await SignInDataModel.create(
       [
         {
@@ -65,7 +65,7 @@ const createFixedTimeEvent = async (
       );
     }
 
-    // ✅ 3️⃣ Create SignOutData
+    // Create SignOutData
     const [createdSignOut] = await SignOutDataModel.create(
       [
         {
@@ -84,7 +84,7 @@ const createFixedTimeEvent = async (
       );
     }
 
-    // ✅ 4️⃣ Update event with signInData & signOutData refs
+    // Update event with signInData & signOutData refs
     createdEvent.signInData = createdSignIn._id;
     createdEvent.signOutData = createdSignOut._id;
     await createdEvent.save({ session });
@@ -162,7 +162,7 @@ const updateFixedTimeEvent = async (
       );
     }
 
-    // --- If there are new manpowers, validate and update ---
+    // If there are new manpowers, validate and update ---
     if (selectedManpower.length > 0) {
       const manpowerUsers = await User.find({
         _id: { $in: selectedManpower },
