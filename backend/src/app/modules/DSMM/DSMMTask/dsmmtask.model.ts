@@ -31,6 +31,11 @@ const DSMMTaskSchema = new Schema<TDSMMTask>(
         required: true,
       },
     ],
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     status: {
       type: String,
       enum: ['completed', 'in-progress'],
