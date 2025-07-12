@@ -14,4 +14,10 @@ router.post(
   DSMMTaskController.createDSMMTask,
 );
 
+router.patch(
+  '/update/:id',
+  auth(USER_ROLE.dsmmAdmin),
+  DSMMTaskController.updateDSMMTask,
+);
+
 export const DSMMTaskRoutes = router;

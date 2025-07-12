@@ -113,6 +113,11 @@ const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
   }
 };
 
+const updateDSMMTask = async (taskId: string, payLoad: TDSMMTask) => {
+  return 'Update DSMM Task functionality not implemented yet';
+};
+
 export const DSMMTaskService = {
   createDSMMTask,
+  updateDSMMTask,
 };
