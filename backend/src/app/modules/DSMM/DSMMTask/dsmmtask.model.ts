@@ -24,6 +24,18 @@ const DSMMTaskSchema = new Schema<TDSMMTask>(
       type: Schema.Types.ObjectId,
       ref: 'DSMMMultitasking',
     },
+    taskDate: {
+      type: Date,
+      required: true,
+    },
+    startTime: {
+      type: Date,
+      required: true,
+    },
+    endTime: {
+      type: Date,
+      required: true,
+    },
     selectedManpower: [
       {
         type: Schema.Types.ObjectId,

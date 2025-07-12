@@ -2,7 +2,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { TDSMMTask } from './dsmmtask.interface';
 import { DSMMTask } from './dsmmtask.model';
 import { User } from '../../User/user.model';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 import { DSMMMultitasking } from '../DSMMMultitasking/dsmmmultitasking.model';
@@ -113,8 +113,142 @@ const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
   }
 };
 
-const updateDSMMTask = async (taskId: string, payLoad: TDSMMTask) => {
-  return 'Update DSMM Task functionality not implemented yet';
+const updateDSMMTask = async (id: string, payLoad: TDSMMTask) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const task = await DSMMTask.findById(id).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    const { selectedManpower = [], multiTask, multiTaskId } = payLoad;
+
+    // 🔷 Convert to Set for faster lookups
+    const previousIds = new Set(
+      task.selectedManpower.map((id) => id.toString()),
+    );
+    const currentIds = new Set(selectedManpower.map((id) => id.toString()));
+
+    // 🔷 Compute removed manpower
+    const removedIds = [...previousIds].filter((id) => !currentIds.has(id));
+
+    if (removedIds.length > 0) {
+      await User.updateMany(
+        { _id: { $in: removedIds } },
+        { $pull: { tasks: { taskId: id } } },
+        { session },
+      );
+    }
+
+    if (selectedManpower.length > 0) {
+      const manpowerUsers = await User.find({ _id: { $in: selectedManpower } })
+        .select('role firstName tasks')
+        .lean()
+        .session(session);
+
+      if (manpowerUsers.length !== selectedManpower.length) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'One or more manpower users do not exist',
+        );
+      }
+
+      // 🔷 If multiTask specified, get allowed manpower ids
+      const allowedMultitaskIds = new Set<string>();
+      if (multiTask && multiTaskId) {
+        const multitask = await DSMMMultitasking.findById(multiTaskId)
+          .select('manpower')
+          .lean()
+          .session(session);
+
+        if (!multitask) {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Invalid multiTaskId provided',
+          );
+        }
+
+        multitask.manpower.forEach((u) =>
+          allowedMultitaskIds.add(u.userId.toString()),
+        );
+      }
+
+      // 🔷 Validate roles + prepare list of users needing task add
+      const usersToAddTask: Types.ObjectId[] = [];
+
+      for (const user of manpowerUsers) {
+        const isAdmin = user.role === 'dsmmAdmin';
+        const isAllowed =
+          isAdmin || allowedMultitaskIds.has(user._id.toString());
+
+        if (!isAllowed) {
+          throw new AppError(
+            httpStatus.BAD_REQUEST,
+            `User ${user.firstName} must be part of DSMM or multitasking team`,
+          );
+        }
+
+        const alreadyHasTask = user.tasks?.some(
+          (t) => t.taskId.toString() === id,
+        );
+
+        if (!alreadyHasTask) {
+          usersToAddTask.push(user._id);
+        }
+      }
+
+      if (usersToAddTask.length > 0) {
+        await User.updateMany(
+          { _id: { $in: usersToAddTask } },
+          {
+            $addToSet: {
+              tasks: {
+                taskId: id,
+                unit: 'DSMM',
+                type: 'Task',
+                category: 'DSMMTask',
+              },
+            },
+          },
+          { session },
+        );
+      }
+
+      task.selectedManpower = selectedManpower as Types.ObjectId[];
+    } else {
+      task.selectedManpower = [];
+    }
+
+    // 🔷 Update other task fields
+    Object.assign(task, {
+      title: payLoad.title ?? task.title,
+      taskDate: payLoad.taskDate ?? task.taskDate,
+      startTime: payLoad.startTime ?? task.startTime,
+      endTime: payLoad.endTime ?? task.endTime,
+      multiTask: payLoad.multiTask ?? task.multiTask,
+      multiTaskId: payLoad.multiTaskId ?? task.multiTaskId,
+      status: payLoad.status ?? task.status,
+    });
+
+    const updatedTask = await task.save({ session });
+    await session.commitTransaction();
+
+    return updatedTask;
+  } catch (error) {
+    await session.abortTransaction();
+    if (error instanceof AppError) throw error;
+
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      `Failed to update DSMM task: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+    );
+  } finally {
+    session.endSession();
+  }
 };
 
 export const DSMMTaskService = {
