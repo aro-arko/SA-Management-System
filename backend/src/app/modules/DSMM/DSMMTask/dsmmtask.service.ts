@@ -49,8 +49,8 @@ const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
       if (!multitaskDetails) {
         throw new AppError(httpStatus.BAD_REQUEST, 'Invalid multiTaskId');
       }
-      multitaskManpowerIds = multitaskDetails.manpower.map((id) =>
-        id.toString(),
+      multitaskManpowerIds = multitaskDetails.manpower.map((user) =>
+        user.userId.toString(),
       );
     }
 
@@ -131,6 +131,7 @@ const getAllDSMMTasks = async (query: Record<string, unknown>) => {
   return tasks;
 };
 
+// update DSMM Task
 const updateDSMMTask = async (id: string, payLoad: TDSMMTask) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -269,8 +270,60 @@ const updateDSMMTask = async (id: string, payLoad: TDSMMTask) => {
   }
 };
 
+// delete DSMM Task
+
+const deleteDSMMTask = async (id: string) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const task = await DSMMTask.findById(id)
+      .select('_id selectedManpower')
+      .session(session);
+
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    // 🔷 Remove task from all users’ task list
+    if (task.selectedManpower.length > 0) {
+      await User.updateMany(
+        { _id: { $in: task.selectedManpower } },
+        { $pull: { tasks: { taskId: task._id } } },
+        { session },
+      );
+    }
+
+    // 🔷 Delete the task itself
+    const deleteResult = await DSMMTask.deleteOne({ _id: task._id }).session(
+      session,
+    );
+
+    if (deleteResult.deletedCount === 0) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to delete DSMM task',
+      );
+    }
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+
+    if (error instanceof AppError) throw error;
+
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      `Failed to delete DSMM task: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+  } finally {
+    session.endSession();
+  }
+};
+
 export const DSMMTaskService = {
   createDSMMTask,
   getAllDSMMTasks,
   updateDSMMTask,
+  deleteDSMMTask,
 };

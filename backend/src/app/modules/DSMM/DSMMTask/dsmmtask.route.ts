@@ -27,4 +27,10 @@ router.patch(
   DSMMTaskController.updateDSMMTask,
 );
 
+router.delete(
+  '/delete/:id',
+  auth(USER_ROLE.dsmmAdmin),
+  DSMMTaskController.deleteDSMMTask,
+);
+
 export const DSMMTaskRoutes = router;

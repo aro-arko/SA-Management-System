@@ -45,8 +45,23 @@ const updateDSMMTask = catchAsync(async (req, res) => {
   });
 });
 
+// delete DSMM Task
+const deleteDSMMTask = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await DSMMTaskService.deleteDSMMTask(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'DSMM Task deleted successfully',
+    data: result,
+  });
+});
+
 export const DSMMTaskController = {
   createDSMMTask,
   getAllDSMMTasks,
   updateDSMMTask,
+  deleteDSMMTask,
 };
