@@ -1,6 +1,7 @@
 import catchAsync from '../../../utils/catchAsync';
 import sendResponse from '../../../utils/sendReponse';
 import httpStatus from 'http-status';
+import { DSMMMultiTaskingService } from './dsmmmultitasking.service';
 
 const createDSMMMultitasking = catchAsync(async (req, res) => {
   const user = req.user;
