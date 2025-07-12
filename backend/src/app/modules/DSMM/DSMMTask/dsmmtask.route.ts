@@ -17,6 +17,7 @@ router.post(
 router.patch(
   '/update/:id',
   auth(USER_ROLE.dsmmAdmin),
+  validateRequest(DSMMTaskValidation.updateDSMMTask),
   DSMMTaskController.updateDSMMTask,
 );
 
