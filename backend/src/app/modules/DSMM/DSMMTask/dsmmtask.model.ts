@@ -48,4 +48,4 @@ const DSMMTaskSchema = new Schema<TDSMMTask>(
   },
 );
 
-export const DSMMTaskModel = model<TDSMMTask>('DSMMTask', DSMMTaskSchema);
+export const DSMMTask = model<TDSMMTask>('DSMMTask', DSMMTaskSchema);

@@ -3,6 +3,7 @@ import auth from '../../../middlewares/auth';
 import { USER_ROLE } from '../../User/user.constant';
 import validateRequest from '../../../middlewares/validateRequest';
 import { DSMMTaskValidation } from './dsmmtask.validation';
+import { DSMMTaskController } from './dsmmtask.controller';
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.post(
   '/create',
   auth(USER_ROLE.dsmmAdmin),
   validateRequest(DSMMTaskValidation.createDSMMTask),
+  DSMMTaskController.creawteDSMMTask,
 );
 
 export const DSMMTaskRoutes = router;
