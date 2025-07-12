@@ -11,7 +11,7 @@ router.post(
   '/create',
   auth(USER_ROLE.dsmmAdmin),
   validateRequest(DSMMTaskValidation.createDSMMTask),
-  DSMMTaskController.creawteDSMMTask,
+  DSMMTaskController.createDSMMTask,
 );
 
 export const DSMMTaskRoutes = router;

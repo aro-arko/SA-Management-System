@@ -5,6 +5,7 @@ import { User } from '../../User/user.model';
 import mongoose from 'mongoose';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
+import { DSMMMultitasking } from '../DSMMMultitasking/dsmmmultitasking.model';
 
 const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
   const { email } = currentUser;
@@ -38,8 +39,46 @@ const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
       );
     }
 
-    // For each selected manpower, add task to their profile if not already present
+    // If multiTask & multiTaskId, fetch its manpower list (once)
+    let multitaskManpowerIds: string[] = [];
+    if (multiTask && multiTaskId) {
+      const multitaskDetails = await DSMMMultitasking.findById(multiTaskId)
+        .select('manpower')
+        .lean();
+      if (!multitaskDetails) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Invalid multiTaskId');
+      }
+      multitaskManpowerIds = multitaskDetails.manpower.map((id) =>
+        id.toString(),
+      );
+    }
+
+    // For each selectedManpower, validate & update
     for (const manpowerId of selectedManpower) {
+      const manpower = await User.findById(manpowerId)
+        .select('role firstName')
+        .lean();
+
+      if (!manpower) {
+        throw new AppError(
+          httpStatus.NOT_FOUND,
+          `User with ID ${manpowerId} not found`,
+        );
+      }
+
+      const isAdmin = manpower.role === 'dsmmAdmin';
+      const isInMultitask = multitaskManpowerIds.includes(
+        manpowerId.toString(),
+      );
+
+      if (!isAdmin && !isInMultitask) {
+        throw new AppError(
+          httpStatus.FORBIDDEN,
+          `User ${manpower.firstName} is not part of DSMM or multitasking team.`,
+        );
+      }
+
+      // Update user profile to add task if not already added
       await User.updateOne(
         {
           _id: manpowerId,

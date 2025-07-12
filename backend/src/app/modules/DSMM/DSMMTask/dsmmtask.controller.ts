@@ -3,7 +3,7 @@ import sendResponse from '../../../utils/sendReponse';
 import httpStatus from 'http-status';
 import { DSMMTaskService } from './dsmmtask.service';
 
-const creawteDSMMTask = catchAsync(async (req, res) => {
+const createDSMMTask = catchAsync(async (req, res) => {
   const data = req.body;
   const user = req.user;
 
@@ -18,5 +18,5 @@ const creawteDSMMTask = catchAsync(async (req, res) => {
 });
 
 export const DSMMTaskController = {
-  creawteDSMMTask,
+  createDSMMTask,
 };
