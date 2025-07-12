@@ -39,6 +39,7 @@ router.patch(
   validateRequest(
     DSMMMultitaskingValidation.updateDSMMMultitaskingValidationSchema,
   ),
+  DSMMMultitaskingController.updateDSMMMultitasking,
 );
 
 export const DSMMMultitaskingRoutes = router;

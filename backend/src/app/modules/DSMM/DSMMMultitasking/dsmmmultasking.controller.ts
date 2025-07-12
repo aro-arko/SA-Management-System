@@ -32,7 +32,23 @@ const getDSMMMultitasking = catchAsync(async (req, res) => {
   });
 });
 
+// update DSMM multitaskings
+const updateDSMMMultitasking = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+
+  const result = await DSMMMultiTaskingService.updateDSMMMultitasking(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking updated successfully',
+    data: result,
+  });
+});
+
 export const DSMMMultitaskingController = {
   createDSMMMultitasking,
   getDSMMMultitasking,
+  updateDSMMMultitasking,
 };

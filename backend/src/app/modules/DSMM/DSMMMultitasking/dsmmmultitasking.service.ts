@@ -26,7 +26,19 @@ const getDSMMMultitasking = async () => {
   return result;
 };
 
+// update DSMM multitaskings
+const updateDSMMMultitasking = async (
+  id: string,
+  payLoad: Partial<TDSMMMultitasking>,
+) => {
+  const result = await DSMMMultitasking.findByIdAndUpdate(id, payLoad, {
+    new: true,
+  });
+  return result;
+};
+
 export const DSMMMultiTaskingService = {
   createDSMMMultitasking,
   getDSMMMultitasking,
+  updateDSMMMultitasking,
 };
