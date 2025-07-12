@@ -38,12 +38,12 @@ const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
       );
     }
 
-    // ✅ 2️⃣ For each selected manpower, add task to their profile if not already present
+    // For each selected manpower, add task to their profile if not already present
     for (const manpowerId of selectedManpower) {
       await User.updateOne(
         {
           _id: manpowerId,
-          'tasks.taskId': { $ne: createdTask._id }, // only if not already present
+          'tasks.taskId': { $ne: createdTask._id },
         },
         {
           $push: {
