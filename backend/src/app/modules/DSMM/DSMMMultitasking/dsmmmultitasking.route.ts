@@ -32,4 +32,13 @@ router.get(
   DSMMMultitaskingController.getDSMMMultitasking,
 );
 
+// update multitasking
+router.patch(
+  '/update-multitasking/:id',
+  auth(USER_ROLE.dsmmAdmin),
+  validateRequest(
+    DSMMMultitaskingValidation.updateDSMMMultitaskingValidationSchema,
+  ),
+);
+
 export const DSMMMultitaskingRoutes = router;
