@@ -17,6 +17,19 @@ const createDSMMTask = catchAsync(async (req, res) => {
   });
 });
 
+// get all DSMM Tasks
+const getAllDSMMTasks = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await DSMMTaskService.getAllDSMMTasks(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'DSMM Tasks retrieved successfully',
+    data: result,
+  });
+});
+
 // update DSMM Task
 const updateDSMMTask = catchAsync(async (req, res) => {
   const id = req.params.id;
@@ -34,5 +47,6 @@ const updateDSMMTask = catchAsync(async (req, res) => {
 
 export const DSMMTaskController = {
   createDSMMTask,
+  getAllDSMMTasks,
   updateDSMMTask,
 };

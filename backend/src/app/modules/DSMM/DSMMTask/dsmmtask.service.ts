@@ -6,6 +6,7 @@ import mongoose, { Types } from 'mongoose';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 import { DSMMMultitasking } from '../DSMMMultitasking/dsmmmultitasking.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
   const { email } = currentUser;
@@ -111,6 +112,23 @@ const createDSMMTask = async (currentUser: JwtPayload, payLoad: TDSMMTask) => {
   } finally {
     session.endSession();
   }
+};
+
+// get all DSMM tasks
+const getAllDSMMTasks = async (query: Record<string, unknown>) => {
+  const baseQuery = DSMMTask.find();
+
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .sort()
+    .paginate()
+    .fields();
+
+  const tasks = await queryBuilder.modelQuery.lean();
+
+  if (!tasks.length) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No DSMM tasks found');
+  }
+  return tasks;
 };
 
 const updateDSMMTask = async (id: string, payLoad: TDSMMTask) => {
@@ -253,5 +271,6 @@ const updateDSMMTask = async (id: string, payLoad: TDSMMTask) => {
 
 export const DSMMTaskService = {
   createDSMMTask,
+  getAllDSMMTasks,
   updateDSMMTask,
 };

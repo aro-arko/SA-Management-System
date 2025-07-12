@@ -14,6 +14,12 @@ router.post(
   DSMMTaskController.createDSMMTask,
 );
 
+router.get(
+  '/all',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.dsmmAdmin),
+  DSMMTaskController.getAllDSMMTasks,
+);
+
 router.patch(
   '/update/:id',
   auth(USER_ROLE.dsmmAdmin),
