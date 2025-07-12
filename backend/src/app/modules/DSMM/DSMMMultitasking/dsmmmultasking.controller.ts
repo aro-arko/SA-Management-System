@@ -20,6 +20,19 @@ const createDSMMMultitasking = catchAsync(async (req, res) => {
   });
 });
 
+// get all DSMM multi-taskings
+const getDSMMMultitasking = catchAsync(async (req, res) => {
+  const result = await DSMMMultiTaskingService.getDSMMMultitasking();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking retrieved successfully',
+    data: result,
+  });
+});
+
 export const DSMMMultitaskingController = {
   createDSMMMultitasking,
+  getDSMMMultitasking,
 };

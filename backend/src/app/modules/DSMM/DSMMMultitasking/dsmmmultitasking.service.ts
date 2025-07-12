@@ -18,6 +18,15 @@ const createDSMMMultitasking = async (
   return result;
 };
 
+// get all DSMM multi-taskings
+const getDSMMMultitasking = async () => {
+  const result = await DSMMMultitasking.find({ status: 'active' }).sort({
+    createdAt: -1,
+  });
+  return result;
+};
+
 export const DSMMMultiTaskingService = {
   createDSMMMultitasking,
+  getDSMMMultitasking,
 };
