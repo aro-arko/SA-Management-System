@@ -12,6 +12,7 @@ import { FixedTimeEventRoutes } from '../modules/EMU/FixedTimeEvent/fixedtimeeve
 import { SignInDataRoutes } from '../modules/Attendance/SignInData/signindata.route';
 import { SignOutDataRoutes } from '../modules/Attendance/SignOutData/signoutdata.route';
 import { DSMMTaskRoutes } from '../modules/DSMM/DSMMTask/dsmmtask.route';
+import { DSMMMultitaskingRoutes } from '../modules/DSMM/DSMMMultitasking/dsmmmultitasking.route';
 
 const router = Router();
 
@@ -67,6 +68,10 @@ const moduleRoutes = [
   {
     path: '/dsmmtask',
     route: DSMMTaskRoutes,
+  },
+  {
+    path: '/dsmm-multitaskings',
+    route: DSMMMultitaskingRoutes,
   },
 ];
 
