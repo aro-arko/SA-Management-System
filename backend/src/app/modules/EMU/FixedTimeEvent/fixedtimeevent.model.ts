@@ -8,6 +8,11 @@ const fixedTimeEventSchema = new Schema<TFixedTimeEvent>(
       required: true,
       trim: true,
     },
+    type: {
+      type: String,
+      default: 'Event',
+      required: true,
+    },
     multiTask: {
       type: Boolean,
       required: true,
