@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 export type TDSMMTask = {
   title: string;
   unit: string;
+  type: string;
   details: string;
   multiTask: boolean;
   multiTaskId: Types.ObjectId;

@@ -13,6 +13,11 @@ const DSMMTaskSchema = new Schema<TDSMMTask>(
       default: 'DSMM',
       required: true,
     },
+    type: {
+      type: String,
+      default: 'Task',
+      required: true,
+    },
     details: {
       type: String,
     },
