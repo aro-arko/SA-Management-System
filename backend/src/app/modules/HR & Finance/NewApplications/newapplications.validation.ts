@@ -8,11 +8,12 @@ const applyNewApplicationValidationSchema = z.object({
       .int()
       .positive('Student ID must be a positive integer'),
     expectedGraduationDate: z
-      .date()
-      .refine(
-        (date) => date > new Date(),
-        'Expected graduation date must be in the future',
-      ),
+      .string({
+        invalid_type_error: 'Expected graduation date must be a string',
+      })
+      .refine((date) => !isNaN(Date.parse(date)), {
+        message: 'Invalid date format',
+      }),
     email: z.string().email('Invalid email format'),
     phoneNumber: z
       .number()

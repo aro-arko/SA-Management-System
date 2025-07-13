@@ -1,6 +1,7 @@
 import catchAsync from '../../../utils/catchAsync';
 import sendResponse from '../../../utils/sendReponse';
 import httpStatus from 'http-status';
+import { NewApplicationService } from './newapplications.service';
 
 // apply for new applications
 const applyNewApplication = catchAsync(async (req, res) => {
@@ -15,3 +16,7 @@ const applyNewApplication = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+export const NewApplicationController = {
+  applyNewApplication,
+};
