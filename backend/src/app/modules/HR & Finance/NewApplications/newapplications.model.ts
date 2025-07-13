@@ -11,6 +11,7 @@ const newApplicationSchema = new Schema<TNewApplication>(
     Faculty: { type: String, required: true },
     Major: { type: String, required: true },
     ResumeLink: { type: String, required: true },
+    preferredUnit: { type: String, required: false },
     isChecked: { type: Boolean, default: false },
     checkedBy: { type: Schema.Types.ObjectId, ref: 'User', required: false },
   },

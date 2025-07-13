@@ -9,6 +9,9 @@ export type TNewApplication = {
   Faculty: string;
   Major: string;
   ResumeLink: string;
+  preferredUnit?: string;
   isChecked: boolean;
   checkedBy: Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

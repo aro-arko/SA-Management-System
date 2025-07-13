@@ -22,6 +22,7 @@ const applyNewApplicationValidationSchema = z.object({
     Faculty: z.string().min(1, 'Faculty is required'),
     Major: z.string().min(1, 'Major is required'),
     ResumeLink: z.string().url('Resume link must be a valid URL'),
+    preferredUnit: z.string().optional(),
   }),
 });
 
