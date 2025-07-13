@@ -5,6 +5,7 @@ import { User } from '../../User/user.model';
 import mongoose from 'mongoose';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createHrFinanceTask = async (
   currentUser: JwtPayload,
@@ -81,6 +82,27 @@ const createHrFinanceTask = async (
   return createdTask;
 };
 
+// get all HR Finance tasks
+const getAllHrFinanceTasks = async (query: Record<string, unknown> = {}) => {
+  const baseQuery = HRFinanceTask.find().populate(
+    'assignedTo',
+    'firstName lastName',
+  );
+
+  const queryBuilder = new QueryBuilder(baseQuery, query);
+
+  const tasks = await queryBuilder
+    .search(['title', 'description'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+    .modelQuery.lean();
+
+  return tasks;
+};
+
 export const HrFinanceTaskService = {
   createHrFinanceTask,
+  getAllHrFinanceTasks,
 };

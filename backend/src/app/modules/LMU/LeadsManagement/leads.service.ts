@@ -158,7 +158,7 @@ const leadsTaskCreate = async (
 // get all leads tasks
 const getAllLeadsTasks = async (query: Record<string, unknown>) => {
   const baseQuery = LeadsTask.find()
-    .populate('assignedTo', 'lastName')
+    .populate('assignedTo', 'firstName lastName')
     .populate('goalId', 'title type status');
 
   const queryBuilder = new QueryBuilder(baseQuery, query)

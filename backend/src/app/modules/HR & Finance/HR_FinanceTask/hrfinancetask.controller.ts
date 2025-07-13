@@ -17,6 +17,20 @@ const createHrFinanceTask = catchAsync(async (req, res) => {
   });
 });
 
+// get all HR Finance tasks
+const getAllHrFinanceTasks = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await HrFinanceTaskService.getAllHrFinanceTasks(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'HR Finance tasks retrieved successfully',
+    data: result,
+  });
+});
+
 export const HrFinanceTaskController = {
   createHrFinanceTask,
+  getAllHrFinanceTasks,
 };

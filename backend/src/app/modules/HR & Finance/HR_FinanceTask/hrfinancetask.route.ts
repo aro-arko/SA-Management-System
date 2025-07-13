@@ -15,4 +15,10 @@ router.post(
   HrFinanceTaskController.createHrFinanceTask,
 );
 
+router.get(
+  '/all-tasks',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.hrFinanceAdmin),
+  HrFinanceTaskController.getAllHrFinanceTasks,
+);
+
 export const HRFinanceTaskRoutes = router;
