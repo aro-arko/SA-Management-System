@@ -30,4 +30,11 @@ router.patch(
   HrFinanceTaskController.updateHrFinanceTask,
 );
 
+// delete HR Finance task
+router.delete(
+  '/delete-task/:taskId',
+  auth(USER_ROLE.hrFinanceAdmin),
+  HrFinanceTaskController.deleteHrFinanceTask,
+);
+
 export const HRFinanceTaskRoutes = router;

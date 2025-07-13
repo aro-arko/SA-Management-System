@@ -178,8 +178,42 @@ const updateHrFinanceTask = async (taskId: string, payLoad: THRFinanceTask) => {
   }
 };
 
+// delete HR Finance task
+const deleteHrFinanceTask = async (id: string) => {
+  if (!Types.ObjectId.isValid(id)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const task = await HRFinanceTask.findById(id).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    await Promise.all([
+      User.updateOne(
+        { _id: task.assignedTo },
+        { $pull: { tasks: { taskId: task._id } } },
+        { session },
+      ),
+      HRFinanceTask.deleteOne({ _id: task._id }, { session }),
+    ]);
+
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const HrFinanceTaskService = {
   createHrFinanceTask,
   getAllHrFinanceTasks,
   updateHrFinanceTask,
+  deleteHrFinanceTask,
 };

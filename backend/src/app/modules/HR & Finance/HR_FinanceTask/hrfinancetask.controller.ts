@@ -45,8 +45,23 @@ const updateHrFinanceTask = catchAsync(async (req, res) => {
   });
 });
 
+// delete HR Finance task
+const deleteHrFinanceTask = catchAsync(async (req, res) => {
+  const taskId = req.params.taskId;
+
+  const result = await HrFinanceTaskService.deleteHrFinanceTask(taskId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'HR Finance task deleted successfully',
+    data: result,
+  });
+});
+
 export const HrFinanceTaskController = {
   createHrFinanceTask,
   getAllHrFinanceTasks,
   updateHrFinanceTask,
+  deleteHrFinanceTask,
 };
