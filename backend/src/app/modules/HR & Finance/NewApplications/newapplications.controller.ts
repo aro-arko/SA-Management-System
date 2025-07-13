@@ -30,7 +30,22 @@ const getAllApplications = catchAsync(async (req, res) => {
   });
 });
 
+// get application details
+const getApplicationDetails = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await NewApplicationService.getApplicationDetails(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Application details retrieved successfully',
+    data: result,
+  });
+});
+
 export const NewApplicationController = {
   applyNewApplication,
   getAllApplications,
+  getApplicationDetails,
 };

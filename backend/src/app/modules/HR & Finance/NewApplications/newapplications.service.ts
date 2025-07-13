@@ -63,7 +63,18 @@ const getAllApplications = async (query: Record<string, unknown> = {}) => {
   return applications;
 };
 
+// get application details
+const getApplicationDetails = async (id: string) => {
+  const application = await NewApplication.findById(id).lean();
+
+  if (!application) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Application not found');
+  }
+  return application;
+};
+
 export const NewApplicationService = {
   applyNewApplication,
   getAllApplications,
+  getApplicationDetails,
 };

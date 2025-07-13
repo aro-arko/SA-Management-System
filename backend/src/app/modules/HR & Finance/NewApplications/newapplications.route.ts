@@ -21,4 +21,11 @@ router.get(
   NewApplicationController.getAllApplications,
 );
 
+// get appliation details
+router.get(
+  '/:id',
+  auth(USER_ROLE.hrFinanceAdmin),
+  NewApplicationController.getApplicationDetails,
+);
+
 export const NewApplicationsRoutes = router;
