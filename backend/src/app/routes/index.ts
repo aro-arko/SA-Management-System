@@ -13,6 +13,7 @@ import { SignInDataRoutes } from '../modules/Attendance/SignInData/signindata.ro
 import { SignOutDataRoutes } from '../modules/Attendance/SignOutData/signoutdata.route';
 import { DSMMTaskRoutes } from '../modules/DSMM/DSMMTask/dsmmtask.route';
 import { DSMMMultitaskingRoutes } from '../modules/DSMM/DSMMMultitasking/dsmmmultitasking.route';
+import { NewApplicationsRoutes } from '../modules/HR & Finance/NewApplications/newapplications.route';
 
 const router = Router();
 
@@ -72,6 +73,10 @@ const moduleRoutes = [
   {
     path: '/dsmm-multitaskings',
     route: DSMMMultitaskingRoutes,
+  },
+  {
+    path: '/new-applications',
+    route: NewApplicationsRoutes,
   },
 ];
 
