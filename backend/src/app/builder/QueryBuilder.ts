@@ -47,6 +47,8 @@ class QueryBuilder<T> {
         $in: lmugoalsIds,
       };
     }
+
+    return this;
   }
 
   sort() {
@@ -67,6 +69,13 @@ class QueryBuilder<T> {
   fields() {
     const fields = (this.query.fields as string)?.split(',')?.join(' ');
     this.modelQuery = this.modelQuery.select(fields);
+    return this;
+  }
+
+  sortByCreatedAt(order: 'asc' | 'desc' = 'asc') {
+    this.modelQuery = this.modelQuery.sort({
+      createdAt: order === 'asc' ? 1 : -1,
+    });
     return this;
   }
 }

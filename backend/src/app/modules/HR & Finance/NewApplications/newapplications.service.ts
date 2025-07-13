@@ -2,6 +2,7 @@ import { TNewApplication } from './newapplications.interface';
 import { NewApplication } from './newapplications.model';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const applyNewApplication = async (payLoad: TNewApplication) => {
   const existingApplications = await NewApplication.find({
@@ -37,6 +38,32 @@ const applyNewApplication = async (payLoad: TNewApplication) => {
   return application;
 };
 
+// get all applications
+const getAllApplications = async (query: Record<string, unknown> = {}) => {
+  const filters: Record<string, unknown> = {};
+
+  const showAll = query.showAll === 'true';
+
+  if (!showAll) {
+    filters.isChecked = false;
+  }
+
+  const baseQuery = NewApplication.find(filters);
+
+  const qb = new QueryBuilder(baseQuery, query);
+
+  const applications = await qb
+    .search(['fullName', 'email', 'studentId'])
+    .filter()
+    .sortByCreatedAt(showAll ? 'desc' : 'asc')
+    .paginate()
+    .fields()
+    .modelQuery.lean();
+
+  return applications;
+};
+
 export const NewApplicationService = {
   applyNewApplication,
+  getAllApplications,
 };
