@@ -14,6 +14,7 @@ import { SignOutDataRoutes } from '../modules/Attendance/SignOutData/signoutdata
 import { DSMMTaskRoutes } from '../modules/DSMM/DSMMTask/dsmmtask.route';
 import { DSMMMultitaskingRoutes } from '../modules/DSMM/DSMMMultitasking/dsmmmultitasking.route';
 import { NewApplicationsRoutes } from '../modules/HR & Finance/NewApplications/newapplications.route';
+import { HRFinanceTaskRoutes } from '../modules/HR & Finance/HR_FinanceTask/hrfinancetask.route';
 
 const router = Router();
 
@@ -77,6 +78,10 @@ const moduleRoutes = [
   {
     path: '/new-applications',
     route: NewApplicationsRoutes,
+  },
+  {
+    path: '/hr-finance-task',
+    route: HRFinanceTaskRoutes,
   },
 ];
 
