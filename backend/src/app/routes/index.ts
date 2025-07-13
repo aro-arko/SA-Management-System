@@ -80,7 +80,7 @@ const moduleRoutes = [
     route: NewApplicationsRoutes,
   },
   {
-    path: '/hr-finance-task',
+    path: '/hr-finance-tasks',
     route: HRFinanceTaskRoutes,
   },
 ];
