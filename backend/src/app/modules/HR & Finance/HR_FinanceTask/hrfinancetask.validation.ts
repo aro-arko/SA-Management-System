@@ -15,6 +15,27 @@ const createHrFinanceTaskValidationSchema = z.object({
   }),
 });
 
+// update HR Finance task validation schema
+const updateHrFinanceTaskValidationSchema = z.object({
+  body: z.object({
+    title: z.string().min(1, 'Title is required').optional(),
+    unit: z
+      .string()
+      .min(1, 'Unit is required')
+      .default('HR_FINANCE')
+      .optional(),
+    details: z.string().min(1, 'Details are required').optional(),
+    assignedTo: z.string().min(1, 'Assigned user ID is required').optional(),
+    dueDate: z
+      .string({ invalid_type_error: 'Due date must be a string' })
+      .refine((date) => !isNaN(Date.parse(date)), {
+        message: 'Invalid date format',
+      })
+      .optional(),
+  }),
+});
+
 export const hrFinanceTaskValidation = {
   createHrFinanceTaskValidationSchema,
+  updateHrFinanceTaskValidationSchema,
 };

@@ -15,10 +15,19 @@ router.post(
   HrFinanceTaskController.createHrFinanceTask,
 );
 
+// get all HR Finance tasks
 router.get(
   '/all-tasks',
   auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.hrFinanceAdmin),
   HrFinanceTaskController.getAllHrFinanceTasks,
+);
+
+// update HR Finance task
+router.patch(
+  '/update-task/:taskId',
+  auth(USER_ROLE.hrFinanceAdmin),
+  validateRequest(hrFinanceTaskValidation.updateHrFinanceTaskValidationSchema),
+  HrFinanceTaskController.updateHrFinanceTask,
 );
 
 export const HRFinanceTaskRoutes = router;
