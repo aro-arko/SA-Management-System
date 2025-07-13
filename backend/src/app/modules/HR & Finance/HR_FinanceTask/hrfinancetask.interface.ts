@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 export type THRFinanceTask = {
   title: string;
   unit: string;
+  type: string;
   details: string;
   assignedTo: Types.ObjectId;
   dueDate: Date;

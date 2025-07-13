@@ -8,6 +8,7 @@ import { LeadsTask } from '../LMU/LeadsManagement/leads.model';
 import { DataEntryTask } from '../LMU/DataManagement/datamanagement.model';
 import { LMUOthersTask } from '../LMU/LMUOthers/lmuothers.model';
 import { DSMMTask } from '../DSMM/DSMMTask/dsmmtask.model';
+import { HRFinanceTask } from '../HR & Finance/HR_FinanceTask/hrfinancetask.model';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const categoryModelMap: Record<string, mongoose.Model<any>> = {
@@ -15,6 +16,7 @@ const categoryModelMap: Record<string, mongoose.Model<any>> = {
   DataEntryTask,
   LMUOthersTask,
   DSMMTask,
+  HRFinanceTask,
 };
 
 const userUpdate = async (

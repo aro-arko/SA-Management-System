@@ -12,6 +12,11 @@ const hrFinanceTaskSchema = new Schema<THRFinanceTask>(
       default: 'HR_FINANCE',
       required: true,
     },
+    type: {
+      type: String,
+      default: 'Task',
+      required: true,
+    },
     details: {
       type: String,
       required: true,

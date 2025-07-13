@@ -2,27 +2,83 @@ import { JwtPayload } from 'jsonwebtoken';
 import { THRFinanceTask } from './hrfinancetask.interface';
 import { HRFinanceTask } from './hrfinancetask.model';
 import { User } from '../../User/user.model';
+import mongoose from 'mongoose';
+import AppError from '../../../errors/AppError';
+import httpStatus from 'http-status';
 
 const createHrFinanceTask = async (
   currentUser: JwtPayload,
   payLoad: THRFinanceTask,
 ) => {
   const { email } = currentUser;
-  const currentUserDetails = await User.findOne({ email }).select('_id');
 
-  // check if the assigned to user from HR Finance unit
-  const { assignedTo } = payLoad;
-  const assignedUser = await User.findById(assignedTo).select('_id unit');
-  if (!assignedUser || assignedUser.unit !== 'HR_FINANCE') {
-    throw new Error('Assigned user is not from HR Finance unit');
+  const currentUserDoc = await User.findOne({ email }, { _id: 1 });
+  if (!currentUserDoc?._id) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Current user not found');
   }
 
-  const task = await HRFinanceTask.create({
-    ...payLoad,
-    createdBy: currentUserDetails!._id,
+  const session = await mongoose.startSession();
+
+  let createdTask;
+
+  await session.withTransaction(async () => {
+    // Fetch assigned user inside transaction
+    const assignedUser = await User.findById(payLoad.assignedTo).session(
+      session,
+    );
+
+    if (!assignedUser) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Assigned user not found');
+    }
+
+    if (assignedUser.unit !== 'HR_FINANCE') {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'Assigned user is not from HR Finance unit',
+      );
+    }
+
+    // Create HR Finance task
+    createdTask = await HRFinanceTask.create(
+      [
+        {
+          ...payLoad,
+          createdBy: currentUserDoc._id,
+        },
+      ],
+      { session },
+    ).then((tasks) => tasks[0]);
+
+    if (!createdTask?._id) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to create HR Finance task',
+      );
+    }
+
+    // Add task to assigned user's profile (if not already there)
+    await User.updateOne(
+      {
+        _id: assignedUser._id,
+        'tasks.taskId': { $ne: createdTask._id },
+      },
+      {
+        $addToSet: {
+          tasks: {
+            taskId: createdTask._id,
+            unit: 'HR_FINANCE',
+            type: 'Task',
+            category: 'HRFinanceTask',
+          },
+        },
+      },
+      { session },
+    );
   });
 
-  return task;
+  session.endSession();
+
+  return createdTask;
 };
 
 export const HrFinanceTaskService = {
