@@ -17,6 +17,20 @@ const applyNewApplication = catchAsync(async (req, res) => {
   });
 });
 
+// get all applications
+const getAllApplications = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await NewApplicationService.getAllApplications(query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Applications retrieved successfully',
+    data: result,
+  });
+});
+
 export const NewApplicationController = {
   applyNewApplication,
+  getAllApplications,
 };
