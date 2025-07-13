@@ -2,7 +2,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { THRFinanceTask } from './hrfinancetask.interface';
 import { HRFinanceTask } from './hrfinancetask.model';
 import { User } from '../../User/user.model';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 import QueryBuilder from '../../../builder/QueryBuilder';
@@ -102,7 +102,84 @@ const getAllHrFinanceTasks = async (query: Record<string, unknown> = {}) => {
   return tasks;
 };
 
+// update HR Finance task
+const updateHrFinanceTask = async (taskId: string, payLoad: THRFinanceTask) => {
+  if (!Types.ObjectId.isValid(taskId)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const task = await HRFinanceTask.findById(taskId).session(session);
+    if (!task) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+    }
+
+    const newAssignedTo = payLoad.assignedTo?.toString();
+    const oldAssignedTo = task.assignedTo?.toString();
+
+    if (newAssignedTo && newAssignedTo !== oldAssignedTo) {
+      const [prevUser, newUser] = await Promise.all([
+        User.findById(oldAssignedTo).session(session),
+        User.findById(newAssignedTo).session(session),
+      ]);
+
+      if (!newUser) {
+        throw new AppError(httpStatus.NOT_FOUND, 'New assigned user not found');
+      }
+
+      // Remove from previous user
+      if (prevUser) {
+        await User.updateOne(
+          { _id: prevUser._id },
+          { $pull: { tasks: { taskId: task._id } } },
+          { session },
+        );
+      }
+
+      // Add to new user if not already assigned
+      const alreadyAssigned = newUser.tasks?.some(
+        (t) => t.taskId.toString() === taskId,
+      );
+
+      if (!alreadyAssigned) {
+        await User.updateOne(
+          { _id: newUser._id },
+          {
+            $push: {
+              tasks: {
+                taskId: task._id,
+                unit: 'HR_FINANCE',
+                type: 'Task',
+                category: 'HRFinanceTask',
+              },
+            },
+          },
+          { session },
+        );
+      }
+
+      task.assignedTo = new Types.ObjectId(newAssignedTo);
+    }
+
+    // Update other fields
+    Object.assign(task, payLoad);
+    const updatedTask = await task.save({ session });
+
+    await session.commitTransaction();
+    return updatedTask;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 export const HrFinanceTaskService = {
   createHrFinanceTask,
   getAllHrFinanceTasks,
+  updateHrFinanceTask,
 };

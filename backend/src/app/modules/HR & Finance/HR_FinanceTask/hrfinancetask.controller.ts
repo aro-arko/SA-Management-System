@@ -30,7 +30,23 @@ const getAllHrFinanceTasks = catchAsync(async (req, res) => {
   });
 });
 
+// update HR Finance task
+const updateHrFinanceTask = catchAsync(async (req, res) => {
+  const { taskId } = req.params;
+  const data = req.body;
+
+  const result = await HrFinanceTaskService.updateHrFinanceTask(taskId, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'HR Finance task updated successfully',
+    data: result,
+  });
+});
+
 export const HrFinanceTaskController = {
   createHrFinanceTask,
   getAllHrFinanceTasks,
+  updateHrFinanceTask,
 };
