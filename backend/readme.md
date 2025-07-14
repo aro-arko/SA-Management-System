@@ -231,10 +231,8 @@ npm install
 
 ## 🌐 Base API URL
 
-```bash
-Production: [`https://sa-backend.aro-arko.software/api/v1`](https://sa-backend.aro-arko.software/api/v1)
-Development: `http://localhost:5000/api/v1`
-```
+**Production:** [`https://sa-backend.aro-arko.software/api/v1`](https://sa-backend.aro-arko.software/api/v1)  
+**Development:** `http://localhost:5000/api/v1`
 
 ## 🌱 Environment Variables
 
