@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import Image from "next/image";
-import logo from "@/app/assets/images/sa sec logo.png";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import darkLogo from "@/app/assets/images/sa sec logo dark.png";
+import lightLogo from "@/app/assets/images/sa sec logo.png";
+import { useTheme } from "next-themes";
+import { ModeToggle } from "./ThemeToggler/ThemeToggler";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -21,14 +24,20 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const isActive = (path: string) => pathname === path;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMounted(true); // Fix hydration mismatch
   }, []);
 
   return (
@@ -41,19 +50,21 @@ export default function Navbar() {
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image
-              src={logo}
-              alt="SA SEC Logo"
-              height={40}
-              className="transition duration-300"
-              priority
-            />
+            {mounted && (
+              <Image
+                src={resolvedTheme === "dark" ? darkLogo : lightLogo}
+                alt="SA SEC Logo"
+                height={40}
+                className="inline-block mr-2 transition duration-300"
+                priority
+              />
+            )}
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center justify-center flex-1 space-x-4">
             {navLinks.map((link) => (
               <Link
@@ -72,9 +83,12 @@ export default function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center md:space-x-4">
-            {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex space-x-2">
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <div className="mr-2">
+              <ModeToggle />
+            </div>
+
+            <div className="hidden md:flex items-center space-x-2">
               <Link
                 href="/login"
                 className="rounded-full px-4 py-2 text-sm font-medium border border-red-600 text-red-600 hover:bg-red-600/10"
@@ -89,23 +103,25 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Mobile Toggle */}
-            <button
-              onClick={toggleMobileMenu}
-              aria-label="Toggle mobile menu"
-              className="md:hidden p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-neutral-700 dark:text-neutral-300" />
-              ) : (
-                <Menu className="h-6 w-6 text-neutral-700 dark:text-neutral-300" />
-              )}
-            </button>
+            {/* Mobile toggle */}
+            <div className="md:hidden">
+              <button
+                onClick={toggleMobileMenu}
+                aria-label="Toggle mobile menu"
+                className="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6 text-neutral-700 dark:text-neutral-300" />
+                ) : (
+                  <Menu className="h-6 w-6 text-neutral-700 dark:text-neutral-300" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
