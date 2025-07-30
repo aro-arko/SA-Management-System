@@ -44,8 +44,14 @@ const NewsLetter = () => {
           }`}
         >
           {/* Icon */}
-          <div className="mx-auto mb-4 w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-red-100 to-red-200 shadow-inner">
-            <Mail className="text-red-600 w-6 h-6" />
+          <div className="relative w-14 h-14 mx-auto mb-4">
+            {/* Pulsing ring behind */}
+            <span className="absolute inset-0 rounded-full bg-red-500 opacity-30 animate-ping" />
+
+            {/* Icon container with gradient and glow */}
+            <div className="relative z-10 flex items-center justify-center w-full h-full rounded-full bg-gradient-to-br from-red-500 via-red-600 to-red-700">
+              <Mail className="text-white w-6 h-6" />
+            </div>
           </div>
 
           {/* Title & Description */}
