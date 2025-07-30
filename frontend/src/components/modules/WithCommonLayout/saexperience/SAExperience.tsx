@@ -98,7 +98,7 @@ const SAExperience = () => {
                 <Card
                   className={`px-4 py-5 border shadow-md rounded-xl max-w-[650px] transition-all duration-300 ${
                     isDark
-                      ? "bg-white/1 backdrop-blur-sm border-[#2a2a2a] hover:bg-white/10 hover:border-[#444]"
+                      ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] hover:bg-[#2c2c2c]/60 hover:border-[#444]"
                       : "bg-white border-neutral-200 hover:shadow-lg hover:border-neutral-300"
                   } min-h-[340px] md:min-h-[260px]`}
                 >
