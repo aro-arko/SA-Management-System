@@ -69,10 +69,10 @@ const ProgramOverview = () => {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`rounded-xl border p-6 shadow-md transition duration-300 ${
+              className={`rounded-xl border p-6 shadow-md transition-all duration-300 ${
                 isDark
-                  ? "bg-muted/20 border-border"
-                  : "bg-white border-neutral-200"
+                  ? "bg-[#1a1a1a] border-[#2a2a2a] text-neutral-100 hover:bg-[#2c2c2c] hover:border-[#444]"
+                  : "bg-white border-neutral-200 text-neutral-900 hover:shadow-md hover:border-neutral-300"
               }`}
             >
               <div className="flex items-center justify-center mb-4">
