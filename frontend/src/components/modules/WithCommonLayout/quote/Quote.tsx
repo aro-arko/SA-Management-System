@@ -9,10 +9,7 @@ const Quote = () => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
   const isDark = resolvedTheme === "dark";
@@ -23,33 +20,33 @@ const Quote = () => {
 
   return (
     <section
-      className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
+      className={`pt-12 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-neutral-900 dark:text-neutral-100">
-          Quote of the Day
-        </h2>
-
+      <div className="max-w-7xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className={`relative p-8 rounded-xl shadow-md border flex flex-col items-center text-center transition-all duration-300 ${
+          className={`relative px-6 py-8 rounded-xl shadow-md border transition-all duration-300 ${
             isDark
               ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] hover:bg-[#2c2c2c]/60 hover:border-[#444]"
               : "bg-white border-neutral-200 hover:shadow-lg hover:border-neutral-300"
           }`}
         >
-          <Lightbulb className="absolute top-10 left-10 text-yellow-500 dark:text-yellow-400 w-6 h-6 opacity-70" />
+          <Lightbulb className="absolute top-6 left-6 text-yellow-500 dark:text-yellow-400 w-6 h-6 opacity-70" />
 
-          <p className="mt-4 text-neutral-700 dark:text-neutral-300 italic max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 dark:text-neutral-100 mb-6">
+            Quote of the Day
+          </h2>
+
+          <p className="text-neutral-700 dark:text-neutral-300 italic max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             “{quote}”
           </p>
 
-          <div className="mt-6 text-sm font-semibold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase">
+          <div className="mt-5 text-sm font-semibold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase">
             — {author}
           </div>
         </motion.div>

@@ -62,7 +62,7 @@ const SAExperience = () => {
   return (
     <section
       className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
-        isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
+        isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#ffffff]"
       }`}
     >
       <div className="max-w-7xl mx-auto text-center">
@@ -100,9 +100,9 @@ const SAExperience = () => {
                     isDark
                       ? "bg-white/1 backdrop-blur-sm border-[#2a2a2a] hover:bg-white/10 hover:border-[#444]"
                       : "bg-white border-neutral-200 hover:shadow-lg hover:border-neutral-300"
-                  }`}
+                  } min-h-[340px] md:min-h-[260px]`}
                 >
-                  <CardHeader className="flex flex-col items-center space-y-2">
+                  <CardHeader className="flex flex-col items-center">
                     <Avatar className="h-16 w-16">
                       <AvatarImage src={story.avatar} alt={story.name} />
                       <AvatarFallback>
@@ -116,11 +116,11 @@ const SAExperience = () => {
                       {story.role}
                     </p>
                   </CardHeader>
-                  <CardContent className="pt-2">
+                  <CardContent className="px-2">
                     <p className="text-sm text-gray-600 dark:text-gray-300 italic">
                       “{story.testimonial}”
                     </p>
-                    <div className="flex justify-center mt-3">
+                    <div className="flex justify-center mt-4">
                       {Array.from({ length: story.rating }).map((_, i) => (
                         <Star
                           key={i}
