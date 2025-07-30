@@ -55,10 +55,10 @@ const NewsLetter = () => {
           </div>
 
           {/* Title & Description */}
-          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 dark:text-neutral-100">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-neutral-900 dark:text-neutral-100">
             Stay Connected
           </h2>
-          <p className="text-neutral-700 dark:text-neutral-300 mt-1 text-sm max-w-sm mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 mx-auto">
             Get the latest SA updates, tips, and events — straight to your
             inbox.
           </p>
