@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Briefcase, Users2, FileText, Mic, CalendarCheck } from "lucide-react";
 import benefitIllustration from "@/app/assets/images/benefits/benefits-bg.svg";
+import { motion } from "framer-motion";
 
 const benefits = [
   {
@@ -59,7 +60,13 @@ const Benefits = () => {
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
         {/* Left Illustration */}
-        <div className="w-full lg:w-1/2">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="w-full lg:w-1/2"
+        >
           <div
             className={`relative rounded-2xl overflow-hidden shadow-lg transition-all duration-300 w-full ${
               isDark
@@ -76,13 +83,17 @@ const Benefits = () => {
               priority
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Compact Cards */}
         <div className="w-full lg:w-1/2 space-y-3">
           {benefits.map((item, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
               className={`flex items-start gap-3 p-4 rounded-lg border shadow-sm transition ${
                 isDark
                   ? "bg-[#1a1a1a] border-[#2a2a2a] text-neutral-100 hover:bg-[#2c2c2c] hover:border-[#444]"
@@ -94,7 +105,7 @@ const Benefits = () => {
                 <h3 className="font-semibold text-base">{item.title}</h3>
                 <p className="text-sm mt-1">{item.description}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
