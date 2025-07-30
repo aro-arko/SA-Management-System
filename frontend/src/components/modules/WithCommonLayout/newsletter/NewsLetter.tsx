@@ -27,7 +27,7 @@ const NewsLetter = () => {
 
   return (
     <section
-      className={`pt-12 pb-8 px-4 sm:px-6 lg:px-0 ${
+      className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >
