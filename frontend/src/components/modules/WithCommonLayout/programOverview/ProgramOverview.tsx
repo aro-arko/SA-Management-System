@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Sparkles, Users, Star, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const points = [
   {
@@ -62,8 +63,12 @@ const ProgramOverview = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-10">
           {points.map((point, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
               className={`rounded-xl border p-6 shadow-md transition duration-300 ${
                 isDark
                   ? "bg-muted/20 border-border"
@@ -77,7 +82,7 @@ const ProgramOverview = () => {
                 {point.title}
               </h3>
               <p className="text-sm sm:text-base">{point.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
