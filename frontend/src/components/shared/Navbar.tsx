@@ -45,8 +45,8 @@ export default function Navbar() {
       className={cn(
         "fixed w-full z-50 transition-all duration-300 border-b",
         isScrolled
-          ? "bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md shadow-sm border-neutral-200 dark:border-neutral-800"
-          : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800"
+          ? "bg-white/90 dark:bg-gradient-to-b from-[#000000] to-[#170303] backdrop-blur-md shadow-sm border-neutral-200 dark:border-neutral-900"
+          : "bg-white dark:bg-gradient-to-b from-[#000000] to-[#170303] border-neutral-200 dark:border-neutral-800"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-0">
