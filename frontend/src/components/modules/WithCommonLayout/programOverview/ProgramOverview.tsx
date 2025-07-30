@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Sparkles, Users, Star, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -34,11 +34,19 @@ const points = [
 
 const ProgramOverview = () => {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   const isDark = resolvedTheme === "dark";
 
   return (
     <section
-      className={`py-16 px-4 sm:px-6 lg:px-0 ${
+      className={`pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >

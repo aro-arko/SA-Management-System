@@ -1,4 +1,5 @@
 import Banner from "@/components/modules/WithCommonLayout/banner/Banner";
+import Benefits from "@/components/modules/WithCommonLayout/benefits/Benefits";
 import ProgramOverview from "@/components/modules/WithCommonLayout/programOverview/ProgramOverview";
 import { Metadata } from "next";
 
@@ -13,6 +14,7 @@ const HomePage = () => {
     <div>
       <Banner />
       <ProgramOverview />
+      <Benefits />
     </div>
   );
 };
