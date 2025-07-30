@@ -77,7 +77,9 @@ const Banner = () => {
       {/* Mobile View */}
       <div
         className={`block md:hidden w-full ${
-          isDark ? "bg-gradient-to-b from-[#0f0303] to-[#430808]" : ""
+          isDark
+            ? "bg-gradient-to-b from-[#200404] to-[#170303]"
+            : "bg-[#ffffff]"
         } p-4`}
       >
         {/* Mobile Image (Centered by default) */}
