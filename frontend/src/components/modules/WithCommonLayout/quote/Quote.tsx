@@ -3,6 +3,7 @@
 import { Lightbulb } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const Quote = () => {
   const { resolvedTheme } = useTheme();
@@ -22,7 +23,7 @@ const Quote = () => {
 
   return (
     <section
-      className={` pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
+      className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >
@@ -31,13 +32,16 @@ const Quote = () => {
           Quote of the Day
         </h2>
 
-        <div
-          className={`relative p-8 rounded-xl shadow-md border flex flex-col items-center text-center transition-all duration-300
-    ${
-      isDark
-        ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a]"
-        : "bg-white border-neutral-200"
-    }`}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className={`relative p-8 rounded-xl shadow-md border flex flex-col items-center text-center transition-all duration-300 ${
+            isDark
+              ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] hover:bg-[#2c2c2c]/60 hover:border-[#444]"
+              : "bg-white border-neutral-200 hover:shadow-lg hover:border-neutral-300"
+          }`}
         >
           <Lightbulb className="absolute top-10 left-10 text-yellow-500 dark:text-yellow-400 w-6 h-6 opacity-70" />
 
@@ -48,7 +52,7 @@ const Quote = () => {
           <div className="mt-6 text-sm font-semibold text-neutral-800 dark:text-neutral-100 tracking-wide uppercase">
             — {author}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

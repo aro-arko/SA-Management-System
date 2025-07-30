@@ -4,6 +4,7 @@ import HowToJoin from "@/components/modules/WithCommonLayout/howtojoin/HowToJoin
 import ProgramOverview from "@/components/modules/WithCommonLayout/programOverview/ProgramOverview";
 import Quote from "@/components/modules/WithCommonLayout/quote/Quote";
 import RolesExpectations from "@/components/modules/WithCommonLayout/roles&expectations/RolesExpectations";
+import SAExperience from "@/components/modules/WithCommonLayout/saexperience/SAExperience";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ const HomePage = () => {
       <RolesExpectations />
       <HowToJoin />
       <Quote />
+      <SAExperience />
     </div>
   );
 };
