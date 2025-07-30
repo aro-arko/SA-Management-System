@@ -71,7 +71,7 @@ const ProgramOverview = () => {
               viewport={{ once: true }}
               className={`rounded-xl border p-6 shadow-md transition-all duration-300 ${
                 isDark
-                  ? "bg-[#1a1a1a] border-[#2a2a2a] text-neutral-100 hover:bg-[#2c2c2c] hover:border-[#444]"
+                  ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] text-neutral-100 hover:bg-[#2c2c2c]/60 hover:border-[#444]"
                   : "bg-white border-neutral-200 text-neutral-900 hover:shadow-md hover:border-neutral-300"
               }`}
             >
