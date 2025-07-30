@@ -47,7 +47,7 @@ const ProgramOverview = () => {
 
   return (
     <section
-      className={`pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
+      className={` pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >
@@ -55,7 +55,7 @@ const ProgramOverview = () => {
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
           What is this Program?
         </h2>
-        <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-12">
+        <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 md:mb-12">
           Join a community of changemakers. As a Student Ambassador, you’ll lead
           with purpose, inspire others, and grow both personally and
           professionally.

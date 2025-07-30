@@ -55,7 +55,7 @@ const RolesExpectations = () => {
 
   return (
     <section
-      className={`pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
+      className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >
@@ -63,7 +63,7 @@ const RolesExpectations = () => {
         <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-neutral-900 dark:text-neutral-100">
           Roles & Expectations
         </h2>
-        <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 mb-12 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 mb-8 md:mb-12 max-w-2xl mx-auto">
           Being a Student Ambassador is more than just a title; it’s about
           responsibility, initiative, and creating a lasting impact on your
           campus.

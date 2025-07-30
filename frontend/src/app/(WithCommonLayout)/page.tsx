@@ -1,5 +1,6 @@
 import Banner from "@/components/modules/WithCommonLayout/banner/Banner";
 import Benefits from "@/components/modules/WithCommonLayout/benefits/Benefits";
+import HowToJoin from "@/components/modules/WithCommonLayout/howtojoin/HowToJoin";
 import ProgramOverview from "@/components/modules/WithCommonLayout/programOverview/ProgramOverview";
 import RolesExpectations from "@/components/modules/WithCommonLayout/roles&expectations/RolesExpectations";
 import { Metadata } from "next";
@@ -17,6 +18,7 @@ const HomePage = () => {
       <ProgramOverview />
       <Benefits />
       <RolesExpectations />
+      <HowToJoin />
     </div>
   );
 };
