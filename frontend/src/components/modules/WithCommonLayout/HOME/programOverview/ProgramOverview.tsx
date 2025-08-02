@@ -116,7 +116,7 @@ const ProgramOverview = () => {
           ))}
         </div>
 
-        <Link href="/about-us">
+        <Link href="/about">
           <Button className="cursor-pointer">Learn More</Button>
         </Link>
       </div>
