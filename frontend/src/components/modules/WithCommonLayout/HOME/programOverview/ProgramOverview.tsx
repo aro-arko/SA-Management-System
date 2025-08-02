@@ -41,7 +41,7 @@ const ProgramOverview = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setMounted(true);
-    }, 600); // Optional delay to simulate loading
+    });
 
     return () => clearTimeout(timeout);
   }, []);
