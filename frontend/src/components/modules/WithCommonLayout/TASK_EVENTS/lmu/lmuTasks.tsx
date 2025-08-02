@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import { Phone, Mail, MessageCircle, FileText } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const leadTasks = [
   {
@@ -33,12 +34,40 @@ const LmuTasks = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timeout = setTimeout(() => {
+      setMounted(true);
+    });
+    return () => clearTimeout(timeout);
   }, []);
 
-  if (!mounted) return null;
-
   const isDark = resolvedTheme === "dark";
+
+  if (!mounted) {
+    return (
+      <section className="pt-12 pb-16 px-4 sm:px-6 lg:px-0">
+        <div className="max-w-7xl mx-auto text-center mb-10">
+          <Skeleton className="w-10 h-10 mx-auto mb-4 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+          <Skeleton className="h-8 w-2/3 mx-auto mb-4 bg-neutral-200 dark:bg-neutral-800 rounded-md" />
+          <Skeleton className="h-4 w-4/5 mx-auto mb-2 bg-neutral-200 dark:bg-neutral-800 rounded-md" />
+          <Skeleton className="h-4 w-2/3 mx-auto bg-neutral-200 dark:bg-neutral-800 rounded-md" />
+        </div>
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="rounded-xl border p-6 shadow-md bg-neutral-100 dark:bg-[#1a1a1a]/40 border-neutral-200 dark:border-[#2a2a2a]"
+            >
+              <Skeleton className="h-6 w-6 mb-4 bg-neutral-300 dark:bg-neutral-700 rounded-md" />
+              <Skeleton className="h-5 w-2/3 mb-2 bg-neutral-300 dark:bg-neutral-700 rounded-md" />
+              <Skeleton className="h-3 w-full mb-1 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+              <Skeleton className="h-3 w-3/4 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
