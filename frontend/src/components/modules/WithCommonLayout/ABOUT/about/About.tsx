@@ -86,7 +86,7 @@ const About = () => {
   const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 600);
+    const timer = setTimeout(() => setMounted(true));
     return () => clearTimeout(timer);
   }, []);
 

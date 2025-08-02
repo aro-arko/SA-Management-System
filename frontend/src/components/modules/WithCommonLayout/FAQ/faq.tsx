@@ -46,7 +46,7 @@ const FAQComponent = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 500);
+    const timer = setTimeout(() => setMounted(true));
     return () => clearTimeout(timer);
   }, []);
 
@@ -121,7 +121,7 @@ const FAQComponent = () => {
             Contact our team and we’ll be happy to assist you.
           </p>
           <Link href="/contact">
-            <Button className="bg-primary text-white hover:bg-primary/90">
+            <Button className="bg-primary text-white hover:bg-primary/90 cursor-pointer">
               Contact Support
             </Button>
           </Link>
