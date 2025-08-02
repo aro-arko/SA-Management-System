@@ -48,7 +48,6 @@ const ProgramOverview = () => {
 
   const isDark = resolvedTheme === "dark";
 
-  // 🧊 Show Skeleton Before Return
   if (!mounted) {
     return (
       <section className="pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0">
@@ -76,7 +75,6 @@ const ProgramOverview = () => {
     );
   }
 
-  // ✅ Return Actual Content After Mount
   return (
     <section
       className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
