@@ -1,11 +1,11 @@
-import Banner from "@/components/modules/WithCommonLayout/banner/Banner";
-import Benefits from "@/components/modules/WithCommonLayout/benefits/Benefits";
-import HowToJoin from "@/components/modules/WithCommonLayout/howtojoin/HowToJoin";
-import NewsLetter from "@/components/modules/WithCommonLayout/newsletter/NewsLetter";
-import ProgramOverview from "@/components/modules/WithCommonLayout/programOverview/ProgramOverview";
-import Quote from "@/components/modules/WithCommonLayout/quote/Quote";
-import RolesExpectations from "@/components/modules/WithCommonLayout/roles&expectations/RolesExpectations";
-import SAExperience from "@/components/modules/WithCommonLayout/saexperience/SAExperience";
+import Banner from "@/components/modules/WithCommonLayout/HOME/banner/Banner";
+import Benefits from "@/components/modules/WithCommonLayout/HOME/benefits/Benefits";
+import HowToJoin from "@/components/modules/WithCommonLayout/HOME/howtojoin/HowToJoin";
+import NewsLetter from "@/components/modules/WithCommonLayout/HOME/newsletter/NewsLetter";
+import ProgramOverview from "@/components/modules/WithCommonLayout/HOME/programOverview/ProgramOverview";
+import Quote from "@/components/modules/WithCommonLayout/HOME/quote/Quote";
+import RolesExpectations from "@/components/modules/WithCommonLayout/HOME/roles&expectations/RolesExpectations";
+import SAExperience from "@/components/modules/WithCommonLayout/HOME/saexperience/SAExperience";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
