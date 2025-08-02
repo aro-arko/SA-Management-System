@@ -1,10 +1,11 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Star, Users, Globe, BookOpen } from "lucide-react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
+import { Star, Users, Globe, BookOpen } from "lucide-react";
 import goalImage from "@/app/assets/images/about/goal.jpg";
 
 const team = [
@@ -29,7 +30,8 @@ const team = [
   {
     name: "Aro Arko",
     role: "Chief Technology Officer (CTO)",
-    image: "https://i.ibb.co/svJQBVPh/Abidur-Rahman-Arko.png",
+    image:
+      "https://www.aro-arko.software/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FprofileImage.497e7112.jpg&w=1920&q=75",
   },
 ];
 
@@ -91,20 +93,9 @@ const About = () => {
   if (!mounted) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-16 space-y-10">
-        <div className="text-center space-y-4">
-          <Skeleton className="h-8 w-52 mx-auto" />
-          <Skeleton className="h-4 w-3/5 mx-auto" />
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center gap-8">
-          <div className="space-y-4 md:w-2/3">
-            <Skeleton className="h-6 w-40" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-          </div>
-          <Skeleton className="h-56 w-full md:w-1/3 rounded-lg" />
-        </div>
-
+        <Skeleton className="h-8 w-52 mx-auto" />
+        <Skeleton className="h-4 w-3/5 mx-auto" />
+        <Skeleton className="h-56 w-full rounded-lg" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="space-y-3 text-center">
@@ -119,54 +110,79 @@ const About = () => {
   }
 
   return (
-    <div
-      className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-16 ${
-        isDark ? "text-neutral-100" : "text-neutral-900"
+    <section
+      className={`pt-12 pb-16 px-4 sm:px-6 lg:px-0 ${
+        isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#ffffff]"
       }`}
     >
-      {/* Overview Section */}
-      <section className="text-center mb-16">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="max-w-7xl mx-auto text-center mb-16"
+      >
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-          About SA
+          About Us
         </h1>
-        <p className="text-lg max-w-2xl mx-auto text-neutral-600 dark:text-neutral-300">
+        <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 max-w-2xl mx-auto">
           The SA Program at UCSI empowers students to lead and represent the
           university through meaningful initiatives.
         </p>
-      </section>
+      </motion.div>
 
-      {/* Mission Statement */}
-      <section className="mb-16 flex flex-col md:flex-row items-center gap-8">
-        <div className="space-y-6 md:w-2/3">
-          <h2 className="text-3xl font-bold">Our Mission</h2>
-          <p className="text-neutral-600 dark:text-neutral-300 text-justify">
-            To foster leadership, communication, and teamwork among UCSI
-            students through active involvement in university events and
-            initiatives. The SA Program offers hands-on experience that empowers
-            members to grow academically, socially, and professionally—preparing
-            them for success in both campus life and future careers.
-          </p>
-          <div className="flex items-center gap-4">
-            <Star className="h-8 w-8 text-red-600" />
-            <span className="font-semibold">
-              Engaging, Empowering, and Leading to Employment!
-            </span>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        viewport={{ once: true }}
+        className="mb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-0"
+      >
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+          Our Mission
+        </h2>
+
+        <div className="flex flex-col-reverse md:flex-row items-center gap-8">
+          {/* Left: Mission Text */}
+          <div className="space-y-6 md:w-2/3">
+            <p className="text-sm sm:text-base md:text-lg text-neutral-600 dark:text-neutral-300 text-justify">
+              To foster leadership, communication, and teamwork among UCSI
+              students through active involvement in university events and
+              initiatives. The SA Program offers hands-on experience that
+              empowers members to grow academically, socially, and
+              professionally—preparing them for success in both campus life and
+              future careers.
+            </p>
+            <div className="flex items-center gap-3">
+              <Star className="h-8 w-8 text-red-600" />
+              <span className="font-semibold">
+                Engaging, Empowering, and Leading to Employment!
+              </span>
+            </div>
+          </div>
+
+          {/* Right: Mission Image */}
+          <div className="md:w-1/3 w-full flex h-56 justify-end">
+            <Image
+              src={goalImage}
+              alt="Mission"
+              width={500}
+              height={100}
+              className="rounded-lg shadow-lg w-full h-auto object-cover"
+            />
           </div>
         </div>
-        <div className="md:w-1/3 flex h-56 justify-end">
-          <Image
-            src={goalImage}
-            alt="Mission"
-            width={400}
-            height={100}
-            className="rounded-lg shadow-lg object-cover h-full w-full"
-          />
-        </div>
-      </section>
+      </motion.div>
 
       {/* Team Section */}
-      <section className="mb-16 text-center">
-        <h2 className="text-3xl font-bold mb-8">Meet Our Team</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        viewport={{ once: true }}
+        className="mb-16 text-center max-w-7xl mx-auto"
+      >
+        <h2 className="text-2xl sm:text-3xl font-bold mb-8">Meet Our Team</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {team.map(({ name, role, image }, index) => (
             <div key={index}>
@@ -182,11 +198,17 @@ const About = () => {
             </div>
           ))}
         </div>
-      </section>
+      </motion.div>
 
       {/* Success Stories */}
-      <section className="mb-16 text-center">
-        <h2 className="text-3xl font-bold mb-8">Success Stories</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        viewport={{ once: true }}
+        className="mb-16 text-center max-w-7xl mx-auto"
+      >
+        <h2 className="text-2xl sm:text-3xl font-bold mb-8">Success Stories</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {successStories.map(({ name, story, image }, index) => (
             <div
@@ -211,11 +233,17 @@ const About = () => {
             </div>
           ))}
         </div>
-      </section>
+      </motion.div>
 
       {/* Vision Section */}
-      <section className="text-center">
-        <h2 className="text-3xl font-bold mb-8">Our Vision</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        viewport={{ once: true }}
+        className="text-center max-w-7xl mx-auto"
+      >
+        <h2 className="text-2xl sm:text-3xl font-bold mb-8">Our Vision</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {vision.map(({ icon, title, description }, index) => (
             <div
@@ -234,8 +262,8 @@ const About = () => {
             </div>
           ))}
         </div>
-      </section>
-    </div>
+      </motion.div>
+    </section>
   );
 };
 
