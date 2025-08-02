@@ -101,7 +101,7 @@ const FAQComponent = () => {
                 className={`rounded-lg px-6 py-2 transition-all ${
                   isDark
                     ? "bg-[#1a1a1a]/50 border border-[#2a2a2a] text-neutral-100 hover:bg-[#2c2c2c]/70 hover:border-[#444]"
-                    : "bg-white border border-neutral-200 text-neutral-900 hover:shadow-md hover:border-neutral-300"
+                    : "bg-white border border-neutral-200 text-neutral-900 shadow-sm hover:shadow-md hover:border-neutral-300"
                 }`}
               >
                 <AccordionTrigger className="text-left font-medium py-4 hover:no-underline">
