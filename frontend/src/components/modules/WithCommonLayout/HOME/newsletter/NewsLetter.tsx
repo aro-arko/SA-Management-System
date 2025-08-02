@@ -39,7 +39,7 @@ const NewsLetter = () => {
           viewport={{ once: true }}
           className={`relative px-6 py-8 rounded-xl shadow-md border transition-all duration-300 ${
             isDark
-              ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] hover:bg-[#2c2c2c]/60 hover:border-[#444]"
+              ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] hover:border-[#444]"
               : "bg-white border-neutral-200 hover:shadow-lg hover:border-neutral-300"
           }`}
         >
