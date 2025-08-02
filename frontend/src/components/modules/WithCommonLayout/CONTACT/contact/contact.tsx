@@ -49,10 +49,9 @@ export default function Contact() {
       setError("Please fill in all fields.");
     }
   };
-
   if (!mounted || !resolvedTheme) {
     return (
-      <section className="min-h-screen py-16 px-4 sm:px-6 lg:px-0 bg-gradient-to-b from-[#000000] to-[#170303]">
+      <section className="min-h-screen py-16 px-4 sm:px-6 lg:px-0 bg-[#ffffff] dark:bg-gradient-to-b dark:from-[#000000] dark:to-[#170303]">
         <div className="text-center mb-12 max-w-2xl mx-auto">
           <Skeleton className="h-10 w-56 mx-auto mb-3" />
           <Skeleton className="h-4 w-3/5 mx-auto" />
