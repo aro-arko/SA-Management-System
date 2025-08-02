@@ -6,6 +6,7 @@ import { Sparkles, Users, Star, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const points = [
   {
@@ -38,16 +39,47 @@ const ProgramOverview = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const timeout = setTimeout(() => {
+      setMounted(true);
+    }, 600); // Optional delay to simulate loading
 
-  if (!mounted) return null;
+    return () => clearTimeout(timeout);
+  }, []);
 
   const isDark = resolvedTheme === "dark";
 
+  // 🧊 Show Skeleton Before Return
+  if (!mounted) {
+    return (
+      <section className="pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0">
+        <div className="max-w-7xl mx-auto text-center">
+          <Skeleton className="h-8 w-2/3 mx-auto mb-4 bg-neutral-200 dark:bg-neutral-800" />
+          <Skeleton className="h-4 w-4/5 mx-auto mb-8 bg-neutral-200 dark:bg-neutral-800" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-10">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="rounded-xl border p-6 shadow-md bg-neutral-100 dark:bg-[#1a1a1a]/40 border-neutral-200 dark:border-[#2a2a2a]"
+              >
+                <Skeleton className="h-6 w-6 mx-auto mb-4 bg-neutral-300 dark:bg-neutral-700" />
+                <Skeleton className="h-5 w-2/3 mx-auto mb-2 bg-neutral-300 dark:bg-neutral-700" />
+                <Skeleton className="h-3 w-full bg-neutral-200 dark:bg-neutral-700 mb-1" />
+                <Skeleton className="h-3 w-3/4 bg-neutral-200 dark:bg-neutral-700" />
+              </div>
+            ))}
+          </div>
+
+          <Skeleton className="h-10 w-36 mx-auto bg-neutral-300 dark:bg-neutral-700" />
+        </div>
+      </section>
+    );
+  }
+
+  // ✅ Return Actual Content After Mount
   return (
     <section
-      className={` pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
+      className={`pt-8 md:pt-16 pb-8 px-4 sm:px-6 lg:px-0 ${
         isDark ? "bg-gradient-to-b from-[#000000] to-[#170303]" : "bg-[#F9FAFB]"
       }`}
     >
