@@ -9,6 +9,7 @@ import darkBannerPhoto from "@/app/assets/images/banner/dark-banner-photo.svg";
 import lightBannerPhoto from "@/app/assets/images/banner/light-banner-photo.svg";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Banner = () => {
   const { resolvedTheme } = useTheme();
@@ -22,7 +23,26 @@ const Banner = () => {
   const selectedBanner = isDark ? darkBanner : lightBanner;
   const selectedPhoto = isDark ? darkBannerPhoto : lightBannerPhoto;
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="w-full pt-16 hidden md:block">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-6 lg:px-0 min-h-[400px]">
+          {/* Left side text skeletons */}
+          <div className="flex-1 space-y-4">
+            <Skeleton className="h-10 w-3/4 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+            <Skeleton className="h-10 w-2/3 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+            <Skeleton className="h-5 w-1/2 mt-4 bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+            <Skeleton className="h-10 w-32 mt-2 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+          </div>
+
+          {/* Right side image skeleton */}
+          <div className="flex-1 flex justify-end">
+            <Skeleton className="h-[300px] w-[300px] rounded-xl bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full pt-16">
@@ -36,8 +56,6 @@ const Banner = () => {
           className="w-full h-auto object-cover"
           priority
         />
-
-        {/* Text Overlay */}
         <div className="absolute inset-0 flex items-center">
           <div className="w-full">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-0">
@@ -82,7 +100,6 @@ const Banner = () => {
             : "bg-[#ffffff]"
         } p-4`}
       >
-        {/* Mobile Image (Centered by default) */}
         <Image
           src={selectedPhoto}
           alt="SA Banner Mobile"
@@ -91,8 +108,6 @@ const Banner = () => {
           className="w-full h-auto object-cover mx-auto"
           priority
         />
-
-        {/* Mobile Text BELOW image (Centered) */}
         <div className="w-full py-6 flex justify-center text-center">
           <div className="text-neutral-900 dark:text-neutral-100">
             <h1 className="text-3xl font-bold leading-tight px-4">
