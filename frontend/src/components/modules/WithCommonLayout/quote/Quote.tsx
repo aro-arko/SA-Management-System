@@ -38,7 +38,7 @@ const Quote = () => {
         >
           <Lightbulb className="absolute top-6 left-6 text-yellow-500 dark:text-yellow-400 w-6 h-6 opacity-70" />
 
-          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 dark:text-neutral-100 mb-6">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-neutral-900 dark:text-neutral-100">
             Quote of the Day
           </h2>
 
