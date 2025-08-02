@@ -22,23 +22,31 @@ const Banner = () => {
   const isDark = resolvedTheme === "dark";
   const selectedBanner = isDark ? darkBanner : lightBanner;
   const selectedPhoto = isDark ? darkBannerPhoto : lightBannerPhoto;
-
   if (!mounted) {
     return (
-      <div className="w-full pt-16 hidden md:block">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-6 lg:px-0 min-h-[400px]">
-          {/* Left side text skeletons */}
-          <div className="flex-1 space-y-4">
-            <Skeleton className="h-10 w-3/4 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
-            <Skeleton className="h-10 w-2/3 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
-            <Skeleton className="h-5 w-1/2 mt-4 bg-neutral-200 dark:bg-neutral-800 opacity-90" />
-            <Skeleton className="h-10 w-32 mt-2 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
-          </div>
+      <div className="w-full pt-16">
+        {/* Desktop Skeleton */}
+        <div className="hidden md:block">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-6 lg:px-0 min-h-[400px]">
+            <div className="flex-1 space-y-4">
+              <Skeleton className="h-10 w-3/4 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+              <Skeleton className="h-10 w-2/3 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+              <Skeleton className="h-5 w-1/2 mt-4 bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+              <Skeleton className="h-10 w-32 mt-2 rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+            </div>
 
-          {/* Right side image skeleton */}
-          <div className="flex-1 flex justify-end">
-            <Skeleton className="h-[300px] w-[300px] rounded-xl bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+            <div className="flex-1 flex justify-end">
+              <Skeleton className="h-[300px] w-[300px] rounded-xl bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+            </div>
           </div>
+        </div>
+
+        {/* Mobile Skeleton */}
+        <div className="block md:hidden p-4 space-y-4">
+          <Skeleton className="w-full h-[200px] rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+          <Skeleton className="w-3/4 h-6 mx-auto rounded bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+          <Skeleton className="w-1/2 h-4 mx-auto rounded bg-neutral-200 dark:bg-neutral-800 opacity-90" />
+          <Skeleton className="w-full h-10 mx-auto rounded-md bg-neutral-200 dark:bg-neutral-800 opacity-90" />
         </div>
       </div>
     );
