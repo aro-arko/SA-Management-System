@@ -136,7 +136,7 @@ const About = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
         viewport={{ once: true }}
-        className="mb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-0"
+        className="mb-16 max-w-7xl mx-auto"
       >
         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
           Our Mission
