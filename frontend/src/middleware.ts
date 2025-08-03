@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "./services/AuthService";
 
-type Role = keyof typeof roleBasedPrivateRoutes;
+declare module "jsonwebtoken" {
+  export interface JwtPayload {
+    role?: string;
+  }
+}
 
 const authRoutes = ["/login", "/register"];
 const roleBasedPrivateRoutes = {
@@ -11,10 +15,18 @@ const roleBasedPrivateRoutes = {
     /^\/change-password/,
   ],
 };
+type Role = keyof typeof roleBasedPrivateRoutes;
 
 export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
-  const userInfo = await getCurrentUser();
+  // Define a type for the user info that includes 'role'
+  type UserInfo = {
+    role?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+  };
+
+  const userInfo = (await getCurrentUser()) as UserInfo | null;
   if (!userInfo) {
     if (authRoutes.includes(pathname)) {
       return NextResponse.next();

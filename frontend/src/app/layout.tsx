@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import Providers from "@/providers/Providers";
 
 // configure Poppins with desired weight & subsets
 const poppins = Poppins({
@@ -33,8 +34,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster richColors />
-          {children}
+          <Providers>
+            <Toaster richColors />
+            {children}
+          </Providers>
         </ThemeProvider>
         <noscript>
           <style>{`html { background: #000; color: #fff; }`}</style>

@@ -1,10 +1,11 @@
 import LoginForm from "@/components/modules/WithCommonLayout/LOGIN/loginForm/LoginForm";
+import { Suspense } from "react";
 
 const LoginPage = () => {
   return (
-    <div className="pt-16">
+    <Suspense fallback={<div className="pt-16"></div>}>
       <LoginForm />
-    </div>
+    </Suspense>
   );
 };
 
