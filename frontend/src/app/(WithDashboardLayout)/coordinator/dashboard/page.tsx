@@ -2,8 +2,8 @@ import CoordinatorDashboard from "@/components/modules/WithDashboardLayout/COORD
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tutor Dashboard",
-  description: "View your dashboard and manage your tutoring sessions.",
+  title: "Coordinator Dashboard",
+  description: "View your dashboard and manage your tasks as a coordinator.",
 };
 
 const CoordinatorDashboardPage = () => {

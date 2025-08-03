@@ -10,7 +10,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/dashboard/nav-main";
-import { NavProjects } from "@/components/dashboard/nav-projects";
 import { NavUser } from "@/components/dashboard/nav-user";
 
 import { useUser } from "@/context/UserContext";
@@ -48,7 +47,6 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader />
       <SidebarContent>
         <NavMain items={navMain} />
-        <NavProjects projects={[]} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={currentUser} />

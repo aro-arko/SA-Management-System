@@ -12,32 +12,31 @@ export const coordinatorNavMain = [
     url: "/coordinator/dashboard",
     icon: LayoutDashboard,
     isActive: true,
-    items: [],
   },
   {
-    title: "Tasks",
+    title: "Leads Management Unit",
     url: "#",
     icon: ClipboardList,
     items: [
+      {
+        title: "Leads Goals",
+        url: "/coordinator/leads-goals",
+      },
       {
         title: "Leads Tasks",
         url: "/coordinator/leads-tasks",
       },
       {
-        title: "EMU Tasks",
-        url: "/coordinator/emu-tasks",
+        title: "Data Batches",
+        url: "/coordinator/data-batches",
       },
       {
-        title: "DSMM Tasks",
-        url: "/coordinator/dsmm-tasks",
+        title: "Data Entry Tasks",
+        url: "/coordinator/data-entry-tasks",
       },
       {
-        title: "HR & Finance Tasks",
-        url: "/coordinator/hrfinance-tasks",
-      },
-      {
-        title: "Others",
-        url: "/coordinator/others-tasks",
+        title: "Multitasking",
+        url: "/coordinator/lmu-multitasking",
       },
     ],
   },
