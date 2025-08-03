@@ -20,8 +20,6 @@ export const loginUser = async (userData: FieldValues) => {
       (await cookies()).set("accessToken", result.data.accessToken);
     }
     return result;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return Error(error);
   }
