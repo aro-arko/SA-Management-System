@@ -100,7 +100,7 @@ const SAExperience = () => {
                     isDark
                       ? "bg-[#1a1a1a]/40 backdrop-blur-md border-[#2a2a2a] hover:bg-[#2c2c2c]/60 hover:border-[#444]"
                       : "bg-white border-neutral-200 hover:shadow-lg hover:border-neutral-300"
-                  } min-h-[340px] md:min-h-[260px]`}
+                  }  md:min-h-[260px]`}
                 >
                   <CardHeader className="flex flex-col items-center">
                     <Avatar className="h-16 w-16">
