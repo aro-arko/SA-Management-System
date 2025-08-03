@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-import { jwtDecode } from "jwt-decode";
+
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
-import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 export const loginUser = async (userData: FieldValues) => {
   try {
@@ -29,13 +29,35 @@ export const loginUser = async (userData: FieldValues) => {
 
 export const getCurrentUser = async () => {
   const accessToken = (await cookies()).get("accessToken")?.value;
-  if (!accessToken) return null;
-  try {
-    const decodedData = jwtDecode(accessToken);
-    console.log(decodedData);
+  let decodedData = null;
+
+  if (accessToken) {
+    decodedData = jwtDecode(accessToken);
     return decodedData;
-  } catch (error) {
-    console.error("JWT Decode Error:", error);
-    return null;
   }
+};
+
+// Example usage in other server actions
+export const changePassword = async (passwords: FieldValues) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/change-password`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(passwords),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+export const logout = async () => {
+  (await cookies()).delete("accessToken");
 };

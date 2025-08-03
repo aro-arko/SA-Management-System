@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -15,14 +16,16 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginValidation } from "./loginValidation";
 import { toast } from "sonner";
-import { getCurrentUser, loginUser } from "@/services/AuthService";
-import { useRouter } from "next/navigation";
+import { loginUser } from "@/services/AuthService";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import loginImage from "@/app/assets/images/login/login.png";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginForm() {
   const form = useForm({
@@ -34,20 +37,43 @@ export default function LoginForm() {
   } = form;
 
   const router = useRouter();
-  // const searchParams = useSearchParams();
-  // const redirect = searchParams.get("redirectPath");
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirectPath");
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await loginUser(data);
+      if (res?.success) {
+        toast.success(res?.message);
+
+        Cookies.set("accessToken", res.data.accessToken, {
+          path: "/",
+          expires: 1,
+          sameSite: "Lax",
+          secure: process.env.NODE_ENV === "production",
+        });
+
+        const user = jwtDecode(res.data.accessToken) as { role: string };
+
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          router.push(`/${user.role}/dashboard`);
+        }
+      } else {
+        toast.error(res?.message || "Login failed.");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Something went wrong.");
+    }
+  };
 
   const { theme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = (theme === "system" ? systemTheme : theme) === "dark";
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const currentTheme = theme === "system" ? systemTheme : theme;
-  const isDark = currentTheme === "dark";
-
-  // Avoid UI flicker during theme hydration
   if (!mounted) {
     return (
       <section className="min-h-screen flex items-center justify-center px-4 bg-gray-200 dark:bg-gradient-to-b from-[#000000] to-[#170303]">
@@ -71,25 +97,9 @@ export default function LoginForm() {
     );
   }
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      const res = await loginUser(data);
-      console.log(res);
-      if (res?.success) {
-        toast.success(res?.message);
-        const user = await getCurrentUser();
-      } else {
-        toast.error(res?.message);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      toast.error("Login failed.");
-    }
-  };
-
   return (
     <section
-      className={`min-h-screen md:min-h-auto flex items-center justify-center pt-16 pb-16 px-4 sm:px-6 lg:px-8 transition-colors duration-500 ${
+      className={`min-h-screen flex items-center justify-center pt-16 pb-16 px-4 transition-colors duration-500 ${
         isDark
           ? "bg-gradient-to-b from-[#000000] to-[#170303]"
           : "bg-gradient-to-b from-[#ffffff] to-[#f7f7f7]"
@@ -99,9 +109,9 @@ export default function LoginForm() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex flex-col md:flex-row gap-8 w-full max-w-7xl rounded-xl shadow-md p-6 backdrop-blur-lg border light:border-gray-200 bg-white/90 dark:bg-white/5 dark:border dark:text-white"
+        className="flex flex-col md:flex-row gap-8 w-full max-w-7xl rounded-xl shadow-md p-6 backdrop-blur-lg border bg-white/90 dark:bg-white/5 dark:text-white"
       >
-        {/* Illustration (Desktop only) */}
+        {/* Image Section */}
         <div className="hidden md:block w-1/2">
           <Image
             src={loginImage}
@@ -111,12 +121,12 @@ export default function LoginForm() {
           />
         </div>
 
-        {/* Login Form */}
+        {/* Form Section */}
         <div className="w-full md:w-1/2 p-2 md:p-6 flex flex-col justify-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-neutral-900 dark:text-neutral-100 text-center">
-            Welcome Back!👋
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 text-center text-neutral-900 dark:text-neutral-100">
+            Welcome Back! 👋
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 mb-8 md:mb-12 max-w-2xl mx-auto">
+          <p className="text-neutral-700 dark:text-neutral-300 mb-8 md:mb-12 text-center">
             Log in to access your SA dashboard
           </p>
 
