@@ -53,30 +53,41 @@ export function NavMain({
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <item.icon className="mr-2" />}
-                    <span className="font-medium">{item.title}</span>
+                    <span
+                      className={
+                        item.items.some((sub) => pathname === sub.url)
+                          ? "font-medium"
+                          : undefined
+                      }
+                    >
+                      {item.title}
+                    </span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {item.items.map((subItem) => {
-                      const isActive = pathname === subItem.url;
-                      return (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <Link
-                              href={subItem.url}
-                              className={`flex items-center w-full ${
-                                isActive ? "font-bold text-red-600" : ""
-                              }`}
+                    {item.items.map((subItem) => (
+                      <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubButton asChild>
+                          <Link
+                            href={subItem.url}
+                            className="flex items-center w-full"
+                          >
+                            <span
+                              className={
+                                pathname === subItem.url
+                                  ? "font-medium"
+                                  : undefined
+                              }
                             >
-                              <span>{subItem.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      );
-                    })}
+                              {subItem.title}
+                            </span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
@@ -84,14 +95,15 @@ export function NavMain({
           ) : (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild>
-                <Link
-                  href={item.url}
-                  className={`flex items-center w-full ${
-                    pathname === item.url ? "font-bold " : ""
-                  }`}
-                >
+                <Link href={item.url} className="flex items-center w-full">
                   {item.icon && <item.icon className="mr-2" />}
-                  <span>{item.title}</span>
+                  <span
+                    className={
+                      pathname === item.url ? "font-medium" : undefined
+                    }
+                  >
+                    {item.title}
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
