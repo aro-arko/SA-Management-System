@@ -74,10 +74,10 @@ export default function LoginForm() {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       const res = await loginUser(data);
+      console.log(res);
       if (res?.success) {
         toast.success(res?.message);
         const user = await getCurrentUser();
-        router.push(`/${user.role}/dashboard`);
       } else {
         toast.error(res?.message);
       }
