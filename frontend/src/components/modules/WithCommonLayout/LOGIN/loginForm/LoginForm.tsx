@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginValidation } from "./loginValidation";
 import { toast } from "sonner";
 import { getCurrentUser, loginUser } from "@/services/AuthService";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
@@ -34,18 +34,42 @@ export default function LoginForm() {
   } = form;
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirectPath");
+  // const searchParams = useSearchParams();
+  // const redirect = searchParams.get("redirectPath");
 
-  const { resolvedTheme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true));
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
-  const isDark = mounted && resolvedTheme === "dark";
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const isDark = currentTheme === "dark";
+
+  // Avoid UI flicker during theme hydration
+  if (!mounted) {
+    return (
+      <section className="min-h-screen flex items-center justify-center px-4 bg-gray-200 dark:bg-gradient-to-b from-[#000000] to-[#170303]">
+        <div className="flex flex-col md:flex-row gap-8 max-w-7xl w-full">
+          <div className="hidden md:block w-1/2 space-y-4">
+            <Skeleton className="h-[300px] w-full rounded-xl" />
+          </div>
+          <div className="w-full md:w-1/2 space-y-4 p-4 sm:p-6">
+            <Skeleton className="h-8 w-2/3 mx-auto" />
+            <Skeleton className="h-4 w-1/2 mx-auto" />
+            <div className="space-y-4 mt-4">
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-5 w-20 mt-2" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-10 w-full mt-6" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -57,36 +81,15 @@ export default function LoginForm() {
       } else {
         toast.error(res?.message);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       toast.error("Login failed.");
     }
   };
 
-  // Skeleton during hydration
-  if (!mounted || !resolvedTheme) {
-    return (
-      <section className="min-h-screen flex items-center justify-center px-4 sm:px-2 lg:px-8 bg-gray-200 dark:bg-gradient-to-b from-[#000000] to-[#170303]">
-        <div className="flex flex-col md:flex-row gap-8 max-w-7xl w-full p-2">
-          <div className="hidden md:block w-1/2 space-y-4">
-            <Skeleton className="h-[300px] w-full rounded-xl" />
-          </div>
-          <div className="w-full md:w-1/2 space-y-4 p-6">
-            <Skeleton className="h-8 w-2/3 mx-auto" />
-            <Skeleton className="h-4 w-1/2 mx-auto" />
-            <Skeleton className="h-5 w-20 mt-6" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-5 w-20 mt-4" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full mt-6" />
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section
-      className={`min-h-screen md:min-h-auto justify-center pt-16 pb-16 flex items-center  px-4 sm:px-6 lg:px-8 transition-colors duration-500 ${
+      className={`min-h-screen md:min-h-auto flex items-center justify-center pt-16 pb-16 px-4 sm:px-6 lg:px-8 transition-colors duration-500 ${
         isDark
           ? "bg-gradient-to-b from-[#000000] to-[#170303]"
           : "bg-gradient-to-b from-[#ffffff] to-[#f7f7f7]"
