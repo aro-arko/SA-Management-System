@@ -65,7 +65,7 @@ export default function GoalCard({ goal }: { goal: TLmuGoal }) {
   return (
     <Card
       className={clsx(
-        "w-full rounded-xl border transition-shadow hover:shadow-md",
+        "w-full rounded-xl border transition-shadow hover:shadow-md mb-2",
         isDark
           ? "bg-black/30 border-neutral-700 text-white"
           : "bg-white/80 border-neutral-200 text-black"
