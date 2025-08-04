@@ -21,6 +21,22 @@ const categoryModelMap: Record<string, mongoose.Model<any>> = {
   HRFinanceTask,
 };
 
+const getUserById = async (userId: string) => {
+  const user = await User.findById(userId, {
+    firstName: 1,
+    lastName: 1,
+    _id: 0,
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  return {
+    name: `${user.firstName} ${user.lastName}`,
+  };
+};
+
 const userUpdate = async (
   currentUser: JwtPayload,
   requestedEmail: string,
@@ -167,4 +183,5 @@ export const UserService = {
   userUpdate,
   getUserTasks,
   getTaskDetails,
+  getUserById,
 };

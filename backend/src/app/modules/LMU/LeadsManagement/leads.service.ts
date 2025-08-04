@@ -156,12 +156,14 @@ const leadsTaskCreate = async (
 };
 
 // get all leads tasks
+// get all leads tasks
 const getAllLeadsTasks = async (query: Record<string, unknown>) => {
   const baseQuery = LeadsTask.find()
     .populate('assignedTo', 'firstName lastName')
     .populate('goalId', 'title type status');
 
   const queryBuilder = new QueryBuilder(baseQuery, query)
+    .filter() // Add this line to enable filtering
     .sort()
     .paginate()
     .fields();

@@ -3,6 +3,17 @@ import sendResponse from '../../utils/sendReponse';
 import { UserService } from './user.service';
 import httpStatus from 'http-status';
 
+const getUserById = catchAsync(async (req, res) => {
+  const result = await UserService.getUserById(req.params.userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User fetched successfully',
+    data: result,
+  });
+});
+
 const userUpdate = catchAsync(async (req, res) => {
   const email = req.body.email;
   const newData = req.body.body;
@@ -53,4 +64,5 @@ export const UserController = {
   userUpdate,
   getUserTasks,
   getTaskDetails,
+  getUserById,
 };

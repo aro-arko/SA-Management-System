@@ -48,6 +48,21 @@ class QueryBuilder<T> {
       };
     }
 
+    // Add status filtering
+    if (queryObj.status) {
+      (filterQuery as Record<string, unknown>)['status'] = queryObj.status;
+    }
+
+    // Add type filtering
+    if (queryObj.type) {
+      (filterQuery as Record<string, unknown>)['type'] = queryObj.type;
+    }
+
+    // Apply the filter to the query
+    if (Object.keys(filterQuery).length > 0) {
+      this.modelQuery = this.modelQuery.find(filterQuery);
+    }
+
     return this;
   }
 
