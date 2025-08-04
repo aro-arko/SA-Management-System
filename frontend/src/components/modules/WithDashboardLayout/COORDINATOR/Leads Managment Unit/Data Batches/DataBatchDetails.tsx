@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getDataBatchById } from "@/services/LMUService/dataManagement";
+import { getUserNameById } from "@/services/UserService";
 import { TLMUDataBatch } from "@/types/lmu/databatch.type";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 
@@ -24,6 +25,7 @@ const DataBatchDetails = () => {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [batch, setBatch] = useState<TLMUDataBatch | null>(null);
+  const [creatorName, setCreatorName] = useState("Loading...");
 
   useEffect(() => setMounted(true), []);
   const isDark = resolvedTheme === "dark";
@@ -34,6 +36,9 @@ const DataBatchDetails = () => {
         const res = await getDataBatchById(id as string);
         if (res.success) {
           setBatch(res.data);
+
+          const creator = await getUserNameById(res.data.createdBy);
+          setCreatorName(creator?.data?.name || "Unknown");
         }
       } catch (err) {
         console.error("Error fetching data batch details", err);
@@ -150,7 +155,7 @@ const DataBatchDetails = () => {
     },
     {
       label: "Created By",
-      value: batch.createdBy || "N/A",
+      value: creatorName,
       icon: <User className="w-5 h-5 text-sky-500" />,
     },
     {
@@ -161,7 +166,7 @@ const DataBatchDetails = () => {
   ];
 
   return (
-    <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
+    <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
         <div className="text-center">
           <h1 className="text-4xl font-bold">{batch.title}</h1>
