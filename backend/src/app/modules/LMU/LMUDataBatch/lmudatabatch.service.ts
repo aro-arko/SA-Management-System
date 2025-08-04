@@ -48,8 +48,17 @@ const updateDataBatch = async (id: string, payLoad: Partial<TLMUDataBatch>) => {
   return result;
 };
 
+const getDataBatchById = async (id: string) => {
+  const result = await LMUDataBatch.findById(id);
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Data Batch not found');
+  }
+  return result;
+};
+
 export const LMUDataBatchService = {
   createDataBatch,
   getAllDataBatches,
   updateDataBatch,
+  getDataBatchById,
 };

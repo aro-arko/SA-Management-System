@@ -27,6 +27,17 @@ router.get(
   LMUDataBatchController.getAllDataBatches,
 );
 
+router.get(
+  '/:id',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+  ),
+  LMUDataBatchController.getDataBatchById,
+);
+
 router.patch(
   '/update/:id',
   auth(USER_ROLE.lmuDataLeader, USER_ROLE.lmuAdmin),
