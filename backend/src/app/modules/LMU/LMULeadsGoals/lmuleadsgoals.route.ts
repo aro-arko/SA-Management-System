@@ -7,12 +7,6 @@ import { lmuGoalsController } from './lmuleadsgoals.controller';
 
 const router = express.Router();
 
-router.get(
-  '/:id',
-  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.lmuAdmin),
-  lmuGoalsController.getLmuGoalById,
-);
-
 router.post(
   '/create',
   auth(USER_ROLE.lmuAdmin),
@@ -30,6 +24,12 @@ router.get(
     USER_ROLE.lmuDataLeader,
   ),
   lmuGoalsController.getAllLmuGoals,
+);
+
+router.get(
+  '/:id',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.lmuAdmin),
+  lmuGoalsController.getLmuGoalById,
 );
 
 router.patch(
