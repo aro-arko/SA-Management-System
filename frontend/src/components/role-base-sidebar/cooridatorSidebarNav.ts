@@ -19,20 +19,20 @@ export const coordinatorNavMain = [
     icon: ClipboardList,
     items: [
       {
-        title: "Leads Goals",
-        url: "/coordinator/leads-goals",
-      },
-      {
         title: "Leads Tasks",
         url: "/coordinator/leads-tasks",
       },
       {
-        title: "Data Batches",
-        url: "/coordinator/data-batches",
+        title: "Leads Goals",
+        url: "/coordinator/leads-goals",
       },
       {
         title: "Data Entry Tasks",
         url: "/coordinator/data-entry-tasks",
+      },
+      {
+        title: "Data Batches",
+        url: "/coordinator/data-batches",
       },
       {
         title: "Multitasking",

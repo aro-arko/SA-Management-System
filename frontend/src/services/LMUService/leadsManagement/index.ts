@@ -27,7 +27,7 @@ export const leadsGoals = async (query: any) => {
 export const leadsTasks = async (query: any) => {
   const token = (await cookies()).get("accessToken")?.value;
 
-  console.log(query);
+  // console.log(query);
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/leads-management/all-tasks?${query}`,
