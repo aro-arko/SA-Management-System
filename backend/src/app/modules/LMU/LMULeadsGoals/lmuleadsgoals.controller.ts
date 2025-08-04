@@ -3,7 +3,19 @@ import sendResponse from '../../../utils/sendReponse';
 import httpStatus from 'http-status';
 import { lmuGoalsService } from './lmuleadsgoals.service';
 
-// This controller handles the creation and retrieval of LMU goals.
+const getLmuGoalById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await lmuGoalsService.getLmuGoalById(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Goal retrieved successfully',
+    data: result,
+  });
+});
+
 const createLmuGoal = catchAsync(async (req, res) => {
   const user = req.user;
   const data = req.body;
@@ -48,4 +60,5 @@ export const lmuGoalsController = {
   createLmuGoal,
   getAllLmuGoals,
   updateLmuGoal,
+  getLmuGoalById,
 };

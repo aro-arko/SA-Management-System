@@ -6,7 +6,14 @@ import QueryBuilder from '../../../builder/QueryBuilder';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
 
-// Service for creating and fetching LMU goals
+const getLmuGoalById = async (id: string) => {
+  const result = await LMULeadsGoal.findById(id);
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Goal not found');
+  }
+  return result;
+};
+
 const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
   const { email } = currentUser;
   const user = await User.findOne({ email }, { _id: 1 });
@@ -57,4 +64,5 @@ export const lmuGoalsService = {
   createLmuGoal,
   getAllLmuGoals,
   updateLmuGoal,
+  getLmuGoalById,
 };
