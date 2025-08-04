@@ -98,10 +98,10 @@ const LeadsTasks = () => {
                 key={task._id}
               >
                 <div
-                  className={`rounded-xl transition-all cursor-pointer mb-2 border ${
+                  className={`rounded-xl transition-all cursor-pointer mb-2  ${
                     isDark
                       ? "bg-black/30 backdrop-blur-md border-[#333] text-neutral-100 hover:bg-black/40 hover:border-[#555]"
-                      : "bg-white/80 backdrop-blur-md border-neutral-200 text-neutral-900 shadow-sm hover:shadow-md hover:border-neutral-300"
+                      : "bg-white/80 backdrop-blur-md border-neutral-200 text-neutral-900 hover:shadow-sm hover:border-neutral-300"
                   }`}
                 >
                   <TaskCard task={task} />
