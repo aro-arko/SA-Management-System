@@ -3,12 +3,12 @@
 
 import { cookies } from "next/headers";
 
-export const leadsGoals = async () => {
+export const leadsGoals = async (query: any) => {
   const token = (await cookies()).get("accessToken")?.value;
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-leads-goals/all`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-leads-goals/all?${query}`,
       {
         method: "GET",
         headers: {
