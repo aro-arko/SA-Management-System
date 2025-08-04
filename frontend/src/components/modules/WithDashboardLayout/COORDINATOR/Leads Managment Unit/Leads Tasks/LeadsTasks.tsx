@@ -7,12 +7,23 @@ import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import FilterTasks from "./FilterTasks";
 import TaskCard from "./TaskCard";
 import { Pagination } from "@/utils/Pagination";
+import Link from "next/link";
+import { useTheme } from "next-themes";
 
 const LeadsTasks = () => {
   const [tasks, setTasks] = useState<TLmuTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterQuery, setFilterQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = resolvedTheme === "dark";
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -36,30 +47,77 @@ const LeadsTasks = () => {
     fetchTasks();
   }, [fetchTasks]);
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen px-4 py-6 transition-colors duration-300 bg-neutral-100 dark:bg-gradient-to-b from-[#000000] to-[#170303]">
+        <div className="space-y-6 max-w-full mx-auto">
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-transparent bg-neutral-200/50 dark:bg-neutral-800/50 p-4 space-y-4"
+              >
+                <Skeleton className="h-5 w-1/3" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <FilterTasks
-        setFilterQuery={setFilterQuery}
-        setCurrentPage={setCurrentPage}
-      />
+    <div
+      className={`min-h-screen w-full px-4 py-6 rounded-xl transition-colors duration-300 ${
+        isDark
+          ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
+          : "bg-white text-black"
+      }`}
+    >
+      <div className="space-y-6 max-w-full mx-auto">
+        <FilterTasks
+          setFilterQuery={setFilterQuery}
+          setCurrentPage={setCurrentPage}
+        />
 
-      {loading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 w-full rounded-xl" />
-          ))}
-        </div>
-      ) : tasks.length === 0 ? (
-        <p className="text-muted-foreground text-center">No tasks found.</p>
-      ) : (
-        <div className="space-y-4">
-          {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} />
-          ))}
-        </div>
-      )}
+        {loading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className={`h-40 w-full rounded-xl ${
+                  isDark ? "bg-[#2a2a2a]" : "bg-gray-100"
+                }`}
+              />
+            ))}
+          </div>
+        ) : tasks.length === 0 ? (
+          <p className="text-muted-foreground text-center">No tasks found.</p>
+        ) : (
+          <div className="space-y-4">
+            {tasks.map((task) => (
+              <Link
+                href={`/coordinator/leads-tasks/${task._id}`}
+                key={task._id}
+              >
+                <div
+                  className={`rounded-xl transition-all cursor-pointer mb-2 border ${
+                    isDark
+                      ? "bg-black/30 backdrop-blur-md border-[#333] text-neutral-100 hover:bg-black/40 hover:border-[#555]"
+                      : "bg-white/80 backdrop-blur-md border-neutral-200 text-neutral-900 shadow-sm hover:shadow-md hover:border-neutral-300"
+                  }`}
+                >
+                  <TaskCard task={task} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
-      <Pagination currentPage={currentPage} onPageChange={setCurrentPage} />
+        <Pagination currentPage={currentPage} onPageChange={setCurrentPage} />
+      </div>
     </div>
   );
 };

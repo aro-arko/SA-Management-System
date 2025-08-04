@@ -48,7 +48,7 @@ const TaskCard = ({ task }: { task: TLmuTask }) => {
     badgeColors[type as keyof typeof badgeColors] || badgeColors.default;
 
   return (
-    <Card className="w-full border rounded-lg bg-white dark:bg-[#0f0f0f] shadow-sm hover:shadow-md transition-shadow">
+    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-3 px-4 py-2 text-[15px] text-muted-foreground">
         <InfoRow
           icon={<User2 className="w-5 h-5 text-blue-500" />}

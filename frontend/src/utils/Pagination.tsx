@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 interface PaginationProps {
@@ -21,23 +22,23 @@ export const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="flex items-center justify-center gap-4 mt-6">
-      <button
+      <Button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-4 py-2 rounded bg-gray-200 text-gray-800 disabled:opacity-50"
+        className="px-4 py-2 rounded-md disabled:opacity-50"
       >
         Previous
-      </button>
+      </Button>
 
       <span className="text-sm font-medium">Page {currentPage}</span>
 
-      <button
+      <Button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 rounded bg-gray-200 text-gray-800 disabled:opacity-50"
+        className="px-4 py-2 rounded-md"
       >
         Next
-      </button>
+      </Button>
     </div>
   );
 };

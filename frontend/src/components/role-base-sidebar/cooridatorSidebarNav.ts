@@ -4,9 +4,15 @@ import {
   Users,
   BarChart2,
   Settings,
+  HomeIcon,
 } from "lucide-react";
 
 export const coordinatorNavMain = [
+  {
+    title: "Home",
+    url: "/",
+    icon: HomeIcon,
+  },
   {
     title: "Dashboard",
     url: "/coordinator/dashboard",
