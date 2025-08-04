@@ -123,7 +123,7 @@ const LeadsTaskDetails = () => {
 
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
-        <div className="max-w-6xl mx-auto space-y-10">
+        <div className="max-w-full mx-auto space-y-10">
           {/* Title Skeleton */}
           <div className="text-center space-y-2">
             <Skeleton
