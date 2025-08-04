@@ -9,6 +9,7 @@ import { getUserNameById } from "@/services/UserService";
 import { getAllDataEntryTasks } from "@/services/LMUService/dataManagement";
 import DataEntryTaskCard from "./DataEntryTaskCard";
 import { TDataEntryTask } from "@/types/lmu/dataentry.type";
+import clsx from "clsx";
 
 const DataEntryTasks = () => {
   const [tasks, setTasks] = useState<TDataEntryTask[]>([]);
@@ -69,18 +70,19 @@ const DataEntryTasks = () => {
 
   return (
     <div
-      className={`min-h-screen px-4 py-6 transition-colors duration-300 ${
+      className={clsx(
+        "min-h-screen px-4 py-6 transition-colors duration-300",
         isDark
           ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
           : "bg-white text-black"
-      }`}
+      )}
     >
       <div className="space-y-6 max-w-6xl mx-auto">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold tracking-tight">
             Data Entry Tasks
           </h1>
-          <p className=" mt-1">
+          <p className="mt-1">
             Manage data entry assignments for student ambassador records.
           </p>
         </div>
@@ -90,26 +92,37 @@ const DataEntryTasks = () => {
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className={`rounded-xl w-full border shadow-sm p-4 space-y-4 ${
+                className={clsx(
+                  "w-full border rounded-lg shadow-sm transition-shadow px-4 py-2",
                   isDark
                     ? "bg-black/30 border-neutral-700"
                     : "bg-white/80 border-neutral-200"
-                }`}
+                )}
               >
-                {/* Title */}
-                <Skeleton className="h-5 w-1/2 rounded-md" />
-
-                {/* Status badge */}
-                <Skeleton className="h-6 w-20 rounded-full" />
-
-                {/* Info rows */}
-                <div className="flex flex-wrap gap-6 mt-4">
-                  {Array.from({ length: 4 }).map((_, j) => (
-                    <div key={j} className="flex items-start gap-3 w-40">
-                      <Skeleton className="h-4 w-4 rounded-full" />
-                      <div className="space-y-1">
-                        <Skeleton className="h-3 w-16 rounded" />
-                        <Skeleton className="h-4 w-24 rounded" />
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-3 text-[15px]">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={clsx(
+                        "w-full border rounded-lg shadow-sm transition-shadow px-4 py-5",
+                        isDark
+                          ? "bg-black/30 border-neutral-700"
+                          : "bg-white/80 border-neutral-200"
+                      )}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-4 text-[15px]">
+                        {Array.from({ length: 3 }).map((_, j) => (
+                          <div
+                            key={j}
+                            className="flex items-center gap-2 min-w-[160px]"
+                          >
+                            <Skeleton className="w-6 h-6 rounded-full" />
+                            <div className="space-y-1.5">
+                              <Skeleton className="h-3 w-16 rounded-md" />
+                              <Skeleton className="h-4 w-24 rounded-md" />
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
@@ -127,16 +140,21 @@ const DataEntryTasks = () => {
                 key={task._id}
               >
                 <div
-                  className={`rounded-xl transition-all cursor-pointer${
+                  className={clsx(
+                    "rounded-xl transition-all cursor-pointer",
                     isDark
                       ? "bg-black/30 backdrop-blur-md border-[#333] text-neutral-100 hover:bg-black/40 hover:border-[#555]"
                       : "bg-white/80 backdrop-blur-md border-neutral-200 text-neutral-900 hover:shadow-sm hover:border-neutral-300"
-                  }`}
+                  )}
                 >
                   <DataEntryTaskCard
                     task={{
                       ...task,
                       assigneeName: task.assigneeName ?? "Unassigned",
+                      dueDate:
+                        typeof task.dueDate === "string"
+                          ? task.dueDate
+                          : task.dueDate?.toISOString?.() ?? "",
                     }}
                   />
                 </div>

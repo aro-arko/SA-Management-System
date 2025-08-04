@@ -2,8 +2,9 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tags, User2, BarChart, CircleDot } from "lucide-react";
+import { Tags, User2, BarChart, CircleDot, Calendar } from "lucide-react";
 import clsx from "clsx";
+import { formatToMalaysiaTime } from "@/utils/formatDate";
 
 type DataEntryTaskCardProps = {
   task: {
@@ -14,6 +15,7 @@ type DataEntryTaskCardProps = {
     schoolTeamTotalLeads: number;
     totalLeads: number;
     status: "in-progress" | "in-checking" | "completed";
+    dueDate: string;
   };
 };
 
@@ -28,51 +30,59 @@ const statusStyles = {
 
 const DataEntryTaskCard = ({ task }: DataEntryTaskCardProps) => {
   const {
-    title,
     type,
     assigneeName,
     schoolTeamTotalLeads,
     totalLeads,
     status,
+    dueDate,
   } = task;
 
   return (
-    <Card className="w-full bg-white/80 dark:bg-black/30 mb-2">
-      <CardContent className="space-y-3 px-4">
-        {/* Title at the top */}
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-3 text-[15px] text-muted-foreground">
-          <InfoRow
-            icon={<Tags className="w-5 h-5 text-indigo-600" />}
-            label="Type"
-            value={type}
-          />
-          <InfoRow
-            icon={<User2 className="w-5 h-5 text-blue-500" />}
-            label="Assigned"
-            value={assigneeName}
-          />
-          <InfoRow
-            icon={<BarChart className="w-5 h-5 text-gray-600" />}
-            label="Leads"
-            value={`${schoolTeamTotalLeads} / ${totalLeads}`}
-          />
-          <InfoRow
-            icon={<CircleDot className="w-5 h-5" />}
-            label="Status"
-            value={
-              <Badge
-                className={clsx(
-                  "capitalize text-xs px-2 py-0.5",
-                  statusStyles[status]
-                )}
-              >
-                {status.replace("-", " ")}
-              </Badge>
-            }
-          />
-        </div>
+    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow mb-2">
+      <CardContent className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-3 px-4 py-2 text-[15px] text-muted-foreground">
+        <InfoRow
+          icon={<User2 className="w-5 h-5 text-blue-500" />}
+          label="Assigned"
+          value={assigneeName}
+        />
+        <InfoRow
+          icon={<Tags className="w-5 h-5 text-indigo-600" />}
+          label="Type"
+          value={
+            <Badge
+              className={clsx(
+                "capitalize text-xs px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+              )}
+            >
+              {type}
+            </Badge>
+          }
+        />
+        <InfoRow
+          icon={<BarChart className="w-5 h-5 text-gray-600" />}
+          label="Leads"
+          value={`${schoolTeamTotalLeads} / ${totalLeads}`}
+        />
+        <InfoRow
+          icon={<Calendar className="w-5 h-5 text-rose-500" />}
+          label="Due Date"
+          value={formatToMalaysiaTime(dueDate, "dd MMM yyyy")}
+        />
+        <InfoRow
+          icon={<CircleDot className="w-5 h-5" />}
+          label="Status"
+          value={
+            <Badge
+              className={clsx(
+                "capitalize text-xs px-2 py-0.5",
+                statusStyles[status]
+              )}
+            >
+              {status.replace("-", " ")}
+            </Badge>
+          }
+        />
       </CardContent>
     </Card>
   );
