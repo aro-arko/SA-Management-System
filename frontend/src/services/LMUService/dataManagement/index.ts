@@ -28,7 +28,7 @@ export const getAllDataBatches = async (query: string) => {
   const token = (await cookies()).get("accessToken")?.value;
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/data-management/batches?${query}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-data-batch/all?${query}`,
       {
         method: "GET",
         headers: {
