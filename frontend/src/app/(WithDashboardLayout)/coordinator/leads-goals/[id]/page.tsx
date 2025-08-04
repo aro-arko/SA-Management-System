@@ -1,7 +1,9 @@
+import LeadsGoalDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Leads Goals/LeadsGoalDetails";
+
 const LeadsGoalsDetailsPage = () => {
   return (
     <div>
-      <h1>This is LeadsGoalsDetailsPage component</h1>
+      <LeadsGoalDetails />
     </div>
   );
 };

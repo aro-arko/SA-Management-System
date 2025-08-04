@@ -3,6 +3,7 @@
 
 import { cookies } from "next/headers";
 
+// -----------------leads goals starts
 export const leadsGoals = async (query: any) => {
   const token = (await cookies()).get("accessToken")?.value;
 
@@ -23,6 +24,31 @@ export const leadsGoals = async (query: any) => {
     return error;
   }
 };
+
+// get leads goal by id
+export const getLeadsGoalById = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-leads-goals/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// -----------------leads goals ends
+
+// leads tasks starts
 
 export const leadsTasks = async (query: any) => {
   const token = (await cookies()).get("accessToken")?.value;
