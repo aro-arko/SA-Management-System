@@ -42,3 +42,23 @@ export const getAllDataBatches = async (query: string) => {
     return error;
   }
 };
+
+// get data batch by ID
+export const getDataBatchById = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-data-batch/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
