@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { TaskDetails, getUserNameById } from "@/services/UserService";
 import { useParams } from "next/navigation";
 import {
-  ClipboardList,
   Users,
   User,
   Calendar,
@@ -19,7 +18,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { useTheme } from "next-themes";
-import { TActivity } from "@/types/lmu/task.type";
 
 const LeadsTaskDetails = () => {
   const { id } = useParams();
@@ -114,39 +112,76 @@ const LeadsTaskDetails = () => {
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-[#ffffff] text-black";
 
-  if (!mounted || loading) {
+  if (!mounted) {
+    return (
+      <div className="min-h-screen px-6 py-10 bg-gray-100 dark:bg-black transition-colors duration-300" />
+    );
+  }
+
+  if (loading) {
+    const isDark = resolvedTheme === "dark";
+
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
         <div className="max-w-6xl mx-auto space-y-10">
+          {/* Title Skeleton */}
           <div className="text-center space-y-2">
-            <Skeleton className="mx-auto h-8 w-64 rounded" />
-            <Skeleton className="mx-auto h-5 w-24 rounded" />
+            <Skeleton
+              className={`mx-auto h-8 w-64 rounded ${
+                isDark ? "bg-[#2a2a2a]" : "bg-gray-200"
+              }`}
+            />
+            <Skeleton
+              className={`mx-auto h-5 w-24 rounded ${
+                isDark ? "bg-[#2a2a2a]" : "bg-gray-200"
+              }`}
+            />
           </div>
+
+          {/* Info Cards Skeleton */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
                 className={`rounded-lg p-4 space-y-2 border shadow-sm ${
-                  resolvedTheme === "dark"
+                  isDark
                     ? "bg-black/30 border-neutral-700"
                     : "bg-white/80 border-neutral-200"
                 }`}
               >
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-5 w-2/3" />
+                <Skeleton
+                  className={`h-4 w-1/3 ${
+                    isDark ? "bg-[#2a2a2a]" : "bg-gray-200"
+                  }`}
+                />
+                <Skeleton
+                  className={`h-5 w-2/3 ${
+                    isDark ? "bg-[#2a2a2a]" : "bg-gray-200"
+                  }`}
+                />
               </div>
             ))}
           </div>
+
+          {/* Progress Skeleton */}
           <div
             className={`rounded-xl p-6 border space-y-3 shadow-sm ${
-              resolvedTheme === "dark"
+              isDark
                 ? "bg-black/30 border-neutral-700"
                 : "bg-white/80 border-neutral-200"
             }`}
           >
-            <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-full rounded-full" />
-            <Skeleton className="h-4 w-24" />
+            <Skeleton
+              className={`h-5 w-32 ${isDark ? "bg-[#2a2a2a]" : "bg-gray-200"}`}
+            />
+            <Skeleton
+              className={`h-4 w-full rounded-full ${
+                isDark ? "bg-[#2a2a2a]" : "bg-gray-200"
+              }`}
+            />
+            <Skeleton
+              className={`h-4 w-24 ${isDark ? "bg-[#2a2a2a]" : "bg-gray-200"}`}
+            />
           </div>
         </div>
       </div>
@@ -167,7 +202,6 @@ const LeadsTaskDetails = () => {
         {/* Header */}
         <div className="text-center">
           <h1 className="text-4xl font-bold flex justify-center items-center gap-2">
-            <ClipboardList className="w-8 h-8 text-neutral-400" />
             {task.title}
           </h1>
           <p className="mt-3">
