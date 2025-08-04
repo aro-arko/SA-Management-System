@@ -75,7 +75,13 @@ const DataEntryTasks = () => {
           : "bg-white text-black"
       }`}
     >
-      <div className="space-y-6 max-w-full mx-auto">
+      <div className="space-y-6 max-w-6xl mx-auto">
+        <div className="text-center mb-6">
+          <h1 className="text-4xl font-bold tracking-tight">
+            Data Entry Tasks
+          </h1>
+        </div>
+
         {loading ? (
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -87,16 +93,16 @@ const DataEntryTasks = () => {
                     : "bg-white/80 border-neutral-200"
                 }`}
               >
-                {/* Title skeleton */}
-                <Skeleton className="h-5 w-2/3 rounded-md" />
+                {/* Title */}
+                <Skeleton className="h-5 w-1/2 rounded-md" />
+
+                {/* Status badge */}
+                <Skeleton className="h-6 w-20 rounded-full" />
 
                 {/* Info rows */}
-                <div className="flex flex-wrap gap-4 mt-2">
+                <div className="flex flex-wrap gap-6 mt-4">
                   {Array.from({ length: 4 }).map((_, j) => (
-                    <div
-                      key={j}
-                      className="flex gap-2 items-center min-w-[150px]"
-                    >
+                    <div key={j} className="flex items-start gap-3 w-40">
                       <Skeleton className="h-4 w-4 rounded-full" />
                       <div className="space-y-1">
                         <Skeleton className="h-3 w-16 rounded" />
@@ -118,10 +124,10 @@ const DataEntryTasks = () => {
                 key={task._id}
               >
                 <div
-                  className={`rounded-xl transition-all cursor-pointer mb-2 ${
+                  className={`rounded-xl transition-all cursor-pointer${
                     isDark
                       ? "bg-black/30 backdrop-blur-md border-[#333] text-neutral-100 hover:bg-black/40 hover:border-[#555]"
-                      : "bg-white/80 backdrop-blur-md border-neutral-200 text-neutral-900 shadow-sm hover:shadow-md hover:border-neutral-300"
+                      : "bg-white/80 backdrop-blur-md border-neutral-200 text-neutral-900 hover:shadow-sm hover:border-neutral-300"
                   }`}
                 >
                   <DataEntryTaskCard
