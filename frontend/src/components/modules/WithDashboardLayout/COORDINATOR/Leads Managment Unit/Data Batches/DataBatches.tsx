@@ -7,6 +7,7 @@ import { getAllDataBatches } from "@/services/LMUService/dataManagement";
 import { TLMUDataBatch } from "@/types/lmu/databatch.type";
 import DataBatchCardSkeleton from "./DataBatchSkeleton";
 import DataBatchCard from "./DataBatchCard";
+import Link from "next/link";
 
 const DataBatches = () => {
   const [batches, setBatches] = useState<TLMUDataBatch[]>([]);
@@ -57,7 +58,11 @@ const DataBatches = () => {
           No data batches found.
         </p>
       ) : (
-        batches.map((batch) => <DataBatchCard key={batch._id} batch={batch} />)
+        batches.map((batch) => (
+          <Link key={batch._id} href={`/coordinator/data-batches/${batch._id}`}>
+            <DataBatchCard batch={batch} />
+          </Link>
+        ))
       )}
 
       <Pagination currentPage={currentPage} onPageChange={setCurrentPage} />
