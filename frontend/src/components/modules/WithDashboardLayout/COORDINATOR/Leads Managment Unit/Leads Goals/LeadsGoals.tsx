@@ -49,7 +49,9 @@ const LeadsGoals = () => {
     : "bg-[#ffffff] text-black";
 
   return (
-    <div className={`space-y-6 px-4 py-6 min-h-screen ${containerStyle}`}>
+    <div
+      className={`space-y-6 px-4 py-6 min-h-screen rounded-xl ${containerStyle}`}
+    >
       <div className="text-center mb-6">
         <h1 className="text-4xl font-bold tracking-tight">Leads Goals</h1>
         <p className="mt-1">

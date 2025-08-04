@@ -196,7 +196,7 @@ const LeadsGoalDetails = () => {
   ];
 
   return (
-    <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
+    <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
         {/* Title */}
         <div className="text-center">

@@ -71,7 +71,7 @@ const DataEntryTasks = () => {
   return (
     <div
       className={clsx(
-        "min-h-screen px-4 py-6 transition-colors duration-300",
+        "min-h-screen px-4 py-6 transition-colors duration-300 rounded-xl",
         isDark
           ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
           : "bg-white text-black"

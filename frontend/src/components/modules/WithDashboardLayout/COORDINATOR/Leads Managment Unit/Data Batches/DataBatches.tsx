@@ -1,6 +1,6 @@
 const DataBatches = () => {
   return (
-    <div>
+    <div className="rounded-xl">
       <h1>This is DataBatches component</h1>
     </div>
   );
