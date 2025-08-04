@@ -30,4 +30,6 @@ export type TDataEntryTask = {
   completedAt?: Date;
   status: "in-progress" | "in-checking" | "completed";
   assigneeName?: string; // Added for UI convenience
+  createdAt?: Date;
+  updatedAt?: Date;
 };

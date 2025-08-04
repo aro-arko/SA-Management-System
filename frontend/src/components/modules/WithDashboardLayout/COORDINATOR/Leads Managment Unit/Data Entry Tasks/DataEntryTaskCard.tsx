@@ -37,7 +37,7 @@ const DataEntryTaskCard = ({ task }: DataEntryTaskCardProps) => {
   } = task;
 
   return (
-    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="w-full bg-white/80 dark:bg-black/30 ">
       <CardContent className="space-y-3 px-4">
         {/* Title at the top */}
         <h2 className="text-lg font-semibold text-foreground">{title}</h2>
