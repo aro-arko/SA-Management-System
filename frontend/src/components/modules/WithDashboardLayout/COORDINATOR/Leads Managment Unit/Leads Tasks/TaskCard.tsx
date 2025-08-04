@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { TLmuTask } from "@/types/lmu/leadsTask.type";
-import { getUserNameById } from "@/services/UserService";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,29 +7,8 @@ import { CalendarDays, User2, CircleDot, BarChart, Tags } from "lucide-react";
 import clsx from "clsx";
 
 const TaskCard = ({ task }: { task: TLmuTask }) => {
-  const {
-    type,
-    dueDate,
-    totalLeads,
-    remainingLeads,
-    assignedTo,
-    status,
-    createdBy,
-  } = task;
-
-  const [creatorName, setCreatorName] = useState("Loading...");
-
-  useEffect(() => {
-    const fetchUserName = async () => {
-      try {
-        const user = await getUserNameById(createdBy);
-        setCreatorName(user.data.name || "Unknown");
-      } catch {
-        setCreatorName(createdBy.slice(0, 6) + "..." + createdBy.slice(-4));
-      }
-    };
-    fetchUserName();
-  }, [createdBy]);
+  const { type, dueDate, totalLeads, remainingLeads, assignedTo, status } =
+    task;
 
   const statusColor =
     status === "completed" ? "text-green-600" : "text-yellow-600";
