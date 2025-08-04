@@ -51,15 +51,6 @@ const DataBatchDetails = () => {
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-[#ffffff] text-black";
 
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    };
-    return new Date(dateString).toLocaleDateString("en-MY", options);
-  };
-
   if (!mounted) {
     return (
       <div className="min-h-screen px-6 py-10 bg-gray-100 dark:bg-black transition-colors duration-300" />
