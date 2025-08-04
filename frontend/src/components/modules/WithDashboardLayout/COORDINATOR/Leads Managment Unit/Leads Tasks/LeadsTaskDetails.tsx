@@ -243,24 +243,22 @@ const LeadsTaskDetails = () => {
 
         {/* Progress */}
         <div className="rounded-xl p-6 shadow-sm border bg-white/80 dark:bg-black/30 border-neutral-200 dark:border-neutral-700">
-          <h2 className="text-lg font-semibold mb-2 text-muted-foreground">
-            Leads Progress
-          </h2>
+          <h2 className="text-lg font-semibold mb-2">Leads Progress</h2>
           <div className="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-4 overflow-hidden">
             <div
               className="h-4 bg-neutral-800 dark:bg-neutral-300 transition-all duration-300"
               style={{ width: `${percent}%` }}
             />
           </div>
-          <p className="text-sm mt-1 text-muted-foreground">
+          <p className="text-sm mt-1 ">
             {task.completedLeads} of {task.totalLeads} completed ({percent}%)
           </p>
         </div>
 
         {/* Activities */}
         <div className="rounded-xl p-6 shadow-sm border bg-white/80 dark:bg-black/30 border-neutral-200 dark:border-neutral-700">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-muted-foreground">
-            <CheckCircle className="w-5 h-5 text-neutral-400" />
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 " />
             Activities
           </h2>
           {task.activities.length === 0 ? (
@@ -291,11 +289,11 @@ const LeadsTaskDetails = () => {
                     key={index}
                     className="flex items-center justify-between gap-4 p-4 border bg-white/80 dark:bg-black/20 border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm"
                   >
-                    <div className="flex items-center gap-2 font-semibold min-w-[140px]">
+                    <div className="flex items-center gap-2 font-semibold min-w-[140px] ">
                       <CheckCircle className="w-5 h-5 text-neutral-400" />
                       Activity #{index + 1}
                     </div>
-                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-6 text-sm ">
                       <div className="flex items-center gap-1">
                         <CheckCircle className="w-4 h-4 text-green-500" />
                         {(activity as any).completedLeads} completed
