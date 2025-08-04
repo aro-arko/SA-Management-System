@@ -50,6 +50,13 @@ const LeadsGoals = () => {
 
   return (
     <div className={`space-y-6 px-4 py-6 min-h-screen ${containerStyle}`}>
+      <div className="text-center mb-6">
+        <h1 className="text-4xl font-bold tracking-tight">Leads Goals</h1>
+        <p className="mt-1">
+          Set, monitor, and evaluate goals assigned to student ambassadors.
+        </p>
+      </div>
+
       {loading ? (
         Array.from({ length: 3 }).map((_, i) => <GoalCardSkeleton key={i} />)
       ) : goals.length === 0 ? (

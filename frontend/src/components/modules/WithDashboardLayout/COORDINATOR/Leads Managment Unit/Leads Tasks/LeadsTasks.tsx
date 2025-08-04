@@ -65,6 +65,12 @@ const LeadsTasks = () => {
         }
       `}
     >
+      <div className="text-center mb-6">
+        <h1 className="text-4xl font-bold tracking-tight">Leads Tasks</h1>
+        <p className="mt-1">
+          Browse and manage all lead tasks assigned to student ambassadors.
+        </p>
+      </div>
       <div className="space-y-6 max-w-full mx-auto">
         <FilterTasks
           setFilterQuery={setFilterQuery}

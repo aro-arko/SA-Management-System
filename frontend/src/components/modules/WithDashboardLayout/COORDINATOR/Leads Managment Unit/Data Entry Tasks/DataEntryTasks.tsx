@@ -80,6 +80,9 @@ const DataEntryTasks = () => {
           <h1 className="text-4xl font-bold tracking-tight">
             Data Entry Tasks
           </h1>
+          <p className=" mt-1">
+            Manage data entry assignments for student ambassador records.
+          </p>
         </div>
 
         {loading ? (
