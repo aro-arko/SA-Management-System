@@ -1,38 +1,47 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-// import {
-//   CheckCircle,
-//   Clock,
-//   Puzzle,
-//   User2,
-//   BarChart,
-//   CalendarDays,
-//   CircleDot,
-// } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
 
-export default function GoalCardSkeleton() {
+const GoalCardSkeleton = () => {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const isDark = resolvedTheme === "dark";
+
   return (
-    <Card className="w-full max-w-full mx-auto mb-4 rounded-xl border bg-white dark:bg-[#0f0f0f] shadow-sm">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex justify-between items-start gap-2">
-          <Skeleton className="h-5 w-3/5 rounded-md" />
-          <Skeleton className="h-5 w-16 rounded-md" />
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-sm">
-        {[...Array(7)].map((_, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded-full" />
-            <div className="space-y-1">
-              <Skeleton className="h-3 w-20 rounded-md" />
-              <Skeleton className="h-4 w-32 rounded-md" />
-            </div>
+    <div
+      className={clsx(
+        "w-full rounded-xl border transition-shadow",
+        isDark
+          ? "bg-black/30 border-neutral-700"
+          : "bg-white/80 border-neutral-200"
+      )}
+    >
+      <div className="px-4 pt-3 pb-2">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-5 w-2/3 rounded" />
+          <Skeleton className="h-5 w-16 rounded" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3 px-4 pb-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="space-y-1">
+            <Skeleton className="h-3 w-1/3 rounded" />
+            <Skeleton className="h-4 w-2/3 rounded" />
           </div>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
-}
+};
+
+export default GoalCardSkeleton;

@@ -1,21 +1,29 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTheme } from "next-themes";
 import { TLmuGoal } from "@/types/lmu/goal.type";
 import { leadsGoals } from "@/services/LMUService/leadsManagement";
 import GoalCard from "./GoalCard";
 import GoalCardSkeleton from "./GoalCardSkeleton";
 import { Pagination } from "@/utils/Pagination";
+import Link from "next/link";
 
 const LeadsGoals = () => {
   const [goals, setGoals] = useState<TLmuGoal[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchGoals = useCallback(async () => {
     try {
       setLoading(true);
-      const query = `page=${currentPage}&limit=10`; // Add pagination query
+      const query = `page=${currentPage}&limit=10`;
       const res = await leadsGoals(query);
 
       if (res.success) {
@@ -34,14 +42,24 @@ const LeadsGoals = () => {
     fetchGoals();
   }, [fetchGoals]);
 
+  const containerStyle = !mounted
+    ? "bg-transparent"
+    : resolvedTheme === "dark"
+    ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
+    : "bg-[#ffffff] text-black";
+
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 px-4 py-6 min-h-screen ${containerStyle}`}>
       {loading ? (
         Array.from({ length: 3 }).map((_, i) => <GoalCardSkeleton key={i} />)
       ) : goals.length === 0 ? (
         <p className="text-muted-foreground text-center">No goals found.</p>
       ) : (
-        goals.map((goal) => <GoalCard key={goal._id} goal={goal} />)
+        goals.map((goal) => (
+          <Link href={`/coordinator/leads-goals/${goal._id}`} key={goal._id}>
+            <GoalCard goal={goal} />
+          </Link>
+        ))
       )}
 
       <Pagination currentPage={currentPage} onPageChange={setCurrentPage} />

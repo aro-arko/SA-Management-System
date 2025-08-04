@@ -23,8 +23,6 @@ const LeadsTasks = () => {
     setMounted(true);
   }, []);
 
-  const isDark = resolvedTheme === "dark";
-
   const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
@@ -47,34 +45,25 @@ const LeadsTasks = () => {
     fetchTasks();
   }, [fetchTasks]);
 
+  // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="min-h-screen px-4 py-6 transition-colors duration-300 bg-neutral-100 dark:bg-gradient-to-b from-[#000000] to-[#170303]">
-        <div className="space-y-6 max-w-full mx-auto">
-          <div className="space-y-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-xl border border-transparent bg-neutral-200/50 dark:bg-neutral-800/50 p-4 space-y-4"
-              >
-                <Skeleton className="h-5 w-1/3" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-2/3" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <div className="min-h-screen w-full px-4 py-6 rounded-xl bg-gray-100 dark:bg-black transition-colors duration-300" />
     );
   }
 
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div
-      className={`min-h-screen w-full px-4 py-6 rounded-xl transition-colors duration-300 ${
-        isDark
-          ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
-          : "bg-white text-black"
-      }`}
+      className={`
+        min-h-screen w-full px-4 py-6 rounded-xl transition-colors duration-300
+        ${
+          isDark
+            ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
+            : "bg-white text-black"
+        }
+      `}
     >
       <div className="space-y-6 max-w-full mx-auto">
         <FilterTasks
