@@ -18,6 +18,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { useTheme } from "next-themes";
+import { formatToMalaysiaTime } from "@/utils/formatDate";
 
 const LeadsTaskDetails = () => {
   const { id } = useParams();
@@ -95,7 +96,10 @@ const LeadsTaskDetails = () => {
         },
         {
           label: "Due Date",
-          value: new Date(task.dueDate).toLocaleString(),
+          value: formatToMalaysiaTime(
+            task.dueDate as unknown as string,
+            "dd MMM yyyy"
+          ),
           icon: <Calendar className="w-5 h-5 text-rose-400" />,
         },
         {

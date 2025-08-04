@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { getDataBatchById } from "@/services/LMUService/dataManagement";
 import { TLMUDataBatch } from "@/types/lmu/databatch.type";
+import { formatToMalaysiaTime } from "@/utils/formatDate";
 
 const DataBatchDetails = () => {
   const { id } = useParams();
@@ -163,13 +164,8 @@ const DataBatchDetails = () => {
     },
     {
       label: "Created At",
-      value: formatDate(batch.createdAt),
+      value: formatToMalaysiaTime(batch.createdAt),
       icon: <Calendar className="w-5 h-5 text-rose-400" />,
-    },
-    {
-      label: "Updated At",
-      value: formatDate(batch.updatedAt),
-      icon: <Calendar className="w-5 h-5 text-amber-500" />,
     },
   ];
 

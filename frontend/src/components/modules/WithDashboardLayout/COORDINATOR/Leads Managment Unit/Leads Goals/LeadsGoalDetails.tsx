@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { TLmuGoal } from "@/types/lmu/goal.type";
 import Link from "next/link";
+import { formatToMalaysiaTime } from "@/utils/formatDate";
 
 const LeadsGoalDetails = () => {
   const { id } = useParams();
@@ -190,7 +191,7 @@ const LeadsGoalDetails = () => {
     },
     {
       label: "Created At",
-      value: new Date(goal.createdAt).toLocaleString(),
+      value: formatToMalaysiaTime(goal.createdAt),
       icon: <Calendar className="w-5 h-5 text-rose-400" />,
     },
   ];
@@ -203,7 +204,7 @@ const LeadsGoalDetails = () => {
           <h1 className="text-4xl font-bold flex justify-center items-center gap-2">
             {goal.title}
           </h1>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
               {goal.type}
             </span>
