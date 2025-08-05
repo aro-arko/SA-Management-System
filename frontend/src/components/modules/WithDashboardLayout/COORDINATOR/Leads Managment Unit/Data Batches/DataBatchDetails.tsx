@@ -169,7 +169,7 @@ const DataBatchDetails = () => {
     <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">{batch.title}</h1>
+          <h1 className="text-3xl font-bold">{batch.title}</h1>
           <p className="mt-4 text-muted-foreground">
             <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
               {batch.type}

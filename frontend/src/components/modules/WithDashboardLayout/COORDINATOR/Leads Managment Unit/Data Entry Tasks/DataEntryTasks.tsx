@@ -82,7 +82,7 @@ const DataEntryTasks = () => {
     >
       <div className="space-y-6 max-w-full mx-auto">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight">
             Data Entry Tasks
           </h1>
           <p className="mt-1">

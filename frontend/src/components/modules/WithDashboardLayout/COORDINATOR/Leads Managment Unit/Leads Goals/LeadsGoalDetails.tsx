@@ -201,7 +201,7 @@ const LeadsGoalDetails = () => {
       <div className="max-w-full mx-auto space-y-10">
         {/* Title */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold flex justify-center items-center gap-2">
+          <h1 className="text-3xl font-bold flex justify-center items-center gap-2">
             {goal.title}
           </h1>
           <p className="mt-4 text-muted-foreground">

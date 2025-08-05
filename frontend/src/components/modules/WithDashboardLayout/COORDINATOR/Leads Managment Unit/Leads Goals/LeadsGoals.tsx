@@ -53,7 +53,7 @@ const LeadsGoals = () => {
       className={`space-y-6 px-4 py-6 min-h-screen rounded-xl ${containerStyle}`}
     >
       <div className="text-center mb-6">
-        <h1 className="text-4xl font-bold tracking-tight">Leads Goals</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Leads Goals</h1>
         <p className="mt-1">
           Set, monitor, and evaluate goals assigned to student ambassadors.
         </p>

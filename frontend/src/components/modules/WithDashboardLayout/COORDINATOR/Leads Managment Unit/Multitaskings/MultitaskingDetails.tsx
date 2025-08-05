@@ -228,7 +228,7 @@ const MultitaskingDetails = () => {
     <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">{task.title}</h1>
+          <h1 className="text-3xl font-bold">{task.title}</h1>
           <p className="mt-3">
             <span
               className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${

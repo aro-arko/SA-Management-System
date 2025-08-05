@@ -4,13 +4,13 @@ import { useEffect, useState, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { Pagination } from "@/utils/Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import MultitaskingCard from "./MultitaskingCard";
-import { getAllMultitaskings } from "@/services/LMUService/multitaskings";
-import { TLMUMultitasking } from "@/types/lmu/multitasking.type";
+import LmuOthersTaskCard from "./LmuOthersTaskCard";
 import Link from "next/link";
+import { TLMUOthersTask } from "@/types/lmu/others.type";
+import { getLMUOtherTasks } from "@/services/LMUService/others tasks";
 
-const Multitaskings = () => {
-  const [tasks, setTasks] = useState<TLMUMultitasking[]>([]);
+const LmuOthersTasks = () => {
+  const [tasks, setTasks] = useState<TLMUOthersTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,14 +26,15 @@ const Multitaskings = () => {
         searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ""
       }`;
 
-      const res = await getAllMultitaskings(query);
+      const res = await getLMUOtherTasks(query);
+      console.log(res);
       if (res.success) {
         setTasks(res.data);
       } else {
         setTasks([]);
       }
     } catch (err) {
-      console.error("Failed to fetch multitaskings", err);
+      console.error("Failed to fetch others tasks", err);
     } finally {
       setLoading(false);
     }
@@ -58,9 +59,9 @@ const Multitaskings = () => {
       <div className="max-w-full mx-auto space-y-6">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold tracking-tight">
-            Multitasking Assignments
+            LMU Others Tasks
           </h1>
-          <p className="mt-1">Browse all multitasking operations</p>
+          <p className="mt-1">View all LMU ad hoc/others tasks</p>
 
           <div className="mt-6 max-w-md mx-auto">
             <input
@@ -93,16 +94,13 @@ const Multitaskings = () => {
           </div>
         ) : tasks.length === 0 ? (
           <p className="text-muted-foreground text-center">
-            No multitaskings found.
+            No other tasks found.
           </p>
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => (
-              <Link
-                href={`/coordinator/lmu-multitaskings/${task._id}`}
-                key={task._id}
-              >
-                <MultitaskingCard task={task} />
+              <Link href={`/coordinator/lmu-others/${task._id}`} key={task._id}>
+                <LmuOthersTaskCard task={task} />
               </Link>
             ))}
           </div>
@@ -114,4 +112,4 @@ const Multitaskings = () => {
   );
 };
 
-export default Multitaskings;
+export default LmuOthersTasks;

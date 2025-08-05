@@ -43,7 +43,7 @@ const DataBatches = () => {
   return (
     <div className={`space-y-6 px-4 py-6 min-h-screen ${containerStyle}`}>
       <div className="text-center mb-6">
-        <h1 className="text-4xl font-bold tracking-tight">Data Batches</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Data Batches</h1>
         <p className="mt-1">
           View and manage all LMU data batches created for entry and evaluation.
         </p>
