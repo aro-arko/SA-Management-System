@@ -80,7 +80,7 @@ const DataEntryTasks = () => {
           : "bg-white text-black"
       )}
     >
-      <div className="space-y-6 max-w-6xl mx-auto">
+      <div className="space-y-6 max-w-full mx-auto">
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold tracking-tight">
             Data Entry Tasks
