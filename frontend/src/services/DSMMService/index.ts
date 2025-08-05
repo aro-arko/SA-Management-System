@@ -23,3 +23,26 @@ export const getDSMMTasks = async (query: string) => {
     throw new Error("Failed to fetch DSMM tasks");
   }
 };
+
+// get DSMMTask by ID
+export const getDSMMTaskById = async (taskId: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/dsmmtask/${taskId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching DSMM task by ID:", error);
+    throw new Error("Failed to fetch DSMM task by ID");
+  }
+};
