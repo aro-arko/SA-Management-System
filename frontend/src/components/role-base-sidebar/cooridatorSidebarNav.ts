@@ -78,7 +78,7 @@ export const coordinatorNavMain = [
       },
       {
         title: "Multitaskings",
-        url: "/coordinator/emu-multitaskings",
+        url: "/coordinator/dsmm-multitaskings",
       },
     ],
   },
