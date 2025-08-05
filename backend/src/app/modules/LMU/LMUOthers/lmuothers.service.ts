@@ -290,7 +290,7 @@ const deleteOthersTask = async (id: string) => {
 const getAllOthersTasks = async (query: Record<string, unknown>) => {
   const modelQuery = LMUOthersTask.find();
   const queryBuilder = new QueryBuilder(modelQuery, query);
-  queryBuilder.sort().paginate();
+  queryBuilder.sort().paginate().search(['title']).fields();
 
   const result = await queryBuilder.modelQuery;
   return result;
