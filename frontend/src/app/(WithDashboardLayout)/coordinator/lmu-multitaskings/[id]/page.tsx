@@ -1,7 +1,9 @@
+import MultitaskingDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Multitaskings/MultitaskingDetails";
+
 const LmuMultitaskingDetailsPage = () => {
   return (
     <div>
-      <h1>This is LmuMultitaskingDetailsPage component</h1>
+      <MultitaskingDetails />
     </div>
   );
 };

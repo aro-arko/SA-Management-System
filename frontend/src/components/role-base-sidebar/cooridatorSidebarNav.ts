@@ -22,7 +22,7 @@ export const coordinatorNavMain = [
   {
     title: "Leads Management Unit",
     url: "#",
-    icon: ClipboardList,
+    icon: Users,
     items: [
       {
         title: "Leads Tasks",
