@@ -60,6 +60,18 @@ const applyEMUMultiTasking = catchAsync(async (req, res) => {
   });
 });
 
+// get EMU multitasking by id
+const getEMUMultiTaskingById = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await EMUMultiTaskingService.getEMUMultiTaskingById(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Multi-tasking retrieved successfully',
+    data: result,
+  });
+});
+
 // devote emu multitasking
 // const devoteEMUMultiTasking = catchAsync(async (req, res) => {
 //   const id = req.params.id;
@@ -102,4 +114,5 @@ export const EMUMultiTaskingController = {
   applyEMUMultiTasking,
   // devoteEMUMultiTasking,
   // rejectFromEMUMultiTasking,
+  getEMUMultiTaskingById,
 };

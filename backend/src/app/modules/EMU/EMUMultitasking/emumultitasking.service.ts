@@ -148,6 +148,15 @@ const devoteEMUMultiTasking = async (id: string, currentUser: JwtPayload) => {
   return multitasking;
 };
 
+// get EMU multitasking by id
+const getEMUMultiTaskingById = async (id: string) => {
+  const multitasking = await EMUMultiTasking.findById(id);
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multi-tasking not found');
+  }
+  return multitasking;
+};
+
 // remove someone from multitasking
 // const rejectFromEMUMultiTasking = async (
 //   id: string,
@@ -188,4 +197,5 @@ export const EMUMultiTaskingService = {
   updateEMUMultiTaskings,
   applyEMUMultitasking,
   devoteEMUMultiTasking,
+  getEMUMultiTaskingById,
 };

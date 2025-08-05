@@ -33,6 +33,22 @@ router.get(
   EMUMultiTaskingController.getEMUMultiTaskings,
 );
 
+router.get(
+  '/:id',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  EMUMultiTaskingController.getEMUMultiTaskingById,
+);
+
 // update multitasking
 router.patch(
   '/update-multitasking/:id',
