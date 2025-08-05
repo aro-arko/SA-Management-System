@@ -21,7 +21,8 @@ const createLMUMultiTasking = catchAsync(async (req, res) => {
 });
 
 const getLMUMultiTaskings = catchAsync(async (req, res) => {
-  const result = await LMUMultiTaskingServices.getLMUMultitaskings();
+  const query = req.query;
+  const result = await LMUMultiTaskingServices.getLMUMultitaskings(query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

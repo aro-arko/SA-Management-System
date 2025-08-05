@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import { LMUMultiTasking } from './lmumultitasking.model';
 import mongoose from 'mongoose';
 import { LeadsTask } from '../LeadsManagement/leads.model';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createLMUMultitasking = async (
   currentUser: JwtPayload,
@@ -34,10 +35,25 @@ const createLMUMultitasking = async (
   return result;
 };
 
-const getLMUMultitaskings = async () => {
-  const result = await LMUMultiTasking.find({ status: 'active' }).sort({
-    createdAt: -1,
-  });
+const getLMUMultitaskings = async (query: Record<string, unknown>) => {
+  const baseQuery = LMUMultiTasking.find();
+
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .search(['title', 'description'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await queryBuilder.modelQuery.lean();
+
+  if (!result.length) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'No active LMU multitaskings found',
+    );
+  }
+
   return result;
 };
 

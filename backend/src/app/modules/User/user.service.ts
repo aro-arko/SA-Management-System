@@ -10,14 +10,20 @@ import { LMUOthersTask } from '../LMU/LMUOthers/lmuothers.model';
 import { DSMMTask } from '../DSMM/DSMMTask/dsmmtask.model';
 import { HRFinanceTask } from '../HR & Finance/HR_FinanceTask/hrfinancetask.model';
 import { FixedTimeEvent } from '../EMU/FixedTimeEvent/fixedtimeevent.model';
+import { LMUMultiTasking } from '../LMU/LMUMultitasking/lmumultitasking.model';
+import { EMUMultiTasking } from '../EMU/EMUMultitasking/emumultitasking.model';
+import { DSMMMultitasking } from '../DSMM/DSMMMultitasking/dsmmmultitasking.model';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const categoryModelMap: Record<string, mongoose.Model<any>> = {
   LeadsTask,
   DataEntryTask,
   LMUOthersTask,
+  LMUMultiTasking,
   FixedTimeEvent,
+  EMUMultiTasking,
   DSMMTask,
+  DSMMMultitasking,
   HRFinanceTask,
 };
 

@@ -148,7 +148,7 @@ const getAllDataEntryTasks = async (query: Record<string, unknown>) => {
     .populate('batchId', 'title type status');
 
   const queryBuilder = new QueryBuilder(baseQuery, query)
-    .search(['schoolName'])
+    .search(['schoolName', 'schoolLevel'])
     .sort()
     .paginate()
     .fields();
