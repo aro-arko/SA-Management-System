@@ -14,7 +14,7 @@ const EventTaskCard = ({ task }: { task: TFixedTimeEvent }) => {
 
   return (
     <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow mb-2">
-      <CardContent className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 px-4 py-3 text-[15px] text-muted-foreground">
+      <CardContent className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 px-4 py-2 text-[15px] text-muted-foreground">
         {/* Title */}
         <div className="flex items-center gap-2 min-w-[180px] flex-1 overflow-hidden">
           <ClipboardList className="w-5 h-5 text-blue-500 shrink-0" />
