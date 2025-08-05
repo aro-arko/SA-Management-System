@@ -4,15 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ClipboardList, CircleDot, Tags } from "lucide-react";
 import clsx from "clsx";
+import { TLMUMultitasking } from "@/types/lmu/multitasking.type";
 
-interface TMultitask {
-  _id: string;
-  title: string;
-  type: string;
-  status: string;
-}
-
-const MultitaskingCard = ({ task }: { task: TMultitask }) => {
+const MultitaskingCard = ({ task }: { task: TLMUMultitasking }) => {
   const { title, type, status } = task;
 
   const badgeColor =
@@ -25,7 +19,7 @@ const MultitaskingCard = ({ task }: { task: TMultitask }) => {
   const statusColor = status === "active" ? "text-green-600" : "text-red-500";
 
   return (
-    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow mb-2">
       <CardContent className="grid grid-cols-3 items-center px-4 py-1 text-[15px] text-muted-foreground h-12">
         {/* Title section - left aligned */}
         <div className="flex items-center gap-2 overflow-hidden mr-8">

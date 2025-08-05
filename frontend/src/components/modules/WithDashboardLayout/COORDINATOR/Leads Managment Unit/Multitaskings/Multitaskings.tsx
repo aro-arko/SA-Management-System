@@ -6,16 +6,11 @@ import { Pagination } from "@/utils/Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import MultitaskingCard from "./MultitaskingCard";
 import { getAllMultitaskings } from "@/services/LMUService/multitaskings";
-
-interface TMultitask {
-  _id: string;
-  title: string;
-  type: string;
-  status: string;
-}
+import { TLMUMultitasking } from "@/types/lmu/multitasking.type";
+import Link from "next/link";
 
 const Multitaskings = () => {
-  const [tasks, setTasks] = useState<TMultitask[]>([]);
+  const [tasks, setTasks] = useState<TLMUMultitasking[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,7 +98,12 @@ const Multitaskings = () => {
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => (
-              <MultitaskingCard key={task._id} task={task} />
+              <Link
+                href={`/coordinator/lmu-multitaskings/${task._id}`}
+                key={task._id}
+              >
+                <MultitaskingCard task={task} />
+              </Link>
             ))}
           </div>
         )}
