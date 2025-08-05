@@ -1,4 +1,5 @@
 export type TNewApplication = {
+  _id: string;
   fullName: string;
   studentId: number;
   expectedGraduationDate: Date;

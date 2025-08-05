@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import HrTaskCard from "./HrTaskCard";
 import { THRFinanceTask } from "@/types/hr_finance/task.types";
-import { getHRFinanceTasks } from "@/services/HR_FinanceService";
+import { getHRFinanceTasks } from "@/services/HR_FinanceService/HrTask";
 
 const HrTasks = () => {
   const [tasks, setTasks] = useState<THRFinanceTask[]>([]);

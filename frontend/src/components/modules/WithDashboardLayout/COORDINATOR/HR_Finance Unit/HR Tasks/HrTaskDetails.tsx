@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { THRFinanceTask } from "@/types/hr_finance/task.types";
-import { getHRFinanceTaskById } from "@/services/HR_FinanceService";
+import { getHRFinanceTaskById } from "@/services/HR_FinanceService/HrTask";
 
 const HrTaskDetails = () => {
   const { id } = useParams();
