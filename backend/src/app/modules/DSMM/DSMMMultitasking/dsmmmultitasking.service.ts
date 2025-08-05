@@ -4,6 +4,7 @@ import { User } from '../../User/user.model';
 import { DSMMMultitasking } from './dsmmmultitasking.model';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 const createDSMMMultitasking = async (
   currentUser: JwtPayload,
@@ -21,11 +22,20 @@ const createDSMMMultitasking = async (
 };
 
 // get all DSMM multi-taskings
-const getDSMMMultitasking = async () => {
-  const result = await DSMMMultitasking.find({ status: 'active' }).sort({
-    createdAt: -1,
-  });
-  return result;
+const getDSMMMultitasking = async (query: Record<string, unknown>) => {
+  const baseQuery = DSMMMultitasking.find();
+
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .search(['title'])
+    .sort()
+    .paginate()
+    .fields();
+
+  const tasks = await queryBuilder.modelQuery.lean();
+  if (!tasks.length) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No DSMM multitaskings found');
+  }
+  return tasks;
 };
 
 // update DSMM multitaskings
