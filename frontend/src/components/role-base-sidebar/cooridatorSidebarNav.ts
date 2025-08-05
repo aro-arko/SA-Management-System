@@ -41,8 +41,12 @@ export const coordinatorNavMain = [
         url: "/coordinator/data-batches",
       },
       {
-        title: "Multitasking & Others",
+        title: "Multitasking",
         url: "/coordinator/lmu-multitasking",
+      },
+      {
+        title: "Others",
+        url: "/coordinator/lmu-others",
       },
     ],
   },
