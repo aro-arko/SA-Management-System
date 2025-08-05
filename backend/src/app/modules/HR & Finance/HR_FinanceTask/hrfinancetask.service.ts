@@ -208,9 +208,20 @@ const deleteHrFinanceTask = async (id: string) => {
   }
 };
 
+// get a single HR Finance task by ID
+const getHrFinanceTaskById = async (id: string) => {
+  const task = await HRFinanceTask.findById(id);
+
+  if (!task) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Task not found');
+  }
+  return task;
+};
+
 export const HrFinanceTaskService = {
   createHrFinanceTask,
   getAllHrFinanceTasks,
+  getHrFinanceTaskById,
   updateHrFinanceTask,
   deleteHrFinanceTask,
 };

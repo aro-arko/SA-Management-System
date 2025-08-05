@@ -22,6 +22,13 @@ router.get(
   HrFinanceTaskController.getAllHrFinanceTasks,
 );
 
+// get a single HR Finance task by ID
+router.get(
+  '/:id',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.hrFinanceAdmin),
+  HrFinanceTaskController.getHrFinanceTaskById,
+);
+
 // update HR Finance task
 router.patch(
   '/update-task/:taskId',
