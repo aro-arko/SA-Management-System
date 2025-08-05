@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import DSMMTaskCard from "./DSMMTaskCard";
 import Link from "next/link";
 import { TDSMMTask } from "@/types/dsmm/task.type";
-import { getDSMMTasks } from "@/services/DSMMService";
+import { getDSMMTasks } from "@/services/DSMMService/dsmmtask";
 
 const DSMMTasks = () => {
   const [tasks, setTasks] = useState<TDSMMTask[]>([]);

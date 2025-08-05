@@ -16,7 +16,7 @@ import {
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { getUserNameById } from "@/services/UserService";
 import { TDSMMTask } from "@/types/dsmm/task.type";
-import { getDSMMTaskById } from "@/services/DSMMService";
+import { getDSMMTaskById } from "@/services/DSMMService/dsmmtask";
 import Link from "next/link";
 
 const DSMMTaskDetails = () => {
