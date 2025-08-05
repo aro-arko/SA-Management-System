@@ -7,7 +7,7 @@ export const getEmuMultitaskings = async (query: string) => {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/emu/multitaskings?${query}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/emu-multitaskings?${query}`,
       {
         method: "GET",
         headers: {
