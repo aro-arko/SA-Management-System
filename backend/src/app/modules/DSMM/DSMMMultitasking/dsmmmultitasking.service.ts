@@ -97,9 +97,19 @@ const applyDSMMMultitasking = async (id: string, currentUser: JwtPayload) => {
   return updatedMultitasking;
 };
 
+// get multitasking by id
+const getDSMMMultitaskingById = async (id: string) => {
+  const multitasking = await DSMMMultitasking.findById(id);
+  if (!multitasking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Multitasking not found');
+  }
+  return multitasking;
+};
+
 export const DSMMMultiTaskingService = {
   createDSMMMultitasking,
   getDSMMMultitasking,
+  getDSMMMultitaskingById,
   updateDSMMMultitasking,
   applyDSMMMultitasking,
 };
