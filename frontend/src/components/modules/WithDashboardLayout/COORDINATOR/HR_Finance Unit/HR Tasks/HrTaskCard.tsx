@@ -59,7 +59,7 @@ const HrTaskCard = ({ task }: { task: THRFinanceTask }) => {
             Due
           </span>
           <span className="text-sm font-medium text-foreground shrink-0">
-            {formatToMalaysiaTime(dueDate as unknown as string)}
+            {formatToMalaysiaTime(dueDate as unknown as string, "dd MMM yyyy")}
           </span>
         </div>
 

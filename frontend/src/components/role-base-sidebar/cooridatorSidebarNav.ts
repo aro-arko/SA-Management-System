@@ -91,8 +91,8 @@ export const coordinatorNavMain = [
         url: "/coordinator/hr-tasks",
       },
       {
-        title: "Multitaskings",
-        url: "/coordinator/hr-multitaskings",
+        title: "New Applications",
+        url: "/coordinator/hr-new-applications",
       },
     ],
   },
