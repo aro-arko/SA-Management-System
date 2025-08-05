@@ -84,10 +84,7 @@ const createHrFinanceTask = async (
 
 // get all HR Finance tasks
 const getAllHrFinanceTasks = async (query: Record<string, unknown> = {}) => {
-  const baseQuery = HRFinanceTask.find().populate(
-    'assignedTo',
-    'firstName lastName',
-  );
+  const baseQuery = HRFinanceTask.find();
 
   const queryBuilder = new QueryBuilder(baseQuery, query);
 
