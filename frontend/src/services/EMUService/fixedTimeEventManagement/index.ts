@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 
+// get all fixed time events
 export const getAllFixedTimeEvents = async (query: string) => {
   const token = (await cookies()).get("accessToken")?.value;
 
