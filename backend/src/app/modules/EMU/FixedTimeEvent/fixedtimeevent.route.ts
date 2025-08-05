@@ -24,6 +24,13 @@ router.get(
   FixedTimeEventController.getAllFixedTimeEvents,
 );
 
+// get a fixed time event by id
+router.get(
+  '/:id',
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.emuAdmin),
+  FixedTimeEventController.getFixedTimeEventById,
+);
+
 // update a fixed time event
 router.patch(
   '/update/:id',

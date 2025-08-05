@@ -110,9 +110,10 @@ const createFixedTimeEvent = async (
 };
 
 const getAllFixedTimeEvents = async (query: Record<string, unknown>) => {
-  const baseQuery = FixedTimeEvent.find(); // No empty populate
+  const baseQuery = FixedTimeEvent.find();
 
   const queryBuilder = new QueryBuilder(baseQuery, query)
+    .search(['title'])
     .sort()
     .paginate()
     .fields();
@@ -305,9 +306,23 @@ const deleteFixedTimeEvent = async (id: string) => {
   }
 };
 
+// Get a fixed time event by ID
+const getFixedTimeEventById = async (id: string) => {
+  const event = await FixedTimeEvent.findById(id)
+    .populate('signInData signOutData')
+    .lean();
+
+  if (!event) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Event not found');
+  }
+
+  return event;
+};
+
 export const FixedTimeEventService = {
   createFixedTimeEvent,
   getAllFixedTimeEvents,
+  getFixedTimeEventById,
   deleteFixedTimeEvent,
   updateFixedTimeEvent,
 };
