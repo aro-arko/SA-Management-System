@@ -6,6 +6,7 @@ import {
   Settings,
   HomeIcon,
   Calendar,
+  CameraIcon,
 } from "lucide-react";
 
 export const coordinatorNavMain = [
@@ -59,6 +60,21 @@ export const coordinatorNavMain = [
       {
         title: "Event Tasks",
         url: "/coordinator/event-tasks",
+      },
+      {
+        title: "Multitaskings",
+        url: "/coordinator/emu-multitaskings",
+      },
+    ],
+  },
+  {
+    title: "DSMM Unit",
+    url: "#",
+    icon: CameraIcon,
+    items: [
+      {
+        title: "Dsmm Tasks",
+        url: "/coordinator/dsmm-tasks",
       },
       {
         title: "Multitaskings",
