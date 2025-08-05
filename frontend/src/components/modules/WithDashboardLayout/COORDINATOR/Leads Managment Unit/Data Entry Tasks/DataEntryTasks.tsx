@@ -89,11 +89,10 @@ const DataEntryTasks = () => {
             Manage data entry assignments for student ambassador records.
           </p>
 
-          {/* ✅ Search Input */}
           <div className="mt-6 max-w-md mx-auto">
             <input
               type="text"
-              placeholder="Search by school name"
+              placeholder="Search by school name or level"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
