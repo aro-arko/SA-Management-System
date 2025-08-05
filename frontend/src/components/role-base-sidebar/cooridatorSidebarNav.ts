@@ -1,12 +1,11 @@
 import {
   LayoutDashboard,
-  ClipboardList,
   Users,
-  BarChart2,
   Settings,
   HomeIcon,
   Calendar,
   CameraIcon,
+  Briefcase,
 } from "lucide-react";
 
 export const coordinatorNavMain = [
@@ -68,7 +67,7 @@ export const coordinatorNavMain = [
     ],
   },
   {
-    title: "DSMM Unit",
+    title: "Digital & Marketing Unit",
     url: "#",
     icon: CameraIcon,
     items: [
@@ -83,11 +82,21 @@ export const coordinatorNavMain = [
     ],
   },
   {
-    title: "Goals",
-    url: "/coordinator/lmu-goals",
-    icon: BarChart2,
-    items: [],
+    title: "HR & Finance Unit",
+    url: "#",
+    icon: Briefcase,
+    items: [
+      {
+        title: "HR Tasks",
+        url: "/coordinator/hr-tasks",
+      },
+      {
+        title: "Multitaskings",
+        url: "/coordinator/hr-multitaskings",
+      },
+    ],
   },
+
   {
     title: "Settings",
     url: "#",
