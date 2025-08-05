@@ -119,6 +119,7 @@ const getAllDSMMTasks = async (query: Record<string, unknown>) => {
   const baseQuery = DSMMTask.find();
 
   const queryBuilder = new QueryBuilder(baseQuery, query)
+    .search(['title'])
     .sort()
     .paginate()
     .fields();
