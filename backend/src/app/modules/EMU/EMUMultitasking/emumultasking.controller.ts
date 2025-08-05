@@ -19,7 +19,8 @@ const createEmuMultitasking = catchAsync(async (req, res) => {
 
 // get all EMU multi-taskings
 const getEMUMultiTaskings = catchAsync(async (req, res) => {
-  const result = await EMUMultiTaskingService.getEMUMultiTaskings();
+  const query = req.query;
+  const result = await EMUMultiTaskingService.getEMUMultiTaskings(query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -4,6 +4,7 @@ import { User } from '../../User/user.model';
 import { EMUMultiTasking } from './emumultitasking.model';
 import AppError from '../../../errors/AppError';
 import httpStatus from 'http-status';
+import QueryBuilder from '../../../builder/QueryBuilder';
 
 // // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // const categoryModelMap: Record<string, mongoose.Model<any>> = {
@@ -30,10 +31,17 @@ const createEmuMultitasking = async (
 };
 
 // get all EMU multi-taskings
-const getEMUMultiTaskings = async () => {
-  const result = await EMUMultiTasking.find({ status: 'active' }).sort({
-    createdAt: -1,
-  });
+const getEMUMultiTaskings = async (query: Record<string, unknown>) => {
+  const baseQuery = EMUMultiTasking.find();
+
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .search(['title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await queryBuilder.modelQuery.lean();
   return result;
 };
 
