@@ -133,7 +133,7 @@ const DSMMMultitaskingDetails = () => {
           <h1 className="text-3xl font-bold capitalize">{task.title}</h1>
           <p className="mt-2">
             <span
-              className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+              className={`inline-block px-4 py-1 text-sm font-medium capitalize rounded-full ${
                 task.status === "active"
                   ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                   : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
