@@ -132,6 +132,15 @@ const getAllDSMMTasks = async (query: Record<string, unknown>) => {
   return tasks;
 };
 
+// get DSMM Task by ID
+const getDSMMTaskById = async (id: string) => {
+  const task = await DSMMTask.findById(id);
+  if (!task) {
+    throw new AppError(httpStatus.NOT_FOUND, 'DSMM Task not found');
+  }
+  return task;
+};
+
 // update DSMM Task
 const updateDSMMTask = async (id: string, payLoad: TDSMMTask) => {
   const session = await mongoose.startSession();
@@ -327,4 +336,5 @@ export const DSMMTaskService = {
   getAllDSMMTasks,
   updateDSMMTask,
   deleteDSMMTask,
+  getDSMMTaskById,
 };
