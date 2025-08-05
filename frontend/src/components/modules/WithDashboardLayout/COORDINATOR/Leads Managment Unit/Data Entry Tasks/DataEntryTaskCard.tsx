@@ -48,7 +48,7 @@ const DataEntryTaskCard = ({ task }: DataEntryTaskCardProps) => {
 
   return (
     <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow mb-2">
-      <CardContent className="px-4 py-2 text-[15px] text-muted-foreground">
+      <CardContent className="px-4 text-[15px] text-muted-foreground">
         {/* Top Row - Other Info */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-3">
           <InfoRow

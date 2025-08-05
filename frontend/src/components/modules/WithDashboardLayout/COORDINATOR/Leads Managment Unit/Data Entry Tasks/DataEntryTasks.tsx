@@ -15,6 +15,7 @@ const DataEntryTasks = () => {
   const [tasks, setTasks] = useState<TDataEntryTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(""); // NEW: search field
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -23,7 +24,9 @@ const DataEntryTasks = () => {
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
-      const query = `page=${currentPage}&limit=10`;
+      const query = `page=${currentPage}&limit=10${
+        searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ""
+      }`;
       const res = await getAllDataEntryTasks(query);
       if (res.success) {
         const enriched = await Promise.all(
@@ -54,7 +57,7 @@ const DataEntryTasks = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage]);
+  }, [currentPage, searchTerm]);
 
   useEffect(() => {
     fetchTasks();
@@ -85,6 +88,25 @@ const DataEntryTasks = () => {
           <p className="mt-1">
             Manage data entry assignments for student ambassador records.
           </p>
+
+          {/* ✅ Search Input */}
+          <div className="mt-6 max-w-md mx-auto">
+            <input
+              type="text"
+              placeholder="Search by school name"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // reset pagination on new search
+              }}
+              className={clsx(
+                "w-full px-4 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-500 transition",
+                isDark
+                  ? "bg-black text-white border-neutral-700"
+                  : "bg-white border-gray-300"
+              )}
+            />
+          </div>
         </div>
 
         {loading ? (
