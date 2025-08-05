@@ -5,6 +5,7 @@ import {
   BarChart2,
   Settings,
   HomeIcon,
+  Calendar,
 } from "lucide-react";
 
 export const coordinatorNavMain = [
@@ -51,21 +52,17 @@ export const coordinatorNavMain = [
     ],
   },
   {
-    title: "Multitasking",
+    title: "Event Management Unit",
     url: "#",
-    icon: Users,
+    icon: Calendar,
     items: [
       {
-        title: "LMU Multitasking",
-        url: "/coordinator/lmu-multitasking",
+        title: "Event Tasks",
+        url: "/coordinator/event-tasks",
       },
       {
-        title: "EMU Multitasking",
-        url: "/coordinator/emu-multitasking",
-      },
-      {
-        title: "DSMM Multitasking",
-        url: "/coordinator/dsmm-multitasking",
+        title: "Multitaskings",
+        url: "/coordinator/emu-multitaskings",
       },
     ],
   },
