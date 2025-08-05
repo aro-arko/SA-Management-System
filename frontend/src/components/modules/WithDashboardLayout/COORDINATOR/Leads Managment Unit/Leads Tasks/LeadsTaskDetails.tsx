@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { useTheme } from "next-themes";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
+import Link from "next/link";
 
 const LeadsTaskDetails = () => {
   const { id } = useParams();
@@ -81,7 +82,14 @@ const LeadsTaskDetails = () => {
         },
         {
           label: "Goal ID",
-          value: task.goalId,
+          value: (
+            <Link
+              href={`/coordinator/leads-goals/${task.goalId}`}
+              className="text-blue-500 underline hover:text-blue-600"
+            >
+              {task.goalId}
+            </Link>
+          ),
           icon: <Hash className="w-5 h-5 text-yellow-400" />,
         },
         {
