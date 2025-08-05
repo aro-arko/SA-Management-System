@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { TLMUOthersTask } from "@/types/lmu/others.type";
+import Link from "next/link";
 
 const LmuOthersTaskDetails = () => {
   const { id } = useParams();
@@ -145,7 +146,16 @@ const LmuOthersTaskDetails = () => {
     },
     {
       label: "Multitask",
-      value: task.multiTask ? "Yes" : "No",
+      value: task.multiTask ? (
+        <Link
+          className="text-blue-500 hover:underline"
+          href={`/coordinator/lmu-multitaskings/${task.multiTaskId}`}
+        >
+          Yes
+        </Link>
+      ) : (
+        "No"
+      ),
       icon: <CircleDot className="w-5 h-5 text-green-400" />,
     },
     ...(task.details
