@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import UserCard from "./UserCard";
 import { getAllUsers } from "@/services/UserService";
 import { TUserDetails } from "@/types/users/user.type";
+import Link from "next/link";
 
 const AllUsers = () => {
   const [users, setUsers] = useState<TUserDetails[]>([]);
@@ -88,9 +89,11 @@ const AllUsers = () => {
         ) : users.length === 0 ? (
           <p className="text-muted-foreground text-center">No users found.</p>
         ) : (
-          <div className="space-y-4">
+          <div className="">
             {users.map((user) => (
-              <UserCard key={user._id} user={user} />
+              <Link href={`/coordinator/users/${user._id}`} key={user._id}>
+                <UserCard user={user} />
+              </Link>
             ))}
           </div>
         )}

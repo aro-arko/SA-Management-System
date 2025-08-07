@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { TUserDetails } from "@/types/users/user.type";
 import { cookies } from "next/headers";
 
 export const getUserNameById = async (userId: string) => {
@@ -100,5 +101,27 @@ export const getUserDetailsById = async (userId: string) => {
     return res.json();
   } catch (error: any) {
     return error.message || "An error occurred while fetching user details";
+  }
+};
+
+// edit user details
+export const editUserDetails = async (id: string, data: TUserDetails) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/users/update/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({ body: data }),
+      }
+    );
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
   }
 };

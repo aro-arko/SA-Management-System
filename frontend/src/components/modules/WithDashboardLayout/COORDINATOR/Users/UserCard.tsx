@@ -23,7 +23,7 @@ const UserCard = ({ user }: { user: TUserDetails }) => {
   }, [user._id]);
 
   return (
-    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md mb-2 transition-shadow">
       <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 items-center gap-4 px-4 py-3 text-[15px] text-muted-foreground">
         {/* Name: span 2 cols on md screens */}
         <div className="flex items-center gap-2 truncate col-span-1 md:col-span-2">

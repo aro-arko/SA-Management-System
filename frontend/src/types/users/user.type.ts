@@ -18,11 +18,11 @@ export type TUserDetails = {
   lastName: string;
   email: string;
   password: string;
-  unit: "LMU" | "EMU" | "DSMM" | "HR_FINANCE" | "ALL";
+  unit: string;
   role: string;
   phone: string;
   dob: Date;
-  status: "active" | "inactive";
+  status: string;
   tasks?: TTask[];
   createdAt?: Date;
   updatedAt?: Date;
