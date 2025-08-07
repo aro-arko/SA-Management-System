@@ -146,7 +146,7 @@ const UserDetails = () => {
                 <div className="mt-1">{item.icon}</div>
                 <div>
                   <p className="text-xs text-muted-foreground">{item.label}</p>
-                  <p className="font-medium text-[15px] capitalize break-words">
+                  <p className="font-medium text-[15px] break-words">
                     {item.value}
                   </p>
                 </div>
