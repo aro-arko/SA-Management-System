@@ -35,8 +35,16 @@ export const getCurrentUser = async () => {
   }
 };
 
-// Example usage in other server actions
-export const changePassword = async (passwords: FieldValues) => {
+// logout
+export const logout = async () => {
+  (await cookies()).delete("accessToken");
+};
+
+// change password
+export const changePassword = async (data: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
   const token = (await cookies()).get("accessToken")?.value;
   try {
     const res = await fetch(
@@ -47,15 +55,11 @@ export const changePassword = async (passwords: FieldValues) => {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: JSON.stringify(passwords),
+        body: JSON.stringify(data),
       }
     );
     return res.json();
-  } catch (error: any) {
+  } catch (error) {
     return error;
   }
-};
-
-export const logout = async () => {
-  (await cookies()).delete("accessToken");
 };
