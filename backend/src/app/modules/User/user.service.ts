@@ -45,26 +45,32 @@ const getUserById = async (userId: string) => {
 
 const userUpdate = async (
   currentUser: JwtPayload,
-  requestedEmail: string,
+  userId: string,
   updateData: Partial<typeof User.prototype>,
 ) => {
-  if (!requestedEmail) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Email is required');
+  if (!userId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User ID is required');
   }
-  // Check if the current user is trying to update their own role
+
+  const currentUserId = await User.findOne(
+    { email: currentUser.email },
+    { _id: 1 },
+  );
+  if (!currentUserId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Current user not found');
+  }
+
   const { role } = updateData;
 
-  if (currentUser.email === requestedEmail && role) {
+  if (currentUserId._id.toString() === userId && role) {
     throw new AppError(httpStatus.FORBIDDEN, 'You cannot change your own role');
   }
 
-  const updatedUser = await User.findOneAndUpdate(
-    { email: requestedEmail },
-    updateData,
-    {
-      new: true,
-    },
-  );
+  console.log(currentUserId._id.toString(), userId);
+
+  const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+    new: true,
+  });
 
   if (!updatedUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');

@@ -15,13 +15,12 @@ const getUserById = catchAsync(async (req, res) => {
 });
 
 const userUpdate = catchAsync(async (req, res) => {
-  const email = req.body.email;
+  const id = req.params.id;
   const newData = req.body.body;
 
   const currentUser = req.user;
-  // console.log(currentUser);
 
-  const result = await UserService.userUpdate(currentUser, email, newData);
+  const result = await UserService.userUpdate(currentUser, id, newData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
