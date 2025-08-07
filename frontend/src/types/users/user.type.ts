@@ -13,7 +13,21 @@ type TTask = {
 };
 
 export type TUserDetails = {
-  _id: string;
+  _id?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  unit: string;
+  role: string;
+  phone: string;
+  dob: Date;
+  status: string;
+  tasks?: TTask[];
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+export type TCreateUser = {
   firstName: string;
   lastName: string;
   email: string;

@@ -126,12 +126,12 @@ export const editUserDetails = async (id: string, data: TUserDetails) => {
   }
 };
 
-// create new user
 export const createNewUser = async (data: TUserDetails) => {
   const token = (await cookies()).get("accessToken")?.value;
+
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/users/create`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/register`,
       {
         method: "POST",
         headers: {
@@ -141,9 +141,16 @@ export const createNewUser = async (data: TUserDetails) => {
         body: JSON.stringify(data),
       }
     );
-    return await response.json();
-  } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      // throw the error message from backend
+      throw new Error(result.message || "Failed to create user");
+    }
+
+    return result;
+  } catch (error: any) {
+    throw new Error(error.message || "Something went wrong");
   }
 };
