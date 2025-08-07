@@ -185,9 +185,27 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
   return task;
 };
 
+const getAllUsers = async (query: Record<string, unknown>) => {
+  const baseQuery = User.find().select({ unit: 1, role: 1 });
+  const queryBuilder = new QueryBuilder(baseQuery, query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const users = await queryBuilder.modelQuery.lean();
+
+  if (!users || users.length === 0) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No users found');
+  }
+
+  return users;
+};
+
 export const UserService = {
   userUpdate,
   getUserTasks,
   getTaskDetails,
   getUserById,
+  getAllUsers,
 };

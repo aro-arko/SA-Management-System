@@ -60,4 +60,10 @@ router.get(
   UserController.getTaskDetails,
 );
 
+router.get(
+  '/',
+  auth(USER_ROLE.coordinator, USER_ROLE.head),
+  UserController.getAllUsers,
+);
+
 export const UserRoutes = router;
