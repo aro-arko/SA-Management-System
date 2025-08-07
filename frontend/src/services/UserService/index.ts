@@ -154,3 +154,22 @@ export const createNewUser = async (data: TUserDetails) => {
     throw new Error(error.message || "Something went wrong");
   }
 };
+
+// get me for profile
+export const getMe = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    return res.json();
+  } catch (error: any) {
+    return error.message || "An error occurred while fetching user data";
+  }
+};
