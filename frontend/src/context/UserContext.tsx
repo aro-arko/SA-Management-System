@@ -1,7 +1,8 @@
 "use client";
+
 import { getCurrentUser } from "@/services/AuthService";
 import { IUser } from "@/types/user.type";
-
+import { useRouter } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -24,24 +25,37 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleUser = async () => {
-    const payload = await getCurrentUser();
-    if (
-      payload &&
-      typeof payload === "object" &&
-      "email" in payload &&
-      "role" in payload
-    ) {
-      setUser(payload as IUser);
-    } else {
-      setUser(null);
-    }
-    setIsLoading(false);
-  };
-
   useEffect(() => {
-    handleUser();
-  }, [isLoading]);
+    const justLoggedIn = localStorage.getItem("justLoggedIn") === "true";
+
+    const fetchUser = async () => {
+      try {
+        const payload = await getCurrentUser();
+
+        if (
+          payload &&
+          typeof payload === "object" &&
+          "email" in payload &&
+          "role" in payload
+        ) {
+          setUser(payload as IUser);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setUser(null);
+        if (!user) {
+          window.location.reload();
+        }
+      } finally {
+        setIsLoading(false);
+        if (justLoggedIn) localStorage.removeItem("justLoggedIn");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
@@ -52,7 +66,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (context == undefined) {
+  if (context === undefined) {
     throw new Error("useUser must be used within a UserProvider");
   }
   return context;
