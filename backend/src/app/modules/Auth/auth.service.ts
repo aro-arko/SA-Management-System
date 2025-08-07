@@ -4,6 +4,7 @@ import { User } from '../User/user.model';
 import httpStatus from 'http-status';
 import { createToken } from './auth.utils';
 import config from '../../config';
+import { JwtPayload } from 'jsonwebtoken';
 
 const createUser = async (payLoad: Partial<TUser>) => {
   const userData = { ...payLoad };
@@ -57,7 +58,29 @@ const loginUser = async (payLoad: { email: string; password: string }) => {
   return { accessToken: accessToken };
 };
 
+// change password
+const changePassword = async (
+  currentUser: JwtPayload,
+  oldPassword: string,
+  newPassword: string,
+) => {
+  const user = await User.findOne({ email: currentUser.email });
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  if (!(await User.isPasswordMatched(oldPassword, user.password))) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid old password');
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  return user;
+};
+
 export const authService = {
   createUser,
   loginUser,
+  changePassword,
 };

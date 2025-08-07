@@ -81,7 +81,34 @@ const loginValidation = z.object({
   }),
 });
 
+// change password
+const changePasswordValidation = z.object({
+  body: z.object({
+    oldPassword: z
+      .string({
+        invalid_type_error: 'Old password must be a string',
+      })
+      .min(6, {
+        message: 'Old password must be at least 6 characters long',
+      })
+      .max(100, {
+        message: 'Old password must be at most 32 characters long',
+      }),
+    newPassword: z
+      .string({
+        invalid_type_error: 'New password must be a string',
+      })
+      .min(6, {
+        message: 'New password must be at least 6 characters long',
+      })
+      .max(100, {
+        message: 'New password must be at most 32 characters long',
+      }),
+  }),
+});
+
 export const authValidation = {
   registerValidation,
   loginValidation,
+  changePasswordValidation,
 };
