@@ -125,3 +125,25 @@ export const editUserDetails = async (id: string, data: TUserDetails) => {
     throw error;
   }
 };
+
+// create new user
+export const createNewUser = async (data: TUserDetails) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/users/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+};

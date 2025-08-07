@@ -119,7 +119,8 @@ const UserDetails = () => {
     <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold capitalize">{fullName}</h1>
+          <div></div>
+          <h1 className="text-3xl font-bold capitalize">User Details</h1>
           <button
             onClick={() => router.push(`/coordinator/users/${id}/update`)}
             className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-semibold border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
