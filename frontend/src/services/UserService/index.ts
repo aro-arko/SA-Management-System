@@ -76,3 +76,29 @@ export const getAllUsers = async (query: string) => {
     return error.message || "An error occurred while fetching users";
   }
 };
+
+// get user details by Id
+export const getUserDetailsById = async (userId: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/users/details/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch user details");
+    }
+
+    return res.json();
+  } catch (error: any) {
+    return error.message || "An error occurred while fetching user details";
+  }
+};
