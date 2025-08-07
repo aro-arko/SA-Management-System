@@ -42,20 +42,14 @@ const applyNewApplication = async (payLoad: TNewApplication) => {
 const getAllApplications = async (query: Record<string, unknown> = {}) => {
   const filters: Record<string, unknown> = {};
 
-  const showAll = query.showAll === 'true';
-
-  if (!showAll) {
-    filters.isChecked = false;
-  }
-
   const baseQuery = NewApplication.find(filters);
 
   const qb = new QueryBuilder(baseQuery, query);
 
   const applications = await qb
-    .search(['fullName', 'email', 'studentId'])
+    .search(['fullName', 'email', 'studentId'], ['studentId'])
     .filter()
-    .sortByCreatedAt(showAll ? 'desc' : 'asc')
+    .sortByCreatedAt('desc')
     .paginate()
     .fields()
     .modelQuery.lean();

@@ -17,14 +17,14 @@ router.post(
 // get all applications
 router.get(
   '/',
-  auth(USER_ROLE.hrFinanceAdmin),
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.hrFinanceAdmin),
   NewApplicationController.getAllApplications,
 );
 
 // get appliation details
 router.get(
   '/:id',
-  auth(USER_ROLE.hrFinanceAdmin),
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.hrFinanceAdmin),
   NewApplicationController.getApplicationDetails,
 );
 

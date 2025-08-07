@@ -9,17 +9,33 @@ class QueryBuilder<T> {
     this.query = query;
   }
 
-  search(searchableFields: string[]) {
+  search(searchableFields: string[], numericFields: string[] = []) {
     const searchTerm = this.query.search as string;
     if (searchTerm) {
-      this.modelQuery = this.modelQuery.find({
-        $or: searchableFields.map(
-          (field) =>
-            ({
-              [field]: { $regex: searchTerm, $options: 'i' },
-            }) as FilterQuery<T>,
-        ),
-      });
+      const searchConditions = searchableFields
+        .map((field) => {
+          // Handle numeric fields (like studentId)
+          if (numericFields.includes(field)) {
+            // If search term is a valid number, search for exact match
+            if (!isNaN(Number(searchTerm))) {
+              return { [field]: Number(searchTerm) } as FilterQuery<T>;
+            }
+            // If not a number, skip this field for numeric search
+            return null;
+          }
+
+          // Handle string fields with regex
+          return {
+            [field]: { $regex: searchTerm, $options: 'i' },
+          } as FilterQuery<T>;
+        })
+        .filter((condition): condition is FilterQuery<T> => condition !== null); // Remove null values with type guard
+
+      if (searchConditions.length > 0) {
+        this.modelQuery = this.modelQuery.find({
+          $or: searchConditions as FilterQuery<T>[],
+        });
+      }
     }
     return this;
   }
