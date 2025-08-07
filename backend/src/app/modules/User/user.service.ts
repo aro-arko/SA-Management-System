@@ -219,6 +219,15 @@ const getUserDetailsById = async (userId: string) => {
   return user;
 };
 
+// get me
+const getMe = async (currentUser: JwtPayload) => {
+  const { email } = currentUser;
+
+  const user = await User.findOne({ email }).select('-password -tasks');
+
+  return user;
+};
+
 export const UserService = {
   userUpdate,
   getUserTasks,
@@ -226,4 +235,5 @@ export const UserService = {
   getUserById,
   getAllUsers,
   getUserDetailsById,
+  getMe,
 };
