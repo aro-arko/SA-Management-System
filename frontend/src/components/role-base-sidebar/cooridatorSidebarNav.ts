@@ -6,6 +6,7 @@ import {
   Calendar,
   CameraIcon,
   Briefcase,
+  Users2,
 } from "lucide-react";
 
 export const coordinatorNavMain = [
@@ -93,6 +94,21 @@ export const coordinatorNavMain = [
       {
         title: "New Applications",
         url: "/coordinator/hr-new-applications",
+      },
+    ],
+  },
+  {
+    title: "User Management",
+    url: "#",
+    icon: Users2,
+    items: [
+      {
+        title: "Users",
+        url: "/coordinator/users",
+      },
+      {
+        title: "Create new User",
+        url: "/coordinator/create-user",
       },
     ],
   },
