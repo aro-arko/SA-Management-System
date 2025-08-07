@@ -66,8 +66,6 @@ const userUpdate = async (
     throw new AppError(httpStatus.FORBIDDEN, 'You cannot change your own role');
   }
 
-  console.log(currentUserId._id.toString(), userId);
-
   const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
     new: true,
   });
