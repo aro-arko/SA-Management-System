@@ -1,7 +1,7 @@
 "use client";
 
 import { getCurrentUser } from "@/services/AuthService";
-import { IUser } from "@/types/user.type";
+import { IUser } from "@/types/users/user.type";
 import { useRouter } from "next/navigation";
 import {
   createContext,
