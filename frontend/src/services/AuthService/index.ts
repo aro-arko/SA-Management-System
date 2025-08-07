@@ -41,11 +41,13 @@ export const logout = async () => {
 };
 
 // change password
+// change password
 export const changePassword = async (data: {
   oldPassword: string;
   newPassword: string;
 }) => {
   const token = (await cookies()).get("accessToken")?.value;
+
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/auth/change-password`,
@@ -58,8 +60,10 @@ export const changePassword = async (data: {
         body: JSON.stringify(data),
       }
     );
-    return res.json();
-  } catch (error) {
-    return error;
+
+    const json = await res.json();
+    return json;
+  } catch (err: any) {
+    throw new Error(err?.message || "Failed to change password");
   }
 };

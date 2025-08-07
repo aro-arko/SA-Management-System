@@ -120,11 +120,11 @@ export const coordinatorNavMain = [
     items: [
       {
         title: "Profile",
-        url: "/coordinator-profile",
+        url: "/coordinator/coordinator-profile",
       },
       {
         title: "Change Password",
-        url: "/change-password",
+        url: "/coordinator/change-password",
       },
     ],
   },
