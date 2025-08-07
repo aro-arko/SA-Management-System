@@ -186,10 +186,11 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
 };
 
 const getAllUsers = async (query: Record<string, unknown>) => {
-  const baseQuery = User.find().select({ unit: 1, role: 1 });
+  const baseQuery = User.find()
+    .select({ firstName: 1, unit: 1, role: 1 })
+    .sort({ firstName: 1 });
   const queryBuilder = new QueryBuilder(baseQuery, query)
     .filter()
-    .sort()
     .paginate()
     .fields();
 
