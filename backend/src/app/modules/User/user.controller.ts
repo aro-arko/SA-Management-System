@@ -73,10 +73,24 @@ const getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
+// get user details by id
+const getUserDetailsById = catchAsync(async (req, res) => {
+  const userId = req.params.userId;
+  const result = await UserService.getUserDetailsById(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User details fetched successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   userUpdate,
   getUserTasks,
   getTaskDetails,
   getUserById,
   getAllUsers,
+  getUserDetailsById,
 };

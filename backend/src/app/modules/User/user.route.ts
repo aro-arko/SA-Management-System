@@ -13,6 +13,7 @@ router.patch(
   UserController.userUpdate,
 );
 
+// extracting user name by ID
 router.get(
   '/:userId',
   auth(
@@ -27,6 +28,23 @@ router.get(
     USER_ROLE.hrFinanceAdmin,
   ),
   UserController.getUserById,
+);
+
+// get user details by id
+router.get(
+  '/details/:userId',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  UserController.getUserDetailsById,
 );
 router.get(
   '/tasks',

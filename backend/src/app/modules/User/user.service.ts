@@ -187,9 +187,10 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
 
 const getAllUsers = async (query: Record<string, unknown>) => {
   const baseQuery = User.find()
-    .select({ firstName: 1, unit: 1, role: 1 })
+    .select({ unit: 1, status: 1 })
     .sort({ firstName: 1 });
   const queryBuilder = new QueryBuilder(baseQuery, query)
+    .search(['firstName', 'lastName', 'email'])
     .filter()
     .paginate()
     .fields();
@@ -203,10 +204,22 @@ const getAllUsers = async (query: Record<string, unknown>) => {
   return users;
 };
 
+// get user details by id
+const getUserDetailsById = async (userId: string) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  return user;
+};
+
 export const UserService = {
   userUpdate,
   getUserTasks,
   getTaskDetails,
   getUserById,
   getAllUsers,
+  getUserDetailsById,
 };
