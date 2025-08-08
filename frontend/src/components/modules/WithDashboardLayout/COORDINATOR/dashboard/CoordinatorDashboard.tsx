@@ -2,9 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useTheme } from "next-themes";
-import LeadsGoals from "../Leads Managment Unit/Leads Goals/LeadsGoals";
-import DataBatches from "../Leads Managment Unit/Data Batches/DataBatches";
-import AllUsers from "../Users/AllUsers";
 import { useUser } from "@/context/UserContext";
 import LeadsGoalsForDashboard from "./LeadsGoalsForDashboard";
 import DataBatchesForDashboard from "./DataBatchesForDashboard";
