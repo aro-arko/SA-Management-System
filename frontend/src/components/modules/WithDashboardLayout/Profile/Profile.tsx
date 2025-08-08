@@ -213,7 +213,7 @@ const Profile = () => {
             <Button
               variant="outline"
               className="flex items-center gap-2 border-neutral-300 dark:border-neutral-700"
-              onClick={() => router.push(`/${me.role}/users/${me._id}/update`)}
+              onClick={() => router.push(`/${me.role}/profile/edit`)}
             >
               <Pencil className="w-4 h-4" />
               Edit Profile
@@ -252,7 +252,7 @@ const Profile = () => {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <User2 className="w-6 h-6 text-blue-400" />
-                <p className="text-2xl font-semibold capitalize">{fullName}</p>
+                <p className="text-2xl font-semibold">{fullName}</p>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-indigo-400" />
@@ -283,7 +283,7 @@ const Profile = () => {
                 <div className="mt-1">{item.icon}</div>
                 <div>
                   <p className="text-xs text-muted-foreground">{item.label}</p>
-                  <p className="font-medium text-[15px] break-words capitalize">
+                  <p className="font-medium text-[15px] break-words">
                     {typeof item.value === "string" ? item.value : item.value}
                   </p>
                 </div>

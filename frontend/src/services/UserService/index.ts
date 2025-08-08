@@ -180,7 +180,7 @@ export const updateOwnProfile = async (data: TUpdateOwnProfile) => {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/users/me`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/users/update/me`,
       {
         method: "PATCH",
         headers: {

@@ -46,5 +46,5 @@ export type TUpdateOwnProfile = {
   firstName: string;
   lastName: string;
   phone: string;
-  dob: Date;
+  dob: string;
 };
