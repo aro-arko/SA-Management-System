@@ -88,7 +88,7 @@ const EditUser = () => {
       </div>
 
       <div className="max-w-full mx-auto space-y-10">
-        <h1 className="text-3xl font-bold mb-6">Edit User</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Edit User</h1>
         <form
           onSubmit={handleSubmit}
           className={`rounded-xl p-6 border space-y-6 ${

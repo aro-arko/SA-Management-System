@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { TUserDetails } from "@/types/users/user.type";
+import { TUpdateOwnProfile, TUserDetails } from "@/types/users/user.type";
 import { cookies } from "next/headers";
 
 export const getUserNameById = async (userId: string) => {
@@ -171,5 +171,28 @@ export const getMe = async () => {
     return res.json();
   } catch (error: any) {
     return error.message || "An error occurred while fetching user data";
+  }
+};
+
+// update own profile
+export const updateOwnProfile = async (data: TUpdateOwnProfile) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/users/me`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    return response.json();
+  } catch (error: any) {
+    return error.message || "An error occurred while updating profile";
   }
 };

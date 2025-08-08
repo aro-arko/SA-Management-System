@@ -41,3 +41,10 @@ export type TCreateUser = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type TUpdateOwnProfile = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  dob: Date;
+};
