@@ -24,12 +24,22 @@ router.get(
   UserController.getMe,
 );
 
-// user update by admin
+// update own profile
 router.patch(
-  '/update/:id',
-  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.lmuAdmin),
-  validateRequest(UserValidation.userUpdateValidation),
-  UserController.userUpdate,
+  '/update/me',
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
+  validateRequest(UserValidation.updateOwnProfileValidation),
+  UserController.updateOwnProfile,
 );
 
 // extracting user name by ID
@@ -101,6 +111,14 @@ router.get(
   '/',
   auth(USER_ROLE.coordinator, USER_ROLE.head),
   UserController.getAllUsers,
+);
+
+// user update by admin
+router.patch(
+  '/update/:id',
+  auth(USER_ROLE.coordinator, USER_ROLE.head),
+  validateRequest(UserValidation.userUpdateValidation),
+  UserController.userUpdate,
 );
 
 export const UserRoutes = router;

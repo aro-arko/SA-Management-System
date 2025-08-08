@@ -52,6 +52,35 @@ const userUpdateValidation = z.object({
     .partial(),
 });
 
+const updateOwnProfileValidation = z.object({
+  body: z.object({
+    firstName: z
+      .string({ invalid_type_error: 'First name must be a string' })
+      .min(1, { message: 'First name is required' })
+      .optional(),
+
+    lastName: z
+      .string({ invalid_type_error: 'Last name must be a string' })
+      .min(1, { message: 'Last name is required' })
+      .optional(),
+
+    phone: z
+      .string({ invalid_type_error: 'Phone must be a string' })
+      .min(10, {
+        message: 'Phone number must be at least 10 characters long',
+      })
+      .optional(),
+
+    dob: z
+      .string({ invalid_type_error: 'Date of birth must be a string' })
+      .refine((date) => !isNaN(Date.parse(date)), {
+        message: 'Invalid date format',
+      })
+      .optional(),
+  }),
+});
+
 export const UserValidation = {
   userUpdateValidation,
+  updateOwnProfileValidation,
 };

@@ -13,6 +13,7 @@ import { FixedTimeEvent } from '../EMU/FixedTimeEvent/fixedtimeevent.model';
 import { LMUMultiTasking } from '../LMU/LMUMultitasking/lmumultitasking.model';
 import { EMUMultiTasking } from '../EMU/EMUMultitasking/emumultitasking.model';
 import { DSMMMultitasking } from '../DSMM/DSMMMultitasking/dsmmmultitasking.model';
+import { TUser } from './user.interface';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const categoryModelMap: Record<string, mongoose.Model<any>> = {
@@ -75,6 +76,28 @@ const userUpdate = async (
   }
 
   return updatedUser;
+};
+
+// update own profile
+const updateOwnProfile = async (
+  currentUser: JwtPayload,
+  updateData: Partial<TUser>,
+) => {
+  // Find the person who's currently logged in
+  const user = await User.findOne({ email: currentUser.email });
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  await user.updateOne(
+    {
+      $set: updateData,
+    },
+    {
+      new: true,
+    },
+  );
+  return user;
 };
 
 const getUserTasks = async (
@@ -236,4 +259,5 @@ export const UserService = {
   getAllUsers,
   getUserDetailsById,
   getMe,
+  updateOwnProfile,
 };

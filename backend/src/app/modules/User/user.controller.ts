@@ -98,6 +98,21 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+// update own profile
+const updateOwnProfile = catchAsync(async (req, res) => {
+  const user = req.user;
+  const newData = req.body;
+
+  const result = await UserService.updateOwnProfile(user, newData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User profile updated successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   userUpdate,
   getUserTasks,
@@ -106,4 +121,5 @@ export const UserController = {
   getUserById,
   getAllUsers,
   getUserDetailsById,
+  updateOwnProfile,
 };
