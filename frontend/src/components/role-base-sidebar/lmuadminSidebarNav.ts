@@ -1,4 +1,12 @@
-import { Users, Settings, HomeIcon, Workflow, Clipboard } from "lucide-react";
+import {
+  Users,
+  Settings,
+  HomeIcon,
+  Workflow,
+  ClipboardList,
+  Database,
+  Layers,
+} from "lucide-react";
 
 export const lmuAdminNavMain = [
   {
@@ -8,8 +16,8 @@ export const lmuAdminNavMain = [
   },
   {
     title: "My Tasks",
-    url: "/head/my-tasks",
-    icon: Clipboard,
+    url: "/lmuadmin/my-tasks",
+    icon: ClipboardList,
     isActive: true,
   },
   {
@@ -19,46 +27,67 @@ export const lmuAdminNavMain = [
     items: [
       {
         title: "EMU Multitaskings",
-        url: "/head/emu-multitaskings",
+        url: "/lmuadmin/emu-multitaskings",
       },
       {
         title: "DSMM Multitaskings",
-        url: "/head/dsmm-multitaskings",
+        url: "/lmuadmin/dsmm-multitaskings",
       },
     ],
   },
   {
-    title: "Leads Management Unit",
+    title: "Leads Management",
     url: "#",
     icon: Users,
     items: [
       {
         title: "Leads Tasks",
-        url: "/head/leads-tasks",
+        url: "/lmuadmin/leads-tasks",
+      },
+      {
+        title: "Create Task",
+        url: "/lmuadmin/create-leads-task",
       },
       {
         title: "Leads Goals",
-        url: "/head/leads-goals",
+        url: "/lmuadmin/leads-goals",
       },
       {
-        title: "Data Entry Tasks",
-        url: "/head/data-entry-tasks",
-      },
-      {
-        title: "Data Batches",
-        url: "/head/data-batches",
-      },
-      {
-        title: "Multitaskings",
-        url: "/head/lmu-multitaskings",
-      },
-      {
-        title: "Others",
-        url: "/head/lmu-others",
+        title: "Create Leads Goal",
+        url: "/lmuadmin/create-leads-goal",
       },
     ],
   },
-
+  {
+    title: "Data Management",
+    url: "#",
+    icon: Database,
+    items: [
+      {
+        title: "Data Entry Tasks",
+        url: "/lmuadmin/data-entry-tasks",
+      },
+      {
+        title: "Data Batches",
+        url: "/lmuadmin/data-batches",
+      },
+    ],
+  },
+  {
+    title: "Multitasking & Others",
+    url: "#",
+    icon: Layers,
+    items: [
+      {
+        title: "Data Entry Tasks",
+        url: "/lmuadmin/data-entry-tasks",
+      },
+      {
+        title: "Data Batches",
+        url: "/lmuadmin/data-batches",
+      },
+    ],
+  },
   {
     title: "Settings",
     url: "#",
@@ -66,11 +95,11 @@ export const lmuAdminNavMain = [
     items: [
       {
         title: "Profile",
-        url: "/head/profile",
+        url: "/lmuadmin/profile",
       },
       {
         title: "Change Password",
-        url: "/head/change-password",
+        url: "/lmuadmin/change-password",
       },
     ],
   },
