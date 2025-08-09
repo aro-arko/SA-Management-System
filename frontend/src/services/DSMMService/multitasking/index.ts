@@ -46,3 +46,25 @@ export const getDSMMMultitaskingById = async (id: string) => {
     throw new Error("Failed to fetch DSMM multitasking by ID");
   }
 };
+
+// apply for dsmm multitasking
+export const applyDSMMMultitasking = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/dsmm-multitaskings/apply-multitasking/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error applying for DSMM multitasking:", error);
+    throw new Error("Failed to apply for DSMM multitasking");
+  }
+};

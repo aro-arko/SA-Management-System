@@ -8,6 +8,7 @@ import Link from "next/link";
 import DSMMMultitaskingCard from "./DSMMMultitaskingCard";
 import { TDSMMMultitasking } from "@/types/dsmm/multitasking.type";
 import { getDSMMMultitaskings } from "@/services/DSMMService/multitasking";
+import { useUser } from "@/context/UserContext";
 
 const DSMMMultitaskings = () => {
   const [tasks, setTasks] = useState<TDSMMMultitasking[]>([]);
@@ -16,6 +17,7 @@ const DSMMMultitaskings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -95,7 +97,7 @@ const DSMMMultitaskings = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/coordinator/dsmm-multitaskings/${task._id}`}
+                href={`/${user?.role}/dsmm-multitaskings/${task._id}`}
                 key={task._id}
               >
                 <DSMMMultitaskingCard task={task} />

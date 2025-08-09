@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,48 +14,95 @@ import {
   History,
   Users,
   User2,
+  Loader2,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { getUserNameById } from "@/services/UserService";
 import { TDSMMMultitasking } from "@/types/dsmm/multitasking.type";
 import { getDSMMMultitaskingById } from "@/services/DSMMService/multitasking";
+import { applyDSMMMultitasking } from "@/services/DSMMService/multitasking";
+import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const DSMMMultitaskingDetails = () => {
   const { id } = useParams();
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
+
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
+
   const [task, setTask] = useState<TDSMMMultitasking | null>(null);
   const [createdByName, setCreatedByName] = useState("");
   const [manpowerNames, setManpowerNames] = useState<string[]>([]);
 
   useEffect(() => setMounted(true), []);
 
-  useEffect(() => {
-    const fetchTask = async () => {
-      setLoading(true);
+  const refetch = useCallback(async () => {
+    setLoading(true);
+    try {
       const res = await getDSMMMultitaskingById(id as string);
       if (res.success) {
-        const data = res.data;
+        const data = res.data as TDSMMMultitasking;
         setTask(data);
 
-        const creator = await getUserNameById(data.createdBy);
-        setCreatedByName(creator?.data?.name || "Unknown");
+        // createdBy (safe)
+        if (data.createdBy) {
+          const creator = await getUserNameById(data.createdBy);
+          setCreatedByName(creator?.data?.name || "Unknown");
+        } else {
+          setCreatedByName("");
+        }
 
-        const names = await Promise.all(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          data.manpower.map(async (mp: any) => {
-            const user = await getUserNameById(mp.userId);
-            return user?.data?.name || "Unknown";
-          })
-        );
-        setManpowerNames(names);
+        // manpower names (safe)
+        if (Array.isArray(data.manpower) && data.manpower.length > 0) {
+          const names = await Promise.all(
+            data.manpower.map(async (mp: any) => {
+              const u = await getUserNameById(mp.userId);
+              return u?.data?.name || "Unknown";
+            })
+          );
+          setManpowerNames(names);
+        } else {
+          setManpowerNames([]);
+        }
+      } else {
+        setTask(null);
+        setCreatedByName("");
+        setManpowerNames([]);
       }
+    } catch (e) {
+      setTask(null);
+      setCreatedByName("");
+      setManpowerNames([]);
+    } finally {
       setLoading(false);
-    };
-
-    fetchTask();
+    }
   }, [id]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  const handleApply = async () => {
+    if (!id || !task) return;
+    setApplying(true);
+    try {
+      const res = await applyDSMMMultitasking(id as string);
+      if (res?.success) {
+        toast.success(res?.message || "Applied successfully");
+        await refetch();
+      } else {
+        toast.error(res?.message || "Failed to apply");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong while applying");
+    } finally {
+      setApplying(false);
+    }
+  };
 
   const isDark = resolvedTheme === "dark";
   const bgClass = !mounted
@@ -63,6 +112,7 @@ const DSMMMultitaskingDetails = () => {
     : "bg-white text-black";
 
   if (!mounted) return <div className="min-h-screen bg-white dark:bg-black" />;
+
   if (loading)
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
@@ -130,18 +180,56 @@ const DSMMMultitaskingDetails = () => {
     <div className={`min-h-screen px-6 py-10 rounded-xl ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
         <div className="text-center">
-          <h1 className="text-3xl font-bold capitalize">{task.title}</h1>
-          <p className="mt-2">
-            <span
-              className={`inline-block px-4 py-1 text-sm font-medium capitalize rounded-full ${
-                task.status === "active"
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-              }`}
-            >
-              {task.status}
-            </span>
-          </p>
+          <h1 className="text-3xl font-bold">{task.title}</h1>
+
+          {user?.role !== "coordinator" ? (
+            task.status === "active" ? (
+              <Button
+                onClick={handleApply}
+                disabled={applying}
+                className={`mt-4 px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+                  ${
+                    isDark
+                      ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
+                      : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
+                  }`}
+                aria-busy={applying}
+              >
+                {applying ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Applying…
+                  </span>
+                ) : (
+                  "Apply"
+                )}
+              </Button>
+            ) : (
+              <p className="mt-3 capitalize">
+                <span
+                  className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+                    (task.status as string) === "active"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+                  }`}
+                >
+                  {task.status}
+                </span>
+              </p>
+            )
+          ) : (
+            <p className="mt-3">
+              <span
+                className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+                  task.status === "active"
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+                }`}
+              >
+                {task.status}
+              </span>
+            </p>
+          )}
         </div>
 
         {/* Info Cards */}
