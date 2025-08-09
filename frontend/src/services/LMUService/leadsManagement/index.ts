@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { TCreateLeadsGoal } from "@/types/lmu/goal.type";
 import { TCreateLeadsTask, TUpdateLeadsTask } from "@/types/lmu/leadsTask.type";
 import { cookies } from "next/headers";
 
@@ -151,6 +152,28 @@ export const deleteLeadsTask = async (id: string) => {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// create lead goals
+export const createLeadGoal = async (data: TCreateLeadsGoal) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-leads-goals/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
       }
     );
     return res.json();

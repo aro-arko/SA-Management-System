@@ -10,3 +10,8 @@ export type TLmuGoal = {
   createdBy: string;
   createdAt: string;
 };
+
+export type TCreateLeadsGoal = {
+  title: string;
+  type: "whatsapp" | "email" | "calling";
+};
