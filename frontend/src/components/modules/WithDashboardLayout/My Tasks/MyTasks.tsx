@@ -182,6 +182,8 @@ export default function MyTasks() {
                 href = `/${user?.role}/lmu-others/${task._id}`;
               } else if (t === "event") {
                 href = `/${user?.role}/event-tasks/${task._id}`;
+              } else if (t === "task" && task.unit === "DSMM") {
+                href = `/${user?.role}/dsmm-tasks/${task._id}`;
               }
 
               return href ? (
