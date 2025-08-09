@@ -21,3 +21,22 @@ export type TLmuTask = {
   completedAt?: Date;
   status: "in-progress" | "completed";
 };
+
+export type TCreateLeadsTask = {
+  title: string;
+  type: "whatsapp" | "email" | "calling" | string;
+  goalId?: string;
+  multiTask: boolean;
+  multiTaskId?: string;
+  totalLeads: number;
+  assignedTo: string;
+  dueDate: Date | string;
+  message: string;
+};
+
+export type TUserOption = {
+  _id: string;
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  meta?: any;
+};

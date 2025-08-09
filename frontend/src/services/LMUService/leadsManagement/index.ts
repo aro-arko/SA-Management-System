@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { TCreateLeadsTask } from "@/types/lmu/leadsTask.type";
 import { cookies } from "next/headers";
 
 // -----------------leads goals starts
@@ -78,6 +79,28 @@ export const addActivityLeadsTask = async (id: string, data: any) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/leads-management/add-activity/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// create leads tasks
+export const createLeadsTask = async (data: TCreateLeadsTask) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/leads-management/create-task`,
       {
         method: "POST",
         headers: {

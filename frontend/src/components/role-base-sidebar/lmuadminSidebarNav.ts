@@ -45,7 +45,7 @@ export const lmuAdminNavMain = [
         url: "/lmuadmin/leads-tasks",
       },
       {
-        title: "Create Task",
+        title: "Create Leads Task",
         url: "/lmuadmin/create-leads-task",
       },
       {

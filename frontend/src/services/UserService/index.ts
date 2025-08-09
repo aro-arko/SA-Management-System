@@ -55,7 +55,7 @@ export const TaskDetails = async (taskId: string) => {
 
 export const getAllUsers = async (query: string) => {
   const token = (await cookies()).get("accessToken")?.value;
-
+  console.log(query);
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/users?${query}`,
@@ -67,11 +67,6 @@ export const getAllUsers = async (query: string) => {
         },
       }
     );
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch users");
-    }
-
     return res.json();
   } catch (error: any) {
     return error.message || "An error occurred while fetching users";
