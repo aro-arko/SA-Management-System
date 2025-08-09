@@ -8,6 +8,7 @@ import { TLMUDataBatch } from "@/types/lmu/databatch.type";
 import DataBatchCardSkeleton from "./DataBatchSkeleton";
 import DataBatchCard from "./DataBatchCard";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
 
 const DataBatches = () => {
   const [batches, setBatches] = useState<TLMUDataBatch[]>([]);
@@ -15,6 +16,7 @@ const DataBatches = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -59,7 +61,10 @@ const DataBatches = () => {
         </p>
       ) : (
         batches.map((batch) => (
-          <Link key={batch._id} href={`/coordinator/data-batches/${batch._id}`}>
+          <Link
+            key={batch._id}
+            href={`/${user?.role}/data-batches/${batch._id}`}
+          >
             <DataBatchCard batch={batch} />
           </Link>
         ))

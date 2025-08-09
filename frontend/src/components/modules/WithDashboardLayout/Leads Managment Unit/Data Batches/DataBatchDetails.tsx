@@ -18,6 +18,7 @@ import { getDataBatchById } from "@/services/LMUService/dataManagement";
 import { getUserNameById } from "@/services/UserService";
 import { TLMUDataBatch } from "@/types/lmu/databatch.type";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
+import { useUser } from "@/context/UserContext";
 
 const DataBatchDetails = () => {
   const { id } = useParams();
@@ -26,6 +27,7 @@ const DataBatchDetails = () => {
   const [loading, setLoading] = useState(true);
   const [batch, setBatch] = useState<TLMUDataBatch | null>(null);
   const [creatorName, setCreatorName] = useState("Loading...");
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
   const isDark = resolvedTheme === "dark";
@@ -223,7 +225,7 @@ const DataBatchDetails = () => {
                   <div>
                     <p className="text-xs text-muted-foreground">Task ID</p>
                     <p className="font-medium text-[15px] break-all">
-                      <Link href={`/coordinator/data-entry-tasks/${taskId}`}>
+                      <Link href={`/${user?.role}/data-entry-tasks/${taskId}`}>
                         {taskId}
                       </Link>
                     </p>
