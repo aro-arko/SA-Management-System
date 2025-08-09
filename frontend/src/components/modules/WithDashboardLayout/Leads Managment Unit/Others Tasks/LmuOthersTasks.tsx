@@ -8,6 +8,7 @@ import LmuOthersTaskCard from "./LmuOthersTaskCard";
 import Link from "next/link";
 import { TLMUOthersTask } from "@/types/lmu/others.type";
 import { getLMUOtherTasks } from "@/services/LMUService/others tasks";
+import { useUser } from "@/context/UserContext";
 
 const LmuOthersTasks = () => {
   const [tasks, setTasks] = useState<TLMUOthersTask[]>([]);
@@ -16,6 +17,7 @@ const LmuOthersTasks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -98,7 +100,10 @@ const LmuOthersTasks = () => {
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => (
-              <Link href={`/coordinator/lmu-others/${task._id}`} key={task._id}>
+              <Link
+                href={`/${user?.role}/lmu-others/${task._id}`}
+                key={task._id}
+              >
                 <LmuOthersTaskCard task={task} />
               </Link>
             ))}
