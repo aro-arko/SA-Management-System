@@ -97,7 +97,9 @@ const EventTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/event-tasks/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/event-tasks/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <EventTaskCard task={task} />

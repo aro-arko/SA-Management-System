@@ -97,7 +97,9 @@ const EmuMultitaskings = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/emu-multitaskings/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/emu-multitaskings/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <EmuMultitaskingCard task={task} />

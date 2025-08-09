@@ -97,7 +97,9 @@ const DSMMMultitaskings = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/dsmm-multitaskings/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/dsmm-multitaskings/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <DSMMMultitaskingCard task={task} />

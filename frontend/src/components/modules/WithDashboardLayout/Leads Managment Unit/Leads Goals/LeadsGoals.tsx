@@ -67,7 +67,10 @@ const LeadsGoals = () => {
         <p className="text-muted-foreground text-center">No goals found.</p>
       ) : (
         goals.map((goal) => (
-          <Link href={`/${user?.role}/leads-goals/${goal._id}`} key={goal._id}>
+          <Link
+            href={`/${user?.role.toLocaleLowerCase()}/leads-goals/${goal._id}`}
+            key={goal._id}
+          >
             <GoalCard goal={goal} />
           </Link>
         ))

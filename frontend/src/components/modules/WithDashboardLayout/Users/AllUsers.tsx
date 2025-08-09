@@ -18,7 +18,7 @@ const AllUsers = () => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const user = useUser();
-  const userRole = user.user?.role;
+  const userRole = user.user?.role.toLocaleLowerCase();
 
   useEffect(() => setMounted(true), []);
 

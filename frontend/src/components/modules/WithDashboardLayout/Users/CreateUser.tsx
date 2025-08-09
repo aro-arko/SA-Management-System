@@ -48,7 +48,7 @@ const CreateUser = () => {
       const response = await createNewUser(formData);
       if (response?.success) {
         toast.success("User created successfully!");
-        router.push(`/${user?.role}/users`);
+        router.push(`/${user?.role.toLocaleLowerCase()}/users`);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

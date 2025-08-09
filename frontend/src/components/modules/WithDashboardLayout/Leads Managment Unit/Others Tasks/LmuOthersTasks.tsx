@@ -101,7 +101,9 @@ const LmuOthersTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/lmu-others/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/lmu-others/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <LmuOthersTaskCard task={task} />

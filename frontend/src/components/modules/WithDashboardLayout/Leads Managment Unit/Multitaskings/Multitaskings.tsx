@@ -101,7 +101,9 @@ const Multitaskings = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/lmu-multitaskings/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/lmu-multitaskings/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <MultitaskingCard task={task} />

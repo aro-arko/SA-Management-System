@@ -182,7 +182,7 @@ const DSMMMultitaskingDetails = () => {
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
 
-          {user?.role !== "coordinator" ? (
+          {user?.role.toLocaleLowerCase() !== "coordinator" ? (
             task.status === "active" ? (
               <Button
                 onClick={handleApply}

@@ -96,7 +96,9 @@ const LeadsTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/leads-tasks/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/leads-tasks/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <div

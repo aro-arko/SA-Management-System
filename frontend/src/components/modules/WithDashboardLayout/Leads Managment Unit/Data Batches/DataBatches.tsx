@@ -63,7 +63,9 @@ const DataBatches = () => {
         batches.map((batch) => (
           <Link
             key={batch._id}
-            href={`/${user?.role}/data-batches/${batch._id}`}
+            href={`/${user?.role.toLocaleLowerCase()}/data-batches/${
+              batch._id
+            }`}
           >
             <DataBatchCard batch={batch} />
           </Link>

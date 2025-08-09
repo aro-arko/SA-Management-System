@@ -159,7 +159,9 @@ const DataEntryTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/${user?.role}/data-entry-tasks/${task._id}`}
+                href={`/${user?.role.toLocaleLowerCase()}/data-entry-tasks/${
+                  task._id
+                }`}
                 key={task._id}
               >
                 <div

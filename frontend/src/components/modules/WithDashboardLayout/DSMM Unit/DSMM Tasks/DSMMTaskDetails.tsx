@@ -119,7 +119,9 @@ const DSMMTaskDetails = () => {
           label: "Multitask",
           value: task.multiTask ? (
             <Link
-              href={`/${user?.role}/dsmm-multitaskings/${task.multiTaskId}`}
+              href={`/${user?.role
+                .toLocaleLowerCase()
+                .toLocaleLowerCase()}/dsmm-multitaskings/${task.multiTaskId}`}
               className="text-blue-500 hover:underline"
             >
               {`${task.multiTaskId}`}

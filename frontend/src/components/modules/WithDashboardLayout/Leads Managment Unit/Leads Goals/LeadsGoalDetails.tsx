@@ -259,7 +259,9 @@ const LeadsGoalDetails = () => {
                   <div>
                     <p className="text-xs text-muted-foreground">Task ID</p>
                     <p className="font-medium text-[15px] break-all">
-                      <Link href={`/${user?.role}/leads-tasks/${taskId}`}>
+                      <Link
+                        href={`/${user?.role.toLocaleLowerCase()}/leads-tasks/${taskId}`}
+                      >
                         {taskId}
                       </Link>
                     </p>

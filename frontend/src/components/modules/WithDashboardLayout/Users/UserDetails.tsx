@@ -127,7 +127,11 @@ const UserDetails = () => {
           <div></div>
           <h1 className="text-3xl font-bold capitalize">User Details</h1>
           <button
-            onClick={() => router.push(`/${user?.role}/users/${id}/update`)}
+            onClick={() =>
+              router.push(
+                `/${user?.role.toLocaleLowerCase()}/users/${id}/update`
+              )
+            }
             className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-semibold border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
           >
             <Pencil className="w-4 h-4" />

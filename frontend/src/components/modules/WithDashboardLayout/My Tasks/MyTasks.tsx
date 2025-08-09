@@ -175,15 +175,25 @@ export default function MyTasks() {
               let href: string | null = null;
 
               if (["whatsapp", "email", "calling"].includes(t)) {
-                href = `/${user?.role}/leads-tasks/${task._id}`;
+                href = `/${user?.role.toLocaleLowerCase()}/leads-tasks/${
+                  task._id
+                }`;
               } else if (t === "data-entry") {
-                href = `/${user?.role}/data-entry-tasks/${task._id}`;
+                href = `/${user?.role.toLocaleLowerCase()}/data-entry-tasks/${
+                  task._id
+                }`;
               } else if (t === "others" && task.unit === "LMU") {
-                href = `/${user?.role}/lmu-others/${task._id}`;
+                href = `/${user?.role.toLocaleLowerCase()}/lmu-others/${
+                  task._id
+                }`;
               } else if (t === "event") {
-                href = `/${user?.role}/event-tasks/${task._id}`;
+                href = `/${user?.role.toLocaleLowerCase()}/event-tasks/${
+                  task._id
+                }`;
               } else if (t === "task" && task.unit === "DSMM") {
-                href = `/${user?.role}/dsmm-tasks/${task._id}`;
+                href = `/${user?.role.toLocaleLowerCase()}/dsmm-tasks/${
+                  task._id
+                }`;
               }
 
               return href ? (

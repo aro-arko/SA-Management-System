@@ -55,7 +55,7 @@ const EditUser = () => {
     console.log(res);
     if (res?.data) {
       toast.success("User updated successfully!");
-      router.push(`/${user?.role}/users/${id}`);
+      router.push(`/${user?.role.toLocaleLowerCase()}/users/${id}`);
     } else {
       toast.error("Failed to update user. Please try again.");
     }

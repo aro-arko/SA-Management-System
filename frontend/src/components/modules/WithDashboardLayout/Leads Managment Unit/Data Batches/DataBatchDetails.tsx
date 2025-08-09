@@ -225,7 +225,9 @@ const DataBatchDetails = () => {
                   <div>
                     <p className="text-xs text-muted-foreground">Task ID</p>
                     <p className="font-medium text-[15px] break-all">
-                      <Link href={`/${user?.role}/data-entry-tasks/${taskId}`}>
+                      <Link
+                        href={`/${user?.role.toLocaleLowerCase()}/data-entry-tasks/${taskId}`}
+                      >
                         {taskId}
                       </Link>
                     </p>

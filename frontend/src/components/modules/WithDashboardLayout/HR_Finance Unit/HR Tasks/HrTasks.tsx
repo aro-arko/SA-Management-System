@@ -98,7 +98,10 @@ const HrTasks = () => {
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => (
-              <Link href={`/${user?.role}/hr-tasks/${task._id}`} key={task._id}>
+              <Link
+                href={`/${user?.role.toLocaleLowerCase()}/hr-tasks/${task._id}`}
+                key={task._id}
+              >
                 <HrTaskCard task={task} />
               </Link>
             ))}

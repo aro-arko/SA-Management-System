@@ -87,7 +87,7 @@ const LeadsTaskDetails = () => {
     : 0;
 
   const isCompleted = (task?.status || "").toLowerCase() === "completed";
-  const canAddActivity = user?.role !== "coordinator";
+  const canAddActivity = user?.role.toLocaleLowerCase() !== "coordinator";
 
   const infoCards = task
     ? [
@@ -115,9 +115,11 @@ const LeadsTaskDetails = () => {
               "lmuAdmin",
               "lmuDataLeader",
               "lmuMember",
-            ].includes(user?.role || "") && task.goalId ? (
+            ].includes(user?.role.toLocaleLowerCase() || "") && task.goalId ? (
               <Link
-                href={`/${user?.role}/leads-goals/${task.goalId}`}
+                href={`/${user?.role.toLocaleLowerCase()}/leads-goals/${
+                  task.goalId
+                }`}
                 className="text-blue-500 underline hover:text-blue-600"
               >
                 {task.goalId}
