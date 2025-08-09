@@ -20,6 +20,11 @@ const roleBasedPrivateRoutes = {
     /^\/head-profile(?:\/.*)?$/,
     /^\/change-password$/,
   ],
+  lmuAdmin: [
+    /^\/lmuadmin(?:\/.*)?$/,
+    /^\/lmuadmin-profile(?:\/.*)?$/,
+    /^\/change-password$/,
+  ],
 } as const;
 
 type Role = keyof typeof roleBasedPrivateRoutes;
@@ -72,5 +77,10 @@ export const config = {
     // optional separate profile routes
     "/coordinator-profile",
     "/head-profile",
+    "/lmuadmin-profile",
+
+    // lmuadmin space
+    "/lmuadmin",
+    "/lmuadmin/:page*",
   ],
 };

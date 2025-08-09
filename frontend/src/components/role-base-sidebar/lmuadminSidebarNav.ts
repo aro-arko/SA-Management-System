@@ -79,12 +79,12 @@ export const lmuAdminNavMain = [
     icon: Layers,
     items: [
       {
-        title: "Data Entry Tasks",
-        url: "/lmuadmin/data-entry-tasks",
+        title: "Multitaskings",
+        url: "/lmuadmin/lmu-multitaskings",
       },
       {
-        title: "Data Batches",
-        url: "/lmuadmin/data-batches",
+        title: "Others",
+        url: "/lmuadmin/lmu-others",
       },
     ],
   },
