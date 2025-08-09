@@ -8,6 +8,7 @@ import Link from "next/link";
 import EventTaskCard from "./EventTaskCard";
 import { TFixedTimeEvent } from "@/types/emu/fixedEvent.type";
 import { getAllFixedTimeEvents } from "@/services/EMUService/fixedTimeEventManagement";
+import { useUser } from "@/context/UserContext";
 
 const EventTasks = () => {
   const [tasks, setTasks] = useState<TFixedTimeEvent[]>([]);
@@ -16,6 +17,7 @@ const EventTasks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -95,7 +97,7 @@ const EventTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/coordinator/event-tasks/${task._id}`}
+                href={`/${user?.role}/event-tasks/${task._id}`}
                 key={task._id}
               >
                 <EventTaskCard task={task} />
