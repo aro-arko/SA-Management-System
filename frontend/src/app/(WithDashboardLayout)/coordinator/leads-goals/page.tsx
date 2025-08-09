@@ -1,4 +1,4 @@
-import LeadsGoals from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Leads Goals/LeadsGoals";
+import LeadsGoals from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Leads Goals/LeadsGoals";
 
 const LeadsGoalsPage = () => {
   return (

@@ -1,4 +1,4 @@
-import EventTaskDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/Event Management Unit/Event Tasks/EventTaskDetails";
+import EventTaskDetails from "@/components/modules/WithDashboardLayout/Event Management Unit/Event Tasks/EventTaskDetails";
 
 const EventTaskDetailsPage = () => {
   return (

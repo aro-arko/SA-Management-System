@@ -1,4 +1,4 @@
-import AllUsers from "@/components/modules/WithDashboardLayout/COORDINATOR/Users/AllUsers";
+import AllUsers from "@/components/modules/WithDashboardLayout/Users/AllUsers";
 
 const UsersPage = () => {
   return (

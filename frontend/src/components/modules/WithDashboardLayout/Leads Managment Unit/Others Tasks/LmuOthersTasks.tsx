@@ -27,7 +27,6 @@ const LmuOthersTasks = () => {
       }`;
 
       const res = await getLMUOtherTasks(query);
-      console.log(res);
       if (res.success) {
         setTasks(res.data);
       } else {

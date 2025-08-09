@@ -1,4 +1,4 @@
-import UserDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/Users/UserDetails";
+import UserDetails from "@/components/modules/WithDashboardLayout/Users/UserDetails";
 
 const UserDetailsPage = () => {
   return (

@@ -1,4 +1,4 @@
-import CreateUser from "@/components/modules/WithDashboardLayout/COORDINATOR/Users/CreateUser";
+import CreateUser from "@/components/modules/WithDashboardLayout/Users/CreateUser";
 
 const CreateUserPage = () => {
   return (

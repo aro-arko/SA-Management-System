@@ -1,4 +1,4 @@
-import DSMMTaskDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/DSMM Unit/DSMM Tasks/DSMMTaskDetails";
+import DSMMTaskDetails from "@/components/modules/WithDashboardLayout/DSMM Unit/DSMM Tasks/DSMMTaskDetails";
 
 const DSMMTaskDetailsPage = () => {
   return (

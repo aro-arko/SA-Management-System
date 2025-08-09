@@ -1,4 +1,4 @@
-import EditUser from "@/components/modules/WithDashboardLayout/COORDINATOR/Users/EditUser";
+import EditUser from "@/components/modules/WithDashboardLayout/Users/EditUser";
 
 const UserDetailsUpdatePage = () => {
   return (

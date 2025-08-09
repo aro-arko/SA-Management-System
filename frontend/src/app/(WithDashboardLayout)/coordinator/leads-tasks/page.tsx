@@ -1,4 +1,4 @@
-import LeadsTasks from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Leads Tasks/LeadsTasks";
+import LeadsTasks from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Leads Tasks/LeadsTasks";
 
 const LeadsTasksPage = () => {
   return (

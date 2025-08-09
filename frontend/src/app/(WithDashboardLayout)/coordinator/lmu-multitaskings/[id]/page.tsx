@@ -1,4 +1,4 @@
-import MultitaskingDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Multitaskings/MultitaskingDetails";
+import MultitaskingDetails from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Multitaskings/MultitaskingDetails";
 
 const LmuMultitaskingDetailsPage = () => {
   return (

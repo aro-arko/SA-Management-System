@@ -1,4 +1,4 @@
-import LmuOthersTasks from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Others Tasks/LmuOthersTasks";
+import LmuOthersTasks from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Others Tasks/LmuOthersTasks";
 
 const LmuOthersTasksPage = () => {
   return (

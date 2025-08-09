@@ -1,4 +1,4 @@
-import Multitaskings from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Multitaskings/Multitaskings";
+import Multitaskings from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Multitaskings/Multitaskings";
 
 const MultiTaskingPage = () => {
   return (

@@ -1,4 +1,4 @@
-import DataBatches from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Data Batches/DataBatches";
+import DataBatches from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Data Batches/DataBatches";
 
 const DataBatchesComponent = () => {
   return (

@@ -230,7 +230,7 @@ const Profile = () => {
 
         {/* Top Card: Avatar + Basic Info */}
         <div
-          className={`rounded-xl p-6 border shadow-xl backdrop-blur-lg ${
+          className={`rounded-xl p-6 border shadow-md backdrop-blur-lg ${
             isDark
               ? "bg-black/20 border-neutral-700"
               : "bg-white/80 border-neutral-200"

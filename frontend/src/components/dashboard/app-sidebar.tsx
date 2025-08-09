@@ -52,7 +52,6 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </Sidebar>
     );
   }
-  console.log(isLoading, user);
 
   // Get nav based on role
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

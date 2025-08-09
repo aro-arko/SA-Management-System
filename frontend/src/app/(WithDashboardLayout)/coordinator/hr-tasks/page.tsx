@@ -1,4 +1,4 @@
-import HrTasks from "@/components/modules/WithDashboardLayout/COORDINATOR/HR_Finance Unit/HR Tasks/HrTasks";
+import HrTasks from "@/components/modules/WithDashboardLayout/HR_Finance Unit/HR Tasks/HrTasks";
 
 const HRTasksPage = () => {
   return (

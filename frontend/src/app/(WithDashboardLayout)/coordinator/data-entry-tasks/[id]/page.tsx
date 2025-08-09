@@ -1,4 +1,4 @@
-import DataEntryTaskDetails from "@/components/modules/WithDashboardLayout/COORDINATOR/Leads Managment Unit/Data Entry Tasks/DataEntryTaskDetails";
+import DataEntryTaskDetails from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Data Entry Tasks/DataEntryTaskDetails";
 
 const DataEntryTaskDetailsPages = () => {
   return (

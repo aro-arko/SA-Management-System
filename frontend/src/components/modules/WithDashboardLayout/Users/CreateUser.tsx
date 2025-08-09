@@ -44,7 +44,6 @@ const CreateUser = () => {
     setLoading(true);
     try {
       const response = await createNewUser(formData);
-      console.log(response);
       if (response?.success) {
         toast.success("User created successfully!");
         router.push("/coordinator/users");
@@ -56,8 +55,6 @@ const CreateUser = () => {
       setLoading(false);
     }
   };
-
-  console.log(formData);
 
   const isDark = resolvedTheme === "dark";
   const bgClass = !mounted

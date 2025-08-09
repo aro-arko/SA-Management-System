@@ -12,7 +12,7 @@ const UserCard = ({ user }: { user: TUserDetails }) => {
   useEffect(() => {
     const fetchName = async () => {
       try {
-        const res = await getUserNameById(user._id);
+        const res = await getUserNameById(user._id!);
         setName(res?.data?.name || "Unknown");
       } catch {
         setName("Unknown");
