@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,54 +13,95 @@ import {
   History,
   User2,
   Users,
+  Loader2,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { TLMUMultitasking } from "@/types/lmu/multitasking.type";
+import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { applyLmuMultitasking } from "@/services/LMUService/multitaskings";
 
 const MultitaskingDetails = () => {
   const { id } = useParams();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
+
   const [task, setTask] = useState<TLMUMultitasking | null>(null);
   const [createdByName, setCreatedByName] = useState<string>("");
   const [manpowerNames, setManpowerNames] = useState<string[]>([]);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
-  useEffect(() => {
-    const fetchTask = async () => {
-      setLoading(true);
+  const refetchTask = useCallback(async () => {
+    setLoading(true);
+    try {
       const res = await TaskDetails(id as string);
 
       if (res?.success) {
-        const taskData = res.data;
+        const taskData: TLMUMultitasking = res.data;
         setTask(taskData);
 
-        // Fetch createdBy name
+        // createdBy name
         if (taskData.createdBy) {
           const userRes = await getUserNameById(taskData.createdBy);
           setCreatedByName(userRes?.data?.name || "Unknown");
+        } else {
+          setCreatedByName("");
         }
 
-        // Fetch manpower user names
-        if (taskData.manpower && taskData.manpower.length > 0) {
+        // manpower names
+        if (Array.isArray(taskData.manpower) && taskData.manpower.length > 0) {
           const names = await Promise.all(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             taskData.manpower.map(async (mp: any) => {
-              const res = await getUserNameById(mp.userId);
-              return res?.data?.name || "Unknown";
+              const r = await getUserNameById(mp.userId);
+              return r?.data?.name || "Unknown";
             })
           );
           setManpowerNames(names);
+        } else {
+          setManpowerNames([]);
         }
+      } else {
+        setTask(null);
+        setCreatedByName("");
+        setManpowerNames([]);
       }
-
+    } catch (err) {
+      setTask(null);
+      setCreatedByName("");
+      setManpowerNames([]);
+    } finally {
       setLoading(false);
-    };
-
-    fetchTask();
+    }
   }, [id]);
+
+  useEffect(() => {
+    refetchTask();
+  }, [refetchTask]);
+
+  const handleApply = async () => {
+    if (!id || !task) return;
+    setApplying(true);
+    try {
+      const res = await applyLmuMultitasking(id as string);
+      if (res?.success) {
+        toast.success(res?.message || "Applied successfully");
+        await refetchTask();
+      } else {
+        toast.error(res?.message || "Failed to apply");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong while applying");
+    } finally {
+      setApplying(false);
+    }
+  };
 
   const bgClass = !mounted
     ? "bg-transparent"
@@ -229,17 +270,55 @@ const MultitaskingDetails = () => {
       <div className="max-w-full mx-auto space-y-10">
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
-          <p className="mt-3">
-            <span
-              className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
-                task.status === "active"
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-              }`}
-            >
-              {task.status}
-            </span>
-          </p>
+
+          {user?.role !== "coordinator" ? (
+            task.status === "active" ? (
+              <Button
+                onClick={handleApply}
+                disabled={applying}
+                className={`mt-4 px-6 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors duration-200
+                  ${
+                    isDark
+                      ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
+                      : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
+                  }`}
+                aria-busy={applying}
+              >
+                {applying ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Applying…
+                  </span>
+                ) : (
+                  "Apply"
+                )}
+              </Button>
+            ) : (
+              <p className="mt-3">
+                <span
+                  className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+                    (task.status as string) === "active"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+                  }`}
+                >
+                  {task.status}
+                </span>
+              </p>
+            )
+          ) : (
+            <p className="mt-3">
+              <span
+                className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+                  task.status === "active"
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+                }`}
+              >
+                {task.status}
+              </span>
+            </p>
+          )}
         </div>
 
         {/* Info Cards */}
@@ -274,7 +353,7 @@ const MultitaskingDetails = () => {
               : "bg-neutral-50 border-neutral-200"
           }`}
         >
-          <h2 className="text-lg font-semibold mb-4">Assigned Manpower</h2>
+          <h2 className="text-lg font-semibold mb-4">Manpower</h2>
           {manpowerNames.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {manpowerNames.map((name, index) => (
