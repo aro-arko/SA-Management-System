@@ -1,7 +1,9 @@
+import GoalUpdate from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Leads Goals/GoalUpdate";
+
 const LeadsGoalUpdate = () => {
   return (
     <div>
-      <h1>This is LeadsGoalUpdate component</h1>
+      <GoalUpdate />
     </div>
   );
 };

@@ -15,11 +15,13 @@ import {
   ListChecks,
   User,
   Calendar,
+  Pencil,
 } from "lucide-react";
 import { TLmuGoal } from "@/types/lmu/goal.type";
 import Link from "next/link";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button"; // assuming you have ShadCN Button
 
 const LeadsGoalDetails = () => {
   const { id } = useParams();
@@ -201,16 +203,32 @@ const LeadsGoalDetails = () => {
   return (
     <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
-        {/* Title */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold flex justify-center items-center gap-2">
-            {goal.title}
-          </h1>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              {goal.title}
+            </h1>
+          </div>
           <p className="mt-4 text-muted-foreground">
             <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
               {goal.type}
             </span>
           </p>
+          <div className="flex justify-end">
+            {user?.role === "lmuAdmin" && (
+              <Link href={`/lmuadmin/leads-goals/${goal._id}/update`}>
+                <Button
+                  variant="outline"
+                  className={`${
+                    isDark ? "border-neutral-700" : ""
+                  } cursor-pointer`}
+                >
+                  <Pencil />
+                  Edit Goal
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Main Info Cards */}

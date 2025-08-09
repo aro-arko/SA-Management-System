@@ -188,7 +188,7 @@ export const updateLeadsGoal = async (id: string, data: TUpdateLeadsGoal) => {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-leads-goals/update/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-leads-goals/${id}`,
       {
         method: "PATCH",
         headers: {
