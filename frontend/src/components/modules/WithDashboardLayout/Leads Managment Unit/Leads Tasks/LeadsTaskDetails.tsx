@@ -271,6 +271,7 @@ const LeadsTaskDetails = () => {
       } else {
         const fresh = await TaskDetails(String(id));
         if (fresh?.success) setTask(fresh.data);
+        toast.error(res?.message || "Failed to add activity.");
       }
 
       // reset + close
@@ -279,7 +280,7 @@ const LeadsTaskDetails = () => {
       setFlaggedLeads("");
       setRemarks("");
     } catch (e) {
-      console.error("Failed to add activity", e);
+      console.error("Error adding activity:", e);
     } finally {
       setSubmitting(false);
     }
