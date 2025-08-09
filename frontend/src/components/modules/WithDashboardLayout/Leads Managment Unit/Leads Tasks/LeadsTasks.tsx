@@ -9,6 +9,7 @@ import TaskCard from "./TaskCard";
 import { Pagination } from "@/utils/Pagination";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useUser } from "@/context/UserContext";
 
 const LeadsTasks = () => {
   const [tasks, setTasks] = useState<TLmuTask[]>([]);
@@ -18,6 +19,7 @@ const LeadsTasks = () => {
 
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => {
     setMounted(true);
@@ -94,7 +96,7 @@ const LeadsTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/coordinator/leads-tasks/${task._id}`}
+                href={`/${user?.role}/leads-tasks/${task._id}`}
                 key={task._id}
               >
                 <div

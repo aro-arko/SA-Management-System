@@ -19,6 +19,7 @@ import {
 import { TLmuGoal } from "@/types/lmu/goal.type";
 import Link from "next/link";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
+import { useUser } from "@/context/UserContext";
 
 const LeadsGoalDetails = () => {
   const { id } = useParams();
@@ -27,6 +28,7 @@ const LeadsGoalDetails = () => {
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState<TLmuGoal | null>(null);
   const [creatorName, setCreatorName] = useState("");
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -257,7 +259,7 @@ const LeadsGoalDetails = () => {
                   <div>
                     <p className="text-xs text-muted-foreground">Task ID</p>
                     <p className="font-medium text-[15px] break-all">
-                      <Link href={`/coordinator/leads-tasks/${taskId}`}>
+                      <Link href={`/${user?.role}/leads-tasks/${taskId}`}>
                         {taskId}
                       </Link>
                     </p>

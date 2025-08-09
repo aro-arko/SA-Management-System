@@ -8,6 +8,7 @@ import GoalCard from "./GoalCard";
 import GoalCardSkeleton from "./GoalCardSkeleton";
 import { Pagination } from "@/utils/Pagination";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
 
 const LeadsGoals = () => {
   const [goals, setGoals] = useState<TLmuGoal[]>([]);
@@ -15,6 +16,7 @@ const LeadsGoals = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
 
   useEffect(() => {
     setMounted(true);
@@ -65,7 +67,7 @@ const LeadsGoals = () => {
         <p className="text-muted-foreground text-center">No goals found.</p>
       ) : (
         goals.map((goal) => (
-          <Link href={`/coordinator/leads-goals/${goal._id}`} key={goal._id}>
+          <Link href={`/${user?.role}/leads-goals/${goal._id}`} key={goal._id}>
             <GoalCard goal={goal} />
           </Link>
         ))
