@@ -40,3 +40,10 @@ export type TUserOption = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta?: any;
 };
+
+export type TUpdateLeadsTask = {
+  title: string;
+  assignedTo: string;
+  dueDate: Date | string;
+  message: string;
+};

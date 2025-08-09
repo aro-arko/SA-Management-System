@@ -358,7 +358,7 @@ const CreateLeadsTask = () => {
         </p>
       </div>
 
-      <div className="space-y-6 max-w-3xl mx-auto">
+      <div className="space-y-6 max-w-full mx-auto">
         <div className={cardCls}>
           <div className="grid gap-2">
             <Label htmlFor="title">Title</Label>

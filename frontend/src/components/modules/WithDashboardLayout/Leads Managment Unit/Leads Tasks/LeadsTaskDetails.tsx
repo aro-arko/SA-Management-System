@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +15,8 @@ import {
   Layers,
   Divide,
   Plus,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useUser } from "@/context/UserContext";
@@ -33,12 +34,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import Swal from "sweetalert2";
 
 import { TaskDetails, getUserNameById } from "@/services/UserService";
+import {
+  addActivityLeadsTask,
+  deleteLeadsTask,
+} from "@/services/LMUService/leadsManagement";
 
 import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
-import { addActivityLeadsTask } from "@/services/LMUService/leadsManagement";
 import { toast } from "sonner";
 
 const LeadsTaskDetails = () => {
@@ -52,12 +57,16 @@ const LeadsTaskDetails = () => {
   const [assignedToName, setAssignedToName] = useState("");
   const [createdByName, setCreatedByName] = useState("");
 
-  // Modal state
+  // Modal state (Add Activity)
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [completedLeads, setCompletedLeads] = useState<string>("");
   const [flaggedLeads, setFlaggedLeads] = useState<string>("");
   const [remarks, setRemarks] = useState<string>("");
+
+  // Modal state (Delete confirm)
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -87,7 +96,10 @@ const LeadsTaskDetails = () => {
     : 0;
 
   const isCompleted = (task?.status || "").toLowerCase() === "completed";
-  const canAddActivity = user?.role.toLocaleLowerCase() !== "coordinator";
+  const roleLower = (user?.role || "").toLowerCase();
+  console.log(roleLower);
+  const isLmuAdmin = roleLower === "lmuadmin";
+  const canAddActivity = roleLower !== "coordinator";
 
   const infoCards = task
     ? [
@@ -115,11 +127,9 @@ const LeadsTaskDetails = () => {
               "lmuadmin",
               "lmudataleader",
               "lmumember",
-            ].includes(user?.role.toLocaleLowerCase() || "") && task.goalId ? (
+            ].includes(roleLower) && task.goalId ? (
               <Link
-                href={`/${user?.role.toLocaleLowerCase()}/leads-goals/${
-                  task.goalId
-                }`}
+                href={`/${roleLower}/leads-goals/${task.goalId}`}
                 className="text-blue-500 underline hover:text-blue-600"
               >
                 {task.goalId}
@@ -248,7 +258,6 @@ const LeadsTaskDetails = () => {
     const f = Number(flaggedLeads || 0);
     const r = remarks.trim();
 
-    // Optional sanity checks
     if (c < 0 || f < 0) return;
     if (!c && !f && !r) return;
     if (task && c > task.totalLeads - task.completedLeads) {
@@ -260,11 +269,8 @@ const LeadsTaskDetails = () => {
 
     try {
       setSubmitting(true);
-
-      // POST to your leads endpoint
       const res = await addActivityLeadsTask(String(id), payload);
 
-      // If API returns the updated task, use it; otherwise refetch
       if (res?.success && res?.data) {
         setTask(res.data);
         toast.success("Activity added successfully!");
@@ -274,7 +280,6 @@ const LeadsTaskDetails = () => {
         toast.error(res?.message || "Failed to add activity.");
       }
 
-      // reset + close
       setOpen(false);
       setCompletedLeads("");
       setFlaggedLeads("");
@@ -285,27 +290,102 @@ const LeadsTaskDetails = () => {
       setSubmitting(false);
     }
   };
+  const onDeleteTask = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone. The task and its activities will be permanently removed.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, delete it",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setDeleting(true);
+          const res = await deleteLeadsTask(String(id));
+
+          if (res?.success) {
+            await Swal.fire({
+              title: "Deleted!",
+              text: res?.message || "Task has been deleted successfully.",
+              icon: "success",
+              confirmButtonColor: "#3085d6",
+            });
+            window.history.back();
+          } else {
+            Swal.fire({
+              title: "Failed",
+              text: res?.message || "Failed to delete task.",
+              icon: "error",
+              confirmButtonColor: "#3085d6",
+            });
+          }
+        } catch (e: any) {
+          Swal.fire({
+            title: "Error",
+            text: e?.message || "Failed to delete task.",
+            icon: "error",
+            confirmButtonColor: "#3085d6",
+          });
+        } finally {
+          setDeleting(false);
+          setOpenDelete(false);
+        }
+      }
+    });
+  };
 
   return (
     <div className={`min-h-screen px-6 py-10 ${bgClass} rounded-xl`}>
       <div className="max-w-full mx-auto space-y-10">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold flex justify-center items-center gap-2">
+        {/* Header */}
+        <div className="flex flex-col items-center justify-center text-center">
+          <h1 className="text-3xl font-bold flex items-center gap-2 justify-center">
             {task.title}
           </h1>
-          <p className="mt-3">
-            <span
-              className={clsx(
-                "inline-block px-4 py-1 text-sm font-medium rounded-full",
-                isCompleted
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-              )}
-            >
-              {task.status}
-            </span>
-          </p>
+          <span
+            className={clsx(
+              "inline-block px-4 py-1 mt-2 text-sm font-medium rounded-full",
+              isCompleted
+                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+            )}
+          >
+            {task.status}
+          </span>
+
+          {/* Admin actions under the centered title */}
+          {isLmuAdmin && (
+            <div className="flex items-center gap-2 mt-4">
+              <Link href={`/${roleLower}/leads-tasks/${id}/update`}>
+                <Button
+                  className={clsx(
+                    "inline-flex items-center gap-2 cursor-pointer py-1 px-6 rounded-md border transition",
+                    isDark
+                      ? "bg-white/10 hover:bg-white/20 border-neutral-700"
+                      : "bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-800"
+                  )}
+                  aria-label="Edit task"
+                >
+                  Edit
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                onClick={() => setOpenDelete(true)}
+                className={clsx(
+                  "inline-flex items-center gap-2 rounded-md px-4 cursor-pointer",
+                  isDark ? "border-neutral-700" : ""
+                )}
+                aria-label="Delete task"
+              >
+                <Trash2 className="w-4 h-4 text-red-500" />
+                Delete
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Info Cards */}
@@ -498,6 +578,51 @@ const LeadsTaskDetails = () => {
               )}
             >
               {submitting ? "Saving..." : "Save Activity"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal (Admin only) */}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Delete Task?
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. The task and its activities will be
+              permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDelete(false)}
+              className={isDark ? "border-neutral-700 text-neutral-300" : ""}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onDeleteTask}
+              disabled={deleting}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-red-600/80 hover:bg-red-600"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
+            >
+              {deleting ? "Deleting..." : "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

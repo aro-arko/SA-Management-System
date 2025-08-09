@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { TCreateLeadsTask } from "@/types/lmu/leadsTask.type";
+import { TCreateLeadsTask, TUpdateLeadsTask } from "@/types/lmu/leadsTask.type";
 import { cookies } from "next/headers";
 
 // -----------------leads goals starts
@@ -108,6 +108,49 @@ export const createLeadsTask = async (data: TCreateLeadsTask) => {
           Authorization: `${token}`,
         },
         body: JSON.stringify(data),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// update leads tasks
+export const updateLeadsTask = async (id: string, data: TUpdateLeadsTask) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/leads-management/update-task/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// delete leads task
+export const deleteLeadsTask = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/leads-management/delete-task/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
       }
     );
     return res.json();
