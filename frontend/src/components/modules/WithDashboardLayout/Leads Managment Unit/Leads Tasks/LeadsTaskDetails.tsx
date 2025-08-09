@@ -39,6 +39,7 @@ import { TaskDetails, getUserNameById } from "@/services/UserService";
 import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { addActivityLeadsTask } from "@/services/LMUService/leadsManagement";
+import { toast } from "sonner";
 
 const LeadsTaskDetails = () => {
   const { id } = useParams();
@@ -107,14 +108,23 @@ const LeadsTaskDetails = () => {
         },
         {
           label: "Goal ID",
-          value: (
-            <Link
-              href={`/coordinator/leads-goals/${task.goalId}`}
-              className="text-blue-500 underline hover:text-blue-600"
-            >
-              {task.goalId}
-            </Link>
-          ),
+          value:
+            [
+              "coordinator",
+              "head",
+              "lmuAdmin",
+              "lmuDataLeader",
+              "lmuMember",
+            ].includes(user?.role || "") && task.goalId ? (
+              <Link
+                href={`/${user?.role}/leads-goals/${task.goalId}`}
+                className="text-blue-500 underline hover:text-blue-600"
+              >
+                {task.goalId}
+              </Link>
+            ) : (
+              task.goalId || "—"
+            ),
           icon: <Hash className="w-5 h-5 text-yellow-400" />,
         },
         {
@@ -240,7 +250,7 @@ const LeadsTaskDetails = () => {
     if (c < 0 || f < 0) return;
     if (!c && !f && !r) return;
     if (task && c > task.totalLeads - task.completedLeads) {
-      alert("Completed leads exceed remaining leads.");
+      toast.warning("Completed leads exceed remaining leads.");
       return;
     }
 
@@ -255,6 +265,7 @@ const LeadsTaskDetails = () => {
       // If API returns the updated task, use it; otherwise refetch
       if (res?.success && res?.data) {
         setTask(res.data);
+        toast.success("Activity added successfully!");
       } else {
         const fresh = await TaskDetails(String(id));
         if (fresh?.success) setTask(fresh.data);
@@ -273,7 +284,7 @@ const LeadsTaskDetails = () => {
   };
 
   return (
-    <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
+    <div className={`min-h-screen px-6 py-10 ${bgClass} rounded-xl`}>
       <div className="max-w-full mx-auto space-y-10">
         {/* Header */}
         <div className="text-center">
