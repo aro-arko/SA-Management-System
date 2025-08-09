@@ -58,7 +58,11 @@ export default function LoginForm() {
         if (redirect) {
           router.push(redirect);
         } else {
-          router.push(`/${user.role}/dashboard`);
+          if (user.role === "coordinator") {
+            router.push(`/${user.role}/dashboard`);
+          } else {
+            router.push(`/${user.role}/my-tasks`);
+          }
         }
       } else {
         toast.error(res?.message || "Login failed.");

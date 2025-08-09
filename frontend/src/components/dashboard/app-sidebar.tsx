@@ -12,6 +12,7 @@ import { NavUser } from "@/components/dashboard/nav-user";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/context/UserContext";
 import { coordinatorNavMain } from "../role-base-sidebar/cooridatorSidebarNav";
+import { headNavMain } from "../role-base-sidebar/headSidebarNav";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { user, isLoading } = useUser();
@@ -59,6 +60,9 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   switch (user.role) {
     case "coordinator":
       navMain = coordinatorNavMain;
+      break;
+    case "head":
+      navMain = headNavMain;
       break;
     default:
       navMain = [];
