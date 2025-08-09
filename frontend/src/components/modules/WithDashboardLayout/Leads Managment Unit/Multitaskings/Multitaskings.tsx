@@ -8,6 +8,7 @@ import MultitaskingCard from "./MultitaskingCard";
 import { getAllMultitaskings } from "@/services/LMUService/multitaskings";
 import { TLMUMultitasking } from "@/types/lmu/multitasking.type";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
 
 const Multitaskings = () => {
   const [tasks, setTasks] = useState<TLMUMultitasking[]>([]);
@@ -16,6 +17,7 @@ const Multitaskings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -99,7 +101,7 @@ const Multitaskings = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/coordinator/lmu-multitaskings/${task._id}`}
+                href={`/${user?.role}/lmu-multitaskings/${task._id}`}
                 key={task._id}
               >
                 <MultitaskingCard task={task} />
