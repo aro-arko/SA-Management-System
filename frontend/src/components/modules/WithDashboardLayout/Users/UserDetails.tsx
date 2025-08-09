@@ -18,21 +18,23 @@ import {
   Pencil,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
+import { useUser } from "@/context/UserContext";
 import { TUserDetails } from "@/types/users/user.type";
 
 const UserDetails = () => {
   const { id } = useParams();
   const router = useRouter();
+  const { user } = useUser();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<TUserDetails | null>(null);
+  const [thisUser, setThisUser] = useState<TUserDetails | null>(null);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => {
     const fetchUser = async () => {
       const res = await getUserDetailsById(id as string);
-      if (res?.data) setUser(res.data);
+      if (res?.data) setThisUser(res.data);
       setLoading(false);
     };
     fetchUser();
@@ -58,15 +60,15 @@ const UserDetails = () => {
       </div>
     );
 
-  if (!user) {
+  if (!thisUser) {
     return (
       <div className="text-center py-10 text-red-500 text-lg">
-        User not found.
+        thisUser not found.
       </div>
     );
   }
 
-  const fullName = `${user.firstName} ${user.lastName}`;
+  const fullName = `${thisUser.firstName} ${thisUser.lastName}`;
   const infoCards = [
     {
       label: "Full Name",
@@ -75,42 +77,45 @@ const UserDetails = () => {
     },
     {
       label: "Email",
-      value: user.email,
+      value: thisUser.email,
       icon: <Mail className="w-5 h-5 text-indigo-400" />,
     },
     {
       label: "Phone",
-      value: user.phone,
+      value: thisUser.phone,
       icon: <Phone className="w-5 h-5 text-green-400" />,
     },
     {
       label: "Date of Birth",
-      value: formatToMalaysiaTime(user.dob as unknown as string, "dd MMM yyyy"),
+      value: formatToMalaysiaTime(
+        thisUser.dob as unknown as string,
+        "dd MMM yyyy"
+      ),
       icon: <Calendar className="w-5 h-5 text-yellow-400" />,
     },
     {
       label: "Unit",
-      value: user.unit,
+      value: thisUser.unit,
       icon: <Users className="w-5 h-5 text-purple-400" />,
     },
     {
       label: "Role",
-      value: user.role,
+      value: thisUser.role,
       icon: <ShieldCheck className="w-5 h-5 text-orange-400" />,
     },
     {
       label: "Status",
-      value: user.status,
+      value: thisUser.status,
       icon: <Hash className="w-5 h-5 text-red-400" />,
     },
     {
       label: "Created At",
-      value: formatToMalaysiaTime(user.createdAt as unknown as string),
+      value: formatToMalaysiaTime(thisUser.createdAt as unknown as string),
       icon: <History className="w-5 h-5 text-gray-400" />,
     },
     {
       label: "Updated At",
-      value: formatToMalaysiaTime(user.updatedAt as unknown as string),
+      value: formatToMalaysiaTime(thisUser.updatedAt as unknown as string),
       icon: <Clock className="w-5 h-5 text-cyan-400" />,
     },
   ];
@@ -122,7 +127,7 @@ const UserDetails = () => {
           <div></div>
           <h1 className="text-3xl font-bold capitalize">User Details</h1>
           <button
-            onClick={() => router.push(`/coordinator/users/${id}/update`)}
+            onClick={() => router.push(`/${user?.role}/users/${id}/update`)}
             className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-semibold border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
           >
             <Pencil className="w-4 h-4" />
@@ -130,7 +135,7 @@ const UserDetails = () => {
           </button>
         </div>
 
-        {/* User Info Cards */}
+        {/* thisUser Info Cards */}
         <div
           className={`rounded-xl p-6 border ${
             isDark

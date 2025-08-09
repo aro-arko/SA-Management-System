@@ -8,6 +8,7 @@ import UserCard from "./UserCard";
 import { getAllUsers } from "@/services/UserService";
 import { TUserDetails } from "@/types/users/user.type";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
 
 const AllUsers = () => {
   const [users, setUsers] = useState<TUserDetails[]>([]);
@@ -16,6 +17,8 @@ const AllUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const user = useUser();
+  const userRole = user.user?.role;
 
   useEffect(() => setMounted(true), []);
 
@@ -91,7 +94,7 @@ const AllUsers = () => {
         ) : (
           <div className="">
             {users.map((user) => (
-              <Link href={`/coordinator/users/${user._id}`} key={user._id}>
+              <Link href={`/${userRole}/users/${user._id}`} key={user._id}>
                 <UserCard user={user} />
               </Link>
             ))}

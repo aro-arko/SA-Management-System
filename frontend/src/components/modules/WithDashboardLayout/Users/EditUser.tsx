@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useUser } from "@/context/UserContext";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -17,6 +18,7 @@ const EditUser = () => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { user } = useUser();
 
   const [formData, setFormData] = useState<TUserDetails>({
     _id: "",
@@ -53,7 +55,7 @@ const EditUser = () => {
     console.log(res);
     if (res?.data) {
       toast.success("User updated successfully!");
-      router.push(`/coordinator/users/${id}`);
+      router.push(`/${user?.role}/users/${id}`);
     } else {
       toast.error("Failed to update user. Please try again.");
     }
