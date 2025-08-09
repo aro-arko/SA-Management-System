@@ -10,12 +10,14 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
+import { useUser } from "@/context/UserContext";
 
 const CreateUser = () => {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { user } = useUser();
 
   const [formData, setFormData] = useState<TCreateUser>({
     firstName: "",
@@ -46,7 +48,7 @@ const CreateUser = () => {
       const response = await createNewUser(formData);
       if (response?.success) {
         toast.success("User created successfully!");
-        router.push("/coordinator/users");
+        router.push(`/${user?.role}/users`);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
