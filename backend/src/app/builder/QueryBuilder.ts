@@ -112,7 +112,7 @@ class QueryBuilder<T> {
     return this;
   }
 
-  sortByCreatedAt(order: 'asc' | 'desc' = 'desc') {
+  sortByCreatedAt(order: 'asc' | 'desc' = 'asc') {
     this.modelQuery = this.modelQuery.sort({
       createdAt: order === 'asc' ? 1 : -1,
     });
