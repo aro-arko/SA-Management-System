@@ -303,10 +303,9 @@ const CreateLeadsTask = () => {
       type,
       goalId: goalId?.trim() ? goalId.trim() : undefined,
       multiTask,
-      multiTaskId: multiTask ? multiTaskId.trim() : undefined, // comes from dropdown
+      multiTaskId: multiTask ? multiTaskId.trim() : undefined,
       totalLeads: Number(totalLeads),
       assignedTo,
-      // "YYYY-MM-DDTHH:mm:ss"
       dueDate: new Date(dueDate).toISOString().slice(0, 19),
       message: message.trim(),
     };
@@ -360,6 +359,7 @@ const CreateLeadsTask = () => {
 
       <div className="space-y-6 max-w-full mx-auto">
         <div className={cardCls}>
+          {/* Title */}
           <div className="grid gap-2">
             <Label htmlFor="title">Title</Label>
             <Input
@@ -371,6 +371,7 @@ const CreateLeadsTask = () => {
             />
           </div>
 
+          {/* Type */}
           <div className="grid gap-2">
             <Label htmlFor="type">Type</Label>
             <select
@@ -417,7 +418,6 @@ const CreateLeadsTask = () => {
                 type="button"
                 onClick={() => {
                   setMultiTask((v) => !v);
-                  // clear selection and manpower when toggling off
                   if (multiTask) {
                     setMultiTaskId("");
                     setMultiManpowerIds([]);
@@ -475,6 +475,7 @@ const CreateLeadsTask = () => {
             </div>
           )}
 
+          {/* Total Leads */}
           <div className="grid gap-2">
             <Label htmlFor="totalLeads">Total Leads</Label>
             <Input
@@ -488,6 +489,7 @@ const CreateLeadsTask = () => {
             />
           </div>
 
+          {/* Assign To: Multitasking first, then LMU users */}
           <div className="grid gap-2">
             <Label htmlFor="assignedTo">Assign To</Label>
             <select
@@ -499,24 +501,50 @@ const CreateLeadsTask = () => {
             >
               <option value="">
                 {loadingUsers || (multiTask && loadingManpower)
-                  ? "Loading users…"
+                  ? "Loading options…"
                   : combinedUsers.length
                   ? "Select a user"
                   : "No users available"}
               </option>
-              {combinedUsers.map((u) => (
-                <option key={u._id} value={u._id}>
-                  {u.name}
-                </option>
-              ))}
+
+              {/* Multitasking manpower group (first) */}
+              {multiTask && multiManpowerIds.length > 0 && (
+                <optgroup
+                  label={`Multitasking Manpower (${multiManpowerIds.length})`}
+                >
+                  {combinedUsers
+                    .filter((u) => multiManpowerIds.includes(u._id))
+                    .map((u) => (
+                      <option key={`mt-${u._id}`} value={u._id}>
+                        {u.name}
+                      </option>
+                    ))}
+                </optgroup>
+              )}
+
+              {/* LMU Users group (remaining) */}
+              <optgroup label="LMU Active Users">
+                {combinedUsers
+                  .filter((u) => !multiManpowerIds.includes(u._id))
+                  .map((u) => (
+                    <option key={`lmu-${u._id}`} value={u._id}>
+                      {u.name}
+                    </option>
+                  ))}
+              </optgroup>
             </select>
             <p className="text-xs opacity-70">
               {multiTask
-                ? "Active LMU members + Multitasking manpower"
+                ? loadingManpower
+                  ? "Loading multitasking manpower…"
+                  : multiManpowerIds.length
+                  ? `Manpower found: ${multiManpowerIds.length}`
+                  : "No multitasking manpower loaded."
                 : "Active LMU members"}
             </p>
           </div>
 
+          {/* Due Date */}
           <div className="grid gap-2">
             <Label htmlFor="dueDate">Due Date</Label>
             <Input
@@ -528,6 +556,7 @@ const CreateLeadsTask = () => {
             />
           </div>
 
+          {/* Message */}
           <div className="grid gap-2">
             <Label htmlFor="message">Message</Label>
             <Textarea
@@ -539,6 +568,7 @@ const CreateLeadsTask = () => {
             />
           </div>
 
+          {/* Actions */}
           <div className="flex items-center gap-3 pt-2">
             <Button
               onClick={onSubmit}

@@ -291,49 +291,37 @@ const LeadsTaskDetails = () => {
     }
   };
   const onDeleteTask = async () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This action cannot be undone. The task and its activities will be permanently removed.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#6c757d",
-      confirmButtonText: "Yes, delete it",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          setDeleting(true);
-          const res = await deleteLeadsTask(String(id));
+    try {
+      setDeleting(true);
+      const res = await deleteLeadsTask(String(id));
 
-          if (res?.success) {
-            await Swal.fire({
-              title: "Deleted!",
-              text: res?.message || "Task has been deleted successfully.",
-              icon: "success",
-              confirmButtonColor: "#3085d6",
-            });
-            window.history.back();
-          } else {
-            Swal.fire({
-              title: "Failed",
-              text: res?.message || "Failed to delete task.",
-              icon: "error",
-              confirmButtonColor: "#3085d6",
-            });
-          }
-        } catch (e: any) {
-          Swal.fire({
-            title: "Error",
-            text: e?.message || "Failed to delete task.",
-            icon: "error",
-            confirmButtonColor: "#3085d6",
-          });
-        } finally {
-          setDeleting(false);
-          setOpenDelete(false);
-        }
+      if (res?.success) {
+        await Swal.fire({
+          title: "Deleted!",
+          text: res?.message || "Task has been deleted successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        });
+        window.history.back();
+      } else {
+        Swal.fire({
+          title: "Failed",
+          text: res?.message || "Failed to delete task.",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+        });
       }
-    });
+    } catch (e: any) {
+      Swal.fire({
+        title: "Error",
+        text: e?.message || "Failed to delete task.",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+      });
+    } finally {
+      setDeleting(false);
+      setOpenDelete(false);
+    }
   };
 
   return (
