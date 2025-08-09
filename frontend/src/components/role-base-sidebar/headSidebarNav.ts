@@ -39,10 +39,6 @@ export const headNavMain = [
         title: "DSMM Multitaskings",
         url: "/head/dsmm-multitaskings",
       },
-      {
-        title: "HR Multitaskings",
-        url: "/head/hr-finance-multitaskings",
-      },
     ],
   },
   {
