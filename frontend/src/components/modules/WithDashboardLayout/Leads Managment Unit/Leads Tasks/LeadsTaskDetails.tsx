@@ -2,8 +2,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TaskDetails, getUserNameById } from "@/services/UserService";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+import clsx from "clsx";
 import {
   Users,
   User,
@@ -14,26 +15,50 @@ import {
   ListChecks,
   Layers,
   Divide,
+  Plus,
 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { useTheme } from "next-themes";
+import { useUser } from "@/context/UserContext";
+
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+import { TaskDetails, getUserNameById } from "@/services/UserService";
+
+import { TLmuTask } from "@/types/lmu/leadsTask.type";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
-import Link from "next/link";
+import { addActivityLeadsTask } from "@/services/LMUService/leadsManagement";
 
 const LeadsTaskDetails = () => {
   const { id } = useParams();
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
+  const [mounted, setMounted] = useState(false);
   const [task, setTask] = useState<TLmuTask | null>(null);
   const [loading, setLoading] = useState(true);
   const [assignedToName, setAssignedToName] = useState("");
   const [createdByName, setCreatedByName] = useState("");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Modal state
+  const [open, setOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [completedLeads, setCompletedLeads] = useState<string>("");
+  const [flaggedLeads, setFlaggedLeads] = useState<string>("");
+  const [remarks, setRemarks] = useState<string>("");
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +71,6 @@ const LeadsTaskDetails = () => {
           getUserNameById(res.data.assignedTo),
           getUserNameById(res.data.createdBy),
         ]);
-
         setAssignedToName(assignedTo?.data?.name || "N/A");
         setCreatedByName(createdBy?.data?.name || "N/A");
       }
@@ -61,7 +85,8 @@ const LeadsTaskDetails = () => {
     ? Math.round((task.completedLeads / task.totalLeads) * 100)
     : 0;
 
-  const isCompleted = task?.status.toLowerCase() === "completed";
+  const isCompleted = (task?.status || "").toLowerCase() === "completed";
+  const canAddActivity = user?.role !== "coordinator";
 
   const infoCards = task
     ? [
@@ -132,11 +157,9 @@ const LeadsTaskDetails = () => {
 
   if (loading) {
     const isDark = resolvedTheme === "dark";
-
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
         <div className="max-w-full mx-auto space-y-10">
-          {/* Title Skeleton */}
           <div className="text-center space-y-2">
             <Skeleton
               className={`mx-auto h-8 w-64 rounded ${
@@ -150,7 +173,6 @@ const LeadsTaskDetails = () => {
             />
           </div>
 
-          {/* Info Cards Skeleton */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
@@ -175,7 +197,6 @@ const LeadsTaskDetails = () => {
             ))}
           </div>
 
-          {/* Progress Skeleton */}
           <div
             className={`rounded-xl p-6 border space-y-3 shadow-sm ${
               isDark
@@ -208,6 +229,49 @@ const LeadsTaskDetails = () => {
     );
   }
 
+  const isDark = resolvedTheme === "dark";
+
+  const onSubmitActivity = async () => {
+    const c = Number(completedLeads || 0);
+    const f = Number(flaggedLeads || 0);
+    const r = remarks.trim();
+
+    // Optional sanity checks
+    if (c < 0 || f < 0) return;
+    if (!c && !f && !r) return;
+    if (task && c > task.totalLeads - task.completedLeads) {
+      alert("Completed leads exceed remaining leads.");
+      return;
+    }
+
+    const payload = { completedLeads: c, flaggedLeads: f, remarks: r };
+
+    try {
+      setSubmitting(true);
+
+      // POST to your leads endpoint
+      const res = await addActivityLeadsTask(String(id), payload);
+
+      // If API returns the updated task, use it; otherwise refetch
+      if (res?.success && res?.data) {
+        setTask(res.data);
+      } else {
+        const fresh = await TaskDetails(String(id));
+        if (fresh?.success) setTask(fresh.data);
+      }
+
+      // reset + close
+      setOpen(false);
+      setCompletedLeads("");
+      setFlaggedLeads("");
+      setRemarks("");
+    } catch (e) {
+      console.error("Failed to add activity", e);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
@@ -218,11 +282,12 @@ const LeadsTaskDetails = () => {
           </h1>
           <p className="mt-3">
             <span
-              className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+              className={clsx(
+                "inline-block px-4 py-1 text-sm font-medium rounded-full",
                 isCompleted
                   ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                   : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-              }`}
+              )}
             >
               {task.status}
             </span>
@@ -231,11 +296,12 @@ const LeadsTaskDetails = () => {
 
         {/* Info Cards */}
         <div
-          className={`rounded-xl p-6 border ${
+          className={clsx(
+            "rounded-xl p-6 border",
             isCompleted
               ? "bg-green-50 border-green-100 dark:bg-green-900/10 dark:border-green-800"
               : "bg-neutral-50 border-neutral-200 dark:bg-black/10 dark:border-neutral-700"
-          }`}
+          )}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {infoCards.map((item, index) => (
@@ -262,23 +328,40 @@ const LeadsTaskDetails = () => {
               style={{ width: `${percent}%` }}
             />
           </div>
-          <p className="text-sm mt-1 ">
+          <p className="text-sm mt-1">
             {task.completedLeads} of {task.totalLeads} completed ({percent}%)
           </p>
         </div>
 
         {/* Activities */}
         <div className="rounded-xl p-6 shadow-sm border bg-white/80 dark:bg-black/30 border-neutral-200 dark:border-neutral-700">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 " />
-            Activities
-          </h2>
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <h2 className="text-2xl font-semibold flex items-center gap-2">
+              <CheckCircle className="w-5 h-5" />
+              Activities
+            </h2>
+
+            {canAddActivity && (
+              <Button
+                onClick={() => setOpen(true)}
+                className={clsx(
+                  "rounded-xl",
+                  isDark
+                    ? "bg-white/10 hover:bg-white/20"
+                    : "bg-neutral-900 hover:bg-neutral-800 text-white"
+                )}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Activity
+              </Button>
+            )}
+          </div>
+
           {task.activities.length === 0 ? (
             <p className="text-muted-foreground">No activities yet.</p>
           ) : (
             <div className="space-y-4">
               {task.activities.map((activity, index) => {
-                // If activity is a string, render it as a simple list item
                 if (typeof activity === "string") {
                   return (
                     <div
@@ -295,7 +378,6 @@ const LeadsTaskDetails = () => {
                     </div>
                   );
                 }
-                // If activity is an object, render its properties
                 return (
                   <div
                     key={index}
@@ -326,6 +408,86 @@ const LeadsTaskDetails = () => {
           )}
         </div>
       </div>
+
+      {/* Add Activity Modal */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl">Add Activity</DialogTitle>
+            <DialogDescription>
+              Update progress for this task.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-2">
+            <div className="grid gap-2">
+              <Label htmlFor="completedLeads">Completed Leads</Label>
+              <Input
+                id="completedLeads"
+                type="number"
+                min={0}
+                value={completedLeads}
+                onChange={(e) => setCompletedLeads(e.target.value)}
+                placeholder="e.g., 45"
+                className={isDark ? "bg-black/40 border-neutral-700" : ""}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="flaggedLeads">Flagged Leads</Label>
+              <Input
+                id="flaggedLeads"
+                type="number"
+                min={0}
+                value={flaggedLeads}
+                onChange={(e) => setFlaggedLeads(e.target.value)}
+                placeholder="e.g., 0"
+                className={isDark ? "bg-black/40 border-neutral-700" : ""}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="remarks">Remarks</Label>
+              <Textarea
+                id="remarks"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                placeholder="Short description (what you did/checked)"
+                className={isDark ? "bg-black/40 border-neutral-700" : ""}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              className={isDark ? "border-neutral-700 text-neutral-300" : ""}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onSubmitActivity}
+              disabled={submitting}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-white/10 hover:bg-white/20"
+                  : "bg-neutral-900 hover:bg-neutral-800 text-white"
+              )}
+            >
+              {submitting ? "Saving..." : "Save Activity"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

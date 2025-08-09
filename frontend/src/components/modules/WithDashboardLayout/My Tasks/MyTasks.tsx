@@ -8,6 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination } from "@/utils/Pagination";
 import { getMyTasks } from "@/services/UserService"; // your index:// getMyTasks
 import MyTaskCard, { TMyTask } from "./MyTaskCard";
+import Link from "next/link";
+import { useUser } from "@/context/UserContext";
 
 export default function MyTasks() {
   const [mounted, setMounted] = useState(false);
@@ -20,6 +22,7 @@ export default function MyTasks() {
   const [status, setStatus] = useState<
     "all" | "in-progress" | "in-checking" | "completed"
   >("all");
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -141,6 +144,7 @@ export default function MyTasks() {
         </header>
 
         {/* List */}
+        {/* List */}
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -166,9 +170,25 @@ export default function MyTasks() {
           <p className="text-center text-muted-foreground">No tasks found.</p>
         ) : (
           <div className="space-y-3">
-            {tasks.map((task) => (
-              <MyTaskCard key={task._id} task={task} />
-            ))}
+            {tasks.map((task) => {
+              const t = (task.type || "").toLowerCase();
+              const isLeadAction =
+                t === "whatsapp" || t === "email" || t === "calling";
+
+              const href = `/${user?.role}/leads-tasks/${task._id}`;
+
+              return isLeadAction ? (
+                <Link
+                  key={task._id}
+                  href={href}
+                  className="block rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <MyTaskCard task={task} />
+                </Link>
+              ) : (
+                <MyTaskCard key={task._id} task={task} />
+              );
+            })}
           </div>
         )}
 

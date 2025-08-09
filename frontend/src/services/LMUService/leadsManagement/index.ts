@@ -70,3 +70,25 @@ export const leadsTasks = async (query: any) => {
     return error;
   }
 };
+
+// add activity report to leads task
+export const addActivityLeadsTask = async (id: string, data: any) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/leads-management/add-activity/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};

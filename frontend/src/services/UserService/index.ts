@@ -200,7 +200,6 @@ export const updateOwnProfile = async (data: TUpdateOwnProfile) => {
 // get my tasks
 export const getMyTasks = async (query: string) => {
   const token = (await cookies()).get("accessToken")?.value;
-  console.log(query);
 
   try {
     const res = await fetch(
