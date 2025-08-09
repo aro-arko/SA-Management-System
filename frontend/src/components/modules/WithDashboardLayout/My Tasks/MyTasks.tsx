@@ -144,7 +144,6 @@ export default function MyTasks() {
         </header>
 
         {/* List */}
-        {/* List */}
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -172,12 +171,16 @@ export default function MyTasks() {
           <div className="space-y-3">
             {tasks.map((task) => {
               const t = (task.type || "").toLowerCase();
-              const isLeadAction =
-                t === "whatsapp" || t === "email" || t === "calling";
 
-              const href = `/${user?.role}/leads-tasks/${task._id}`;
+              let href: string | null = null;
 
-              return isLeadAction ? (
+              if (["whatsapp", "email", "calling"].includes(t)) {
+                href = `/${user?.role}/leads-tasks/${task._id}`;
+              } else if (t === "data-entry") {
+                href = `/${user?.role}/data-entry-tasks/${task._id}`;
+              }
+
+              return href ? (
                 <Link
                   key={task._id}
                   href={href}
