@@ -61,7 +61,7 @@ export default function LoginForm() {
           if (user.role === "coordinator") {
             router.push(`/${user.role}/dashboard`);
           } else {
-            router.push(`/${user.role}/my-tasks`);
+            router.push(`/${user.role.toLocaleLowerCase()}/my-tasks`);
           }
         }
       } else {

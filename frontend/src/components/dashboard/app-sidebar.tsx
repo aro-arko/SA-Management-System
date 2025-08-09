@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/context/UserContext";
 import { coordinatorNavMain } from "../role-base-sidebar/cooridatorSidebarNav";
 import { headNavMain } from "../role-base-sidebar/headSidebarNav";
+import { lmuAdminNavMain } from "../role-base-sidebar/lmuadminSidebarNav";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { user, isLoading } = useUser();
@@ -57,12 +58,15 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   // Get nav based on role
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let navMain: any[] = [];
-  switch (user.role) {
+  switch (user.role.toLocaleLowerCase()) {
     case "coordinator":
       navMain = coordinatorNavMain;
       break;
     case "head":
       navMain = headNavMain;
+      break;
+    case "lmuadmin":
+      navMain = lmuAdminNavMain;
       break;
     default:
       navMain = [];

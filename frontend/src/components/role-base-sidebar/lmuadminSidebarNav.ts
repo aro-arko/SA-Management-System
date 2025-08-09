@@ -1,6 +1,6 @@
 import { Users, Settings, HomeIcon, Workflow, Clipboard } from "lucide-react";
 
-export const headNavMain = [
+export const lmuAdminNavMain = [
   {
     title: "Home",
     url: "/",
