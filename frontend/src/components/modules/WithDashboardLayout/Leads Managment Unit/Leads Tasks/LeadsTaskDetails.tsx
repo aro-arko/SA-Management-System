@@ -112,9 +112,9 @@ const LeadsTaskDetails = () => {
             [
               "coordinator",
               "head",
-              "lmuAdmin",
-              "lmuDataLeader",
-              "lmuMember",
+              "lmuadmin",
+              "lmudataleader",
+              "lmumember",
             ].includes(user?.role.toLocaleLowerCase() || "") && task.goalId ? (
               <Link
                 href={`/${user?.role.toLocaleLowerCase()}/leads-goals/${
