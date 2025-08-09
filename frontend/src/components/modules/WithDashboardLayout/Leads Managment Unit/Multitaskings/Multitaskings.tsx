@@ -58,7 +58,7 @@ const Multitaskings = () => {
       <div className="max-w-full mx-auto space-y-6">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold tracking-tight">
-            Multitasking Assignments
+            Leads Management Unit - Multitaskings
           </h1>
           <p className="mt-1">Browse all multitasking operations</p>
 

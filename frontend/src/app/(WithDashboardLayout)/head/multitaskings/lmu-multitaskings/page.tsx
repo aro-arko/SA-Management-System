@@ -3,7 +3,7 @@ import Multitaskings from "@/components/modules/WithDashboardLayout/Leads Managm
 const LMUMultitaskingsPage = () => {
   return (
     <div>
-      <h2>this is lmuy multis\</h2>
+      <Multitaskings />
     </div>
   );
 };
