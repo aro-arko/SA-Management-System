@@ -29,19 +29,19 @@ export const headNavMain = [
     items: [
       {
         title: "LMU Multitaskings",
-        url: "/head/lmu-multitaskings",
+        url: "/head/multitaskings/lmu-multitaskings",
       },
       {
         title: "EMU Multitaskings",
-        url: "/head/emu-multitaskings",
+        url: "/head/multitaskings/emu-multitaskings",
       },
       {
         title: "DSMM Multitaskings",
-        url: "/head/dsmm-multitaskings",
+        url: "/head/multitaskings/dsmm-multitaskings",
       },
       {
         title: "HR Multitaskings",
-        url: "/head/hr-finance-multitaskings",
+        url: "/head/multitaskings/hr-finance-multitaskings",
       },
     ],
   },
