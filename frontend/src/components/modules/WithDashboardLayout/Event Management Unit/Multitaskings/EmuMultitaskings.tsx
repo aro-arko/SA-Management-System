@@ -8,6 +8,7 @@ import EmuMultitaskingCard from "./EmuMultitaskingCard";
 import Link from "next/link";
 import { TEMUMultitasking } from "@/types/emu/multitasking.type";
 import { getEmuMultitaskings } from "@/services/EMUService/multitaskings";
+import { useUser } from "@/context/UserContext";
 
 const EmuMultitaskings = () => {
   const [tasks, setTasks] = useState<TEMUMultitasking[]>([]);
@@ -16,6 +17,7 @@ const EmuMultitaskings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -95,7 +97,7 @@ const EmuMultitaskings = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/coordinator/emu-multitaskings/${task._id}`}
+                href={`/${user?.role}/emu-multitaskings/${task._id}`}
                 key={task._id}
               >
                 <EmuMultitaskingCard task={task} />

@@ -1,38 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Hash, Calendar, History, User2, CircleDot, Users } from "lucide-react";
+import {
+  Hash,
+  Calendar,
+  History,
+  User2,
+  CircleDot,
+  Users,
+  Loader2,
+} from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { getUserNameById } from "@/services/UserService";
 import { getEmuMultitaskingById } from "@/services/EMUService/multitaskings";
+import { applyEmuMultitasking } from "@/services/EMUService/multitaskings"; // <-- ensure this path matches where you exported applyEmuMultitasking
 import { TEMUMultitasking } from "@/types/emu/multitasking.type";
+import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const EmuMultitaskingDetails = () => {
   const { id } = useParams();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+
   const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
+
   const [task, setTask] = useState<TEMUMultitasking | null>(null);
   const [createdByName, setCreatedByName] = useState("");
   const [manpowerNames, setManpowerNames] = useState<string[]>([]);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+  const refetch = useCallback(async () => {
+    setLoading(true);
+    try {
       const res = await getEmuMultitaskingById(id as string);
       if (res?.success) {
-        const data = res.data;
+        const data: TEMUMultitasking = res.data;
         setTask(data);
 
-        const createdByRes = await getUserNameById(data.createdBy);
-        setCreatedByName(createdByRes?.data?.name || "Unknown");
+        // created by
+        if (data.createdBy) {
+          const createdByRes = await getUserNameById(data.createdBy);
+          setCreatedByName(createdByRes?.data?.name || "Unknown");
+        } else {
+          setCreatedByName("");
+        }
 
-        if (data.manpower?.length > 0) {
+        // manpower
+        if (Array.isArray(data.manpower) && data.manpower.length > 0) {
           const names = await Promise.all(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             data.manpower.map(async (mp: any) => {
@@ -41,13 +63,46 @@ const EmuMultitaskingDetails = () => {
             })
           );
           setManpowerNames(names);
+        } else {
+          setManpowerNames([]);
         }
+      } else {
+        setTask(null);
+        setCreatedByName("");
+        setManpowerNames([]);
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      setTask(null);
+      setCreatedByName("");
+      setManpowerNames([]);
+    } finally {
       setLoading(false);
-    };
-
-    fetchData();
+    }
   }, [id]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  const handleApply = async () => {
+    if (!id || !task) return;
+    setApplying(true);
+    try {
+      const res = await applyEmuMultitasking(id as string);
+      if (res?.success) {
+        toast.success(res?.message || "Applied successfully");
+        await refetch();
+      } else {
+        toast.error(res?.message || "Failed to apply");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong while applying");
+    } finally {
+      setApplying(false);
+    }
+  };
 
   const isDark = resolvedTheme === "dark";
   const bgClass = !mounted
@@ -115,7 +170,6 @@ const EmuMultitaskingDetails = () => {
       value: formatToMalaysiaTime(task.createdAt as unknown as string),
       icon: <History className="w-5 h-5 text-gray-400" />,
     },
-
     {
       label: "Created By",
       value: createdByName,
@@ -128,17 +182,55 @@ const EmuMultitaskingDetails = () => {
       <div className="max-w-full mx-auto space-y-10">
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
-          <p className="mt-2 capitalize">
-            <span
-              className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
-                task.status === "active"
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-              }`}
-            >
-              {task.status}
-            </span>
-          </p>
+
+          {user?.role !== "coordinator" ? (
+            task.status === "active" ? (
+              <Button
+                onClick={handleApply}
+                disabled={applying}
+                className={`mt-4 px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+                  ${
+                    isDark
+                      ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
+                      : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
+                  }`}
+                aria-busy={applying}
+              >
+                {applying ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Applying…
+                  </span>
+                ) : (
+                  "Apply"
+                )}
+              </Button>
+            ) : (
+              <p className="mt-3 capitalize">
+                <span
+                  className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+                    (task.status as string) === "active"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+                  }`}
+                >
+                  {task.status}
+                </span>
+              </p>
+            )
+          ) : (
+            <p className="mt-3">
+              <span
+                className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+                  task.status === "active"
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+                }`}
+              >
+                {task.status}
+              </span>
+            </p>
+          )}
         </div>
 
         {/* Info Section */}

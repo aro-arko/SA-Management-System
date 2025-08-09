@@ -295,7 +295,7 @@ const MultitaskingDetails = () => {
                 )}
               </Button>
             ) : (
-              <p className="mt-3">
+              <p className="mt-3 capitalize">
                 <span
                   className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
                     (task.status as string) === "active"
