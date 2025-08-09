@@ -178,6 +178,8 @@ export default function MyTasks() {
                 href = `/${user?.role}/leads-tasks/${task._id}`;
               } else if (t === "data-entry") {
                 href = `/${user?.role}/data-entry-tasks/${task._id}`;
+              } else if (t === "others" && task.unit === "LMU") {
+                href = `/${user?.role}/lmu-others/${task._id}`;
               }
 
               return href ? (
