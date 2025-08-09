@@ -15,3 +15,8 @@ export type TCreateLeadsGoal = {
   title: string;
   type: "whatsapp" | "email" | "calling";
 };
+export type TUpdateLeadsGoal = {
+  title: string;
+  type: "whatsapp" | "email" | "calling";
+  isActive: boolean;
+};
