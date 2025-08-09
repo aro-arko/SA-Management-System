@@ -9,6 +9,7 @@ import Link from "next/link";
 import HrTaskCard from "./HrTaskCard";
 import { THRFinanceTask } from "@/types/hr_finance/task.types";
 import { getHRFinanceTasks } from "@/services/HR_FinanceService/HrTask";
+import { useUser } from "@/context/UserContext";
 
 const HrTasks = () => {
   const [tasks, setTasks] = useState<THRFinanceTask[]>([]);
@@ -17,6 +18,7 @@ const HrTasks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -96,7 +98,7 @@ const HrTasks = () => {
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => (
-              <Link href={`/coordinator/hr-tasks/${task._id}`} key={task._id}>
+              <Link href={`/${user?.role}/hr-tasks/${task._id}`} key={task._id}>
                 <HrTaskCard task={task} />
               </Link>
             ))}
