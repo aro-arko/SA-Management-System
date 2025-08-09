@@ -1,7 +1,9 @@
+import MyTasks from "@/components/modules/WithDashboardLayout/My Tasks/MyTasks";
+
 const HeadMyTasksPage = () => {
   return (
     <div>
-      <h1>This is HeadMyTasksPage component</h1>
+      <MyTasks />
     </div>
   );
 };

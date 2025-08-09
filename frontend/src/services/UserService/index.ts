@@ -196,3 +196,26 @@ export const updateOwnProfile = async (data: TUpdateOwnProfile) => {
     return error.message || "An error occurred while updating profile";
   }
 };
+
+// get my tasks
+export const getMyTasks = async (query: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  console.log(query);
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/users/tasks?${query}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return res.json();
+  } catch (error: any) {
+    return error.message || "An error occurred while fetching tasks";
+  }
+};
