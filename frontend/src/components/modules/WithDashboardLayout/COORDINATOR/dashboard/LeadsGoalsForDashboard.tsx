@@ -4,9 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { TLmuGoal } from "@/types/lmu/goal.type";
 import { leadsGoals } from "@/services/LMUService/leadsManagement";
-import GoalCardSkeleton from "../Leads Managment Unit/Leads Goals/GoalCardSkeleton";
-import GoalCard from "../Leads Managment Unit/Leads Goals/GoalCard";
+
 import { Button } from "@/components/ui/button";
+import GoalCardSkeleton from "../../Leads Managment Unit/Leads Goals/GoalCardSkeleton";
+import GoalCard from "../../Leads Managment Unit/Leads Goals/GoalCard";
 
 const LeadsGoalsForDashboard = () => {
   const [goal, setGoal] = useState<TLmuGoal | null>(null);

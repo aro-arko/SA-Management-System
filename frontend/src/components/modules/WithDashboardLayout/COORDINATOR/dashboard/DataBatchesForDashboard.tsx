@@ -4,9 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { getAllDataBatches } from "@/services/LMUService/dataManagement";
 import { TLMUDataBatch } from "@/types/lmu/databatch.type";
-import DataBatchCardSkeleton from "../Leads Managment Unit/Data Batches/DataBatchSkeleton";
-import DataBatchCard from "../Leads Managment Unit/Data Batches/DataBatchCard";
+
 import { Button } from "@/components/ui/button";
+import DataBatchCardSkeleton from "../../Leads Managment Unit/Data Batches/DataBatchSkeleton";
+import DataBatchCard from "../../Leads Managment Unit/Data Batches/DataBatchCard";
 
 const DataBatchesForDashboard = () => {
   const [batch, setBatch] = useState<TLMUDataBatch | null>(null);

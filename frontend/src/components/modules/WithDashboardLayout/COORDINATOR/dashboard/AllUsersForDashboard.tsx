@@ -3,11 +3,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
-import UserCard from "../Users/UserCard";
 import { getAllUsers } from "@/services/UserService";
 import { TUserDetails } from "@/types/users/user.type";
 import Link from "next/link";
 import { Pagination } from "@/utils/Pagination";
+import UserCard from "../../Users/UserCard";
 
 const AllUsersForDashboard = () => {
   const [users, setUsers] = useState<TUserDetails[]>([]);
