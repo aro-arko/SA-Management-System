@@ -109,11 +109,6 @@ const getUserTasks = async (
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  const showAll = query.showAll === 'true';
-  const statusFilter = showAll
-    ? {}
-    : { status: { $in: ['in-progress', 'in-checking'] } };
-
   const groupedTaskIds: Record<string, Types.ObjectId[]> = {};
 
   userData.tasks?.forEach((task) => {
@@ -132,10 +127,11 @@ const getUserTasks = async (
 
     const baseQuery = Model.find({
       _id: { $in: ids },
-      ...statusFilter,
     });
 
     const queryBuilder = new QueryBuilder(baseQuery, query)
+      .search(['title', 'unit', 'type'])
+      .filter()
       .sort()
       .fields()
       .paginate();

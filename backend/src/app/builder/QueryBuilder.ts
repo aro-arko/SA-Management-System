@@ -66,7 +66,16 @@ class QueryBuilder<T> {
 
     // Add status filtering
     if (queryObj.status) {
-      (filterQuery as Record<string, unknown>)['status'] = queryObj.status;
+      const statuses = String(queryObj.status)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      // if "all" is present, don't add any status filter
+      if (!statuses.includes('all')) {
+        (filterQuery as Record<string, unknown>)['status'] =
+          statuses.length > 1 ? { $in: statuses } : statuses[0];
+      }
     }
 
     // Add type filtering

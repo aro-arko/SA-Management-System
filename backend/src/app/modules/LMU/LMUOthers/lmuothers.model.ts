@@ -43,6 +43,11 @@ const LMUOthersTaskSchema = new Schema<TLMUOthersTask>(
       ref: 'User',
       required: true,
     },
+    status: {
+      type: String,
+      enum: ['in-progress', 'completed'],
+      default: 'in-progress',
+    },
   },
   {
     timestamps: true,

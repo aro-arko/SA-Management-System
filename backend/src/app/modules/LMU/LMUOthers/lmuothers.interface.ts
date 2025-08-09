@@ -7,6 +7,7 @@ export type TLMUOthersTask = {
   details: string;
   multiTask: boolean;
   multiTaskId: Types.ObjectId;
+  status: 'in-progress' | 'completed';
   assignedTo: Types.ObjectId[];
   createdBy: Types.ObjectId;
 };
