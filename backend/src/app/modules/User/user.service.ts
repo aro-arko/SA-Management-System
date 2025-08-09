@@ -132,13 +132,16 @@ const getUserTasks = async (
     const queryBuilder = new QueryBuilder(baseQuery, query)
       .search(['title', 'unit', 'type'])
       .filter()
-      .sort()
       .fields()
       .paginate();
 
     const result = await queryBuilder.modelQuery.lean();
     allTasks.push(...result);
   }
+
+  allTasks.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
 
   return allTasks;
 };
