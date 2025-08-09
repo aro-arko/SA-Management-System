@@ -10,14 +10,16 @@ import { getAllDataEntryTasks } from "@/services/LMUService/dataManagement";
 import DataEntryTaskCard from "./DataEntryTaskCard";
 import { TDataEntryTask } from "@/types/lmu/dataentry.type";
 import clsx from "clsx";
+import { useUser } from "@/context/UserContext";
 
 const DataEntryTasks = () => {
   const [tasks, setTasks] = useState<TDataEntryTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(""); // NEW: search field
+  const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -157,7 +159,7 @@ const DataEntryTasks = () => {
           <div className="space-y-4">
             {tasks.map((task) => (
               <Link
-                href={`/coordinator/data-entry-tasks/${task._id}`}
+                href={`/${user?.role}/data-entry-tasks/${task._id}`}
                 key={task._id}
               >
                 <div
