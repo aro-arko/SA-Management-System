@@ -2,7 +2,10 @@
 "use server";
 
 import { TCreateDataBatch, TUpdateDataBatch } from "@/types/lmu/databatch.type";
-import { TCreateDataEntryTask } from "@/types/lmu/dataentry.type";
+import {
+  TCreateDataEntryTask,
+  TUpdateDataEntryTask,
+} from "@/types/lmu/dataentry.type";
 import { cookies } from "next/headers";
 
 // get all data entry tasks with pagination
@@ -161,6 +164,31 @@ export const createDataEntryTask = async (data: TCreateDataEntryTask) => {
       `${process.env.NEXT_PUBLIC_BASE_API}/data-management/create-data-entry-task`,
       {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// update data entry task
+export const updateDataEntryTask = async (
+  data: TUpdateDataEntryTask,
+  id: string
+) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/data-management/update-data-entry-task/${id}`,
+      {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,

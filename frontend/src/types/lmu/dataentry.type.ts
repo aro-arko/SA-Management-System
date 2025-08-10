@@ -50,3 +50,18 @@ export type TCreateDataEntryTask = {
   schoolName: string;
   message?: string;
 };
+
+export type TUpdateDataEntryTask = {
+  title: string;
+  assignedTo: string;
+  dueDate: Date;
+  schoolTeamTotalLeads: number;
+  campaignId: string;
+  highestQualification: string;
+  preferredProgram: string;
+  preferredIntake: string;
+  schoolLevel: string;
+  schoolName: string;
+  message?: string;
+  status: "in-progress" | "in-checking" | "completed";
+};

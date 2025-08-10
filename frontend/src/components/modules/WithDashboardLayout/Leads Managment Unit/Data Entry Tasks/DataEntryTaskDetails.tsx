@@ -3,8 +3,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import clsx from "clsx";
+import { useUser } from "@/context/UserContext";
 import { getUserNameById, TaskDetails } from "@/services/UserService";
 import {
   Calendar,
@@ -23,7 +25,7 @@ import {
   History,
 } from "lucide-react";
 import { TDataEntryTask } from "@/types/lmu/dataentry.type";
-import { formatToMalaysiaTime } from "@/utils/formatDate"; // unchanged
+import { formatToMalaysiaTime } from "@/utils/formatDate";
 import {
   submitDataReport,
   editDataEntryReport,
@@ -45,6 +47,8 @@ import { toast } from "sonner";
 const DataEntryTaskDetails = () => {
   const { id } = useParams();
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
+
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [task, setTask] = useState<TDataEntryTask | null>(null);
@@ -311,6 +315,10 @@ const DataEntryTaskDetails = () => {
     );
   }
 
+  // ✅ canEdit and edit URL
+  const canEdit = user?.role === "lmuAdmin" || user?.role === "lmuDataLeader";
+  const editHref = `/${user?.role.toLocaleLowerCase()}/data-entry-tasks/${id}/update`;
+
   return (
     <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
@@ -319,7 +327,8 @@ const DataEntryTaskDetails = () => {
           <h1 className="text-3xl font-bold flex justify-center items-center gap-2">
             {task.title}
           </h1>
-          <p className="mt-3">
+
+          <div className="mt-3 flex flex-col items-center gap-3">
             <span
               className={clsx(
                 "inline-block px-4 py-1 text-sm font-medium rounded-full",
@@ -330,7 +339,22 @@ const DataEntryTaskDetails = () => {
             >
               {task.status}
             </span>
-          </p>
+
+            {/* ✅ Edit button (only admins/data leaders) */}
+            {canEdit && (
+              <Link href={editHref}>
+                <Button
+                  variant="outline"
+                  className={clsx(
+                    "mt-1 px-6",
+                    isDark ? "border-neutral-700 text-neutral-200" : ""
+                  )}
+                >
+                  Edit Task
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Info Cards */}
