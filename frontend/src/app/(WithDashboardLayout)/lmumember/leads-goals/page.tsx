@@ -1,0 +1,11 @@
+import LeadsGoals from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Leads Goals/LeadsGoals";
+
+const LeadsGoalsLmuMemberPage = () => {
+  return (
+    <div>
+      <LeadsGoals />
+    </div>
+  );
+};
+
+export default LeadsGoalsLmuMemberPage;
