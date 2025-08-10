@@ -78,3 +78,26 @@ export const updateLMUOtherTask = async (
     throw new Error("Failed to update others task");
   }
 };
+
+// delete lmu others task
+export const deleteLmuOthersTask = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-others/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error deleting others task:", error);
+    throw new Error("Failed to delete others task");
+  }
+};
