@@ -45,7 +45,7 @@ export default function MyTaskCard({ task }: { task: TMyTask }) {
             icon={<Building2 className="w-5 h-5 text-emerald-600" />}
             label="Unit"
             value={
-              <Badge className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 dark:text-white">
+              <Badge className="text-xs px-2 py-0.5 bg-gray-100 text-emerald-600 dark:bg-gray-800 dark:text-emerald-400">
                 {unit}
               </Badge>
             }
@@ -54,7 +54,7 @@ export default function MyTaskCard({ task }: { task: TMyTask }) {
             icon={<Tag className="w-5 h-5 text-purple-500" />}
             label="Type"
             value={
-              <Badge className="capitalize text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 dark:text-white">
+              <Badge className="capitalize text-xs px-2 py-0.5 bg-gray-100 text-purple-600 dark:bg-gray-800 dark:text-purple-400">
                 {type.replace("-", " ")}
               </Badge>
             }
