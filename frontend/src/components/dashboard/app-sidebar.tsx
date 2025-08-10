@@ -15,6 +15,7 @@ import { coordinatorNavMain } from "../role-base-sidebar/cooridatorSidebarNav";
 import { headNavMain } from "../role-base-sidebar/headSidebarNav";
 import { lmuAdminNavMain } from "../role-base-sidebar/lmuadminSidebarNav";
 import { lmudataleaderNavMain } from "../role-base-sidebar/lmudataleaderSidebarNav";
+import { lmumemberNavMain } from "../role-base-sidebar/lmumemberSidebarNav";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { user, isLoading } = useUser();
@@ -71,6 +72,9 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       break;
     case "lmudataleader":
       navMain = lmudataleaderNavMain;
+      break;
+    case "lmumember":
+      navMain = lmumemberNavMain;
       break;
     default:
       navMain = [];
