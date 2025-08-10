@@ -14,11 +14,24 @@ import {
   BarChart2,
 } from "lucide-react";
 import Link from "next/link";
-import { getDataBatchById } from "@/services/LMUService/dataManagement";
+import {
+  getDataBatchById,
+  updateDataBatch,
+} from "@/services/LMUService/dataManagement";
 import { getUserNameById } from "@/services/UserService";
-import { TLMUDataBatch } from "@/types/lmu/databatch.type";
+import { TLMUDataBatch, TUpdateDataBatch } from "@/types/lmu/databatch.type";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 const DataBatchDetails = () => {
   const { id } = useParams();
@@ -29,16 +42,21 @@ const DataBatchDetails = () => {
   const [creatorName, setCreatorName] = useState("Loading...");
   const { user } = useUser();
 
+  // edit modal state
+  const [open, setOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => setMounted(true), []);
   const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const res = await getDataBatchById(id as string);
         if (res.success) {
           setBatch(res.data);
-
           const creator = await getUserNameById(res.data.createdBy);
           setCreatorName(creator?.data?.name || "Unknown");
         }
@@ -48,15 +66,40 @@ const DataBatchDetails = () => {
         setLoading(false);
       }
     };
-
     if (id) fetchData();
   }, [id]);
+
+  const canEdit = user?.role === "lmuAdmin" || user?.role === "lmuDataLeader";
 
   const bgClass = !mounted
     ? "bg-transparent"
     : isDark
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-[#ffffff] text-black";
+
+  const openEdit = () => {
+    if (!batch) return;
+    setNewTitle(batch.title || "");
+    setOpen(true);
+  };
+
+  const saveEdit = async () => {
+    if (!batch || !newTitle.trim()) {
+      toast.warning("Title is required.");
+      return;
+    }
+    setSaving(true);
+    const payload: TUpdateDataBatch = { title: newTitle.trim() };
+    const res = await updateDataBatch(payload, batch._id);
+    if (res?.success) {
+      toast.success(res?.message || "Data batch updated.");
+      setBatch({ ...batch, title: payload.title });
+      setOpen(false);
+    } else {
+      toast.error(res?.message || "Failed to update data batch.");
+    }
+    setSaving(false);
+  };
 
   if (!mounted) {
     return (
@@ -68,9 +111,12 @@ const DataBatchDetails = () => {
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
         <div className="max-w-full mx-auto space-y-10">
-          <div className="text-center space-y-2">
-            <Skeleton className="mx-auto h-8 w-64 rounded" />
-            <Skeleton className="mx-auto h-5 w-24 rounded" />
+          <div className="flex items-center justify-between">
+            <div className="space-y-2 text-center w-full">
+              <Skeleton className="mx-auto h-8 w-64 rounded" />
+              <Skeleton className="mx-auto h-5 w-24 rounded" />
+            </div>
+            <div className="w-28">{/* keeps layout for edit btn spot */}</div>
           </div>
           <div
             className={`rounded-xl p-6 border shadow-sm ${
@@ -170,13 +216,27 @@ const DataBatchDetails = () => {
   return (
     <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">{batch.title}</h1>
-          <p className="mt-4 text-muted-foreground">
-            <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
-              {batch.type}
-            </span>
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* Header (centered horizontally at top, not screen-centered) */}
+          <div className="w-full">
+            <div className="mx-auto max-w-3xl flex flex-col items-center gap-3 text-center">
+              <h1 className="text-3xl font-bold">{batch.title}</h1>
+
+              <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
+                {batch.type}
+              </span>
+
+              {canEdit && (
+                <Button
+                  onClick={openEdit}
+                  variant="outline"
+                  className={`${isDark ? "border-neutral-700" : ""} mt-2 px-6`}
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Info Cards */}
@@ -205,7 +265,7 @@ const DataBatchDetails = () => {
           </div>
         </div>
 
-        {/* Linked Tasks Section */}
+        {/* Linked Tasks */}
         {batch.tasks?.length > 0 && (
           <div
             className={`rounded-xl p-6 border shadow-sm ${
@@ -238,6 +298,42 @@ const DataBatchDetails = () => {
           </div>
         )}
       </div>
+
+      {/* Edit Modal */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className={isDark ? "bg-neutral-950 text-white" : ""}>
+          <DialogHeader>
+            <DialogTitle>Edit Data Batch</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="batch-title" className="text-sm">
+              Title
+            </label>
+            <Input
+              id="batch-title"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="e.g., Updating data batch..."
+              disabled={saving}
+              className={
+                isDark ? "bg-black/40 border-neutral-700 text-white" : ""
+              }
+            />
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button onClick={saveEdit} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
