@@ -282,7 +282,9 @@ const MultitaskingDetails = () => {
             // Edit button for lmuAdmin / lmuDataLeader
             <Button
               onClick={() =>
-                router.push(`/lmuadmin/lmu-multitaskings/${id}/update`)
+                router.push(
+                  `/${user?.role.toLocaleLowerCase()}/lmu-multitaskings/${id}/update`
+                )
               }
               variant="outline"
               className={`mt-4 px-6 py-2 rounded-md cursor-pointer text-sm font-medium  transition-colors duration-200
