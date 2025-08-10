@@ -1,0 +1,11 @@
+import DataEntryTasks from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Data Entry Tasks/DataEntryTasks";
+
+const DataEntryTasksLmuAdminPage = () => {
+  return (
+    <div>
+      <DataEntryTasks />
+    </div>
+  );
+};
+
+export default DataEntryTasksLmuAdminPage;
