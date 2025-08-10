@@ -23,6 +23,7 @@ router.get(
     USER_ROLE.lmuAdmin,
     USER_ROLE.coordinator,
     USER_ROLE.head,
+    USER_ROLE.lmuMember,
   ),
   LMUDataBatchController.getAllDataBatches,
 );
@@ -34,6 +35,7 @@ router.get(
     USER_ROLE.head,
     USER_ROLE.lmuAdmin,
     USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
   ),
   LMUDataBatchController.getDataBatchById,
 );
