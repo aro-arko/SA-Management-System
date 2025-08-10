@@ -13,3 +13,7 @@ export type TLMUDataBatch = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TCreateDataBatch = {
+  title: string;
+};
