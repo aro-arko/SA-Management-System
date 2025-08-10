@@ -31,6 +31,12 @@ const createLmuGoal = async (currentUser: JwtPayload, data: TGoal) => {
 // all goals will be fetched by the user
 const getAllLmuGoals = async (query: Record<string, unknown>) => {
   const modelQuery = LMULeadsGoal.find();
+
+  // Apply only if isActive query is provided
+  if (query.isActive !== undefined) {
+    modelQuery.where('isActive').equals(query.isActive === 'true');
+  }
+
   const queryBuilder = new QueryBuilder(modelQuery, query);
   queryBuilder.sort().paginate();
 
@@ -46,7 +52,7 @@ const updateLmuGoal = async (id: string, data: TGoal) => {
   }
 
   // If trying to update the type, ensure the goal has no tasks
-  if (data.type && existingGoal.tasks.length > 0) {
+  if (data.type !== existingGoal.type && existingGoal.tasks.length > 0) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       'Cannot update goal type when tasks are associated',

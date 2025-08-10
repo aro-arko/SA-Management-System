@@ -118,6 +118,7 @@ const getUserTasks = async (
     groupedTaskIds[category].push(new Types.ObjectId(taskId));
   });
 
+  // Collect everything first (no pagination here)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-const
   let allTasks: any[] = [];
 
@@ -125,25 +126,37 @@ const getUserTasks = async (
     const Model = categoryModelMap[category];
     if (!Model) continue;
 
-    const baseQuery = Model.find({
-      _id: { $in: ids },
-    });
+    const baseQuery = Model.find({ _id: { $in: ids } });
 
-    const queryBuilder = new QueryBuilder(baseQuery, query)
+    // IMPORTANT: do NOT call .paginate() here
+    const qb = new QueryBuilder(baseQuery, query)
       .search(['title', 'unit', 'type'])
       .filter()
-      .fields()
-      .paginate();
+      .fields();
 
-    const result = await queryBuilder.modelQuery.lean();
+    const result = await qb.modelQuery.lean();
     allTasks.push(...result);
   }
 
-  allTasks.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
+  // Global sort
+  allTasks.sort((a, b) => {
+    const aTime = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bTime = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return bTime - aTime;
+  });
 
-  return allTasks;
+  // Global pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const start = (page - 1) * limit;
+  const end = start + limit;
+
+  const pagedTasks = allTasks.slice(start, end);
+
+  // (Optional) return meta if you want total/hasMore, etc.
+  // return { data: pagedTasks, meta: { page, limit, total: allTasks.length } };
+
+  return pagedTasks;
 };
 
 const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
@@ -215,11 +228,26 @@ const getAllUsers = async (query: Record<string, unknown>) => {
   const baseQuery = User.find()
     .select({ unit: 1, status: 1 })
     .sort({ firstName: 1 });
+
   const queryBuilder = new QueryBuilder(baseQuery, query)
     .search(['firstName', 'lastName', 'email'])
-    .filter()
-    .paginate()
-    .fields();
+    .filter();
+
+  // Extra filtering for status
+  if (query.status) {
+    queryBuilder.modelQuery = queryBuilder.modelQuery.find({
+      status: query.status,
+    });
+  }
+
+  // Extra filtering for unit
+  if (query.unit) {
+    queryBuilder.modelQuery = queryBuilder.modelQuery.find({
+      unit: query.unit,
+    });
+  }
+
+  queryBuilder.paginate().fields();
 
   const users = await queryBuilder.modelQuery.lean();
 

@@ -36,7 +36,13 @@ const createLMUMultitasking = async (
 };
 
 const getLMUMultitaskings = async (query: Record<string, unknown>) => {
-  const baseQuery = LMUMultiTasking.find();
+  let baseQuery;
+
+  if (query.status) {
+    baseQuery = LMUMultiTasking.find({ status: query.status });
+  } else {
+    baseQuery = LMUMultiTasking.find();
+  }
 
   const queryBuilder = new QueryBuilder(baseQuery, query)
     .search(['title', 'description'])

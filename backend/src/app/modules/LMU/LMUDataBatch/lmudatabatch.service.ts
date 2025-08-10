@@ -26,7 +26,12 @@ const createDataBatch = async (
 
 // get all LMU Data Batches
 const getAllDataBatches = async (query: Record<string, unknown>) => {
-  const modelQuery = LMUDataBatch.find();
+  let modelQuery = LMUDataBatch.find();
+
+  if (query.isActive && query.isActive === 'true') {
+    modelQuery = modelQuery.find({ isActive: true });
+  }
+
   const queryBuilder = new QueryBuilder(modelQuery, query);
   queryBuilder.sort().paginate();
 

@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 export type TFixedTimeEvent = {
   title: string;
   type: string;
+  unit: string;
   multiTask: boolean;
   multiTaskId?: Types.ObjectId;
   eventDate: Date;

@@ -27,7 +27,17 @@ router.get(
 // get a fixed time event by id
 router.get(
   '/:id',
-  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.emuAdmin),
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
+    USER_ROLE.hrFinanceAdmin,
+  ),
   FixedTimeEventController.getFixedTimeEventById,
 );
 
