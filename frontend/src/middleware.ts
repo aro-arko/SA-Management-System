@@ -3,7 +3,15 @@ import { getCurrentUser } from "./services/AuthService";
 
 declare module "jsonwebtoken" {
   export interface JwtPayload {
-    role?: "coordinator" | "head";
+    role?:
+      | "coordinator"
+      | "head"
+      | "lmuAdmin"
+      | "lmuDataLeader"
+      | "emuAdmin"
+      | "emuMember"
+      | "dsmmMember"
+      | "hrFinanceAdmin";
   }
 }
 
@@ -37,9 +45,6 @@ export const middleware = async (request: NextRequest) => {
     return NextResponse.next();
   }
 
-  // NOTE: if getCurrentUser() uses `cookies()` from next/headers, it may not work in middleware.
-  // Prefer reading the cookie from the request in middleware if you hit issues:
-  // const token = request.cookies.get("accessToken")?.value;
   const userInfo = (await getCurrentUser()) as { role?: Role } | null;
 
   if (!userInfo?.role) {
@@ -73,11 +78,6 @@ export const config = {
     // head space
     "/head",
     "/head/:page*",
-
-    // optional separate profile routes
-    "/coordinator-profile",
-    "/head-profile",
-    "/lmuadmin-profile",
 
     // lmuadmin space
     "/lmuadmin",
