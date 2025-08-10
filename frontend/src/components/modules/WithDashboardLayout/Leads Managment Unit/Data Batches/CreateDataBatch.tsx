@@ -43,7 +43,7 @@ export default function CreateDataBatch() {
 
   return (
     <div
-      className={`min-h-screen px-4 py-10 ${
+      className={`min-h-screen px-4 py-10 rounded-xl ${
         isDark
           ? "bg-gradient-to-b from-black to-[#170303] text-white"
           : "bg-white text-black"
