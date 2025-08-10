@@ -1,5 +1,6 @@
 "use server";
 
+import { TCreateLMUMultitasking } from "@/types/lmu/multitasking.type";
 import { cookies } from "next/headers";
 
 export const getAllMultitaskings = async (query: string) => {
@@ -41,6 +42,29 @@ export const applyLmuMultitasking = async (id: string) => {
     return await response.json();
   } catch (error) {
     console.error("Error applying for LMU multitasking:", error);
+    throw error;
+  }
+};
+
+// create lmu multitasking
+export const createLmuMultitasking = async (data: TCreateLMUMultitasking) => {
+  const token = (await cookies()).get("accessToken")?.value;
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-multitaskings/create-multitasking`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating LMU multitasking:", error);
     throw error;
   }
 };
