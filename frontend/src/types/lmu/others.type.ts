@@ -7,6 +7,7 @@ export type TLMUOthersTask = {
   multiTask: boolean;
   multiTaskId: string;
   assignedTo: string[];
+  status: "in-progress" | "completed";
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -18,4 +19,13 @@ export type TCreateLMUOthersTask = {
   multiTask: boolean;
   multiTaskId?: string;
   assignedTo: string[];
+};
+
+export type TUpdateLMUOthersTask = {
+  title?: string;
+  details?: string;
+  multiTask?: boolean;
+  multiTaskId?: string;
+  assignedTo?: string[];
+  status?: "in-progress" | "completed";
 };

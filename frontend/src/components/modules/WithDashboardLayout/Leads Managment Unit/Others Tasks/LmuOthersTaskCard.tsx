@@ -7,17 +7,13 @@ import clsx from "clsx";
 import { TLMUOthersTask } from "@/types/lmu/others.type";
 
 const LmuOthersTaskCard = ({ task }: { task: TLMUOthersTask }) => {
-  const {
-    title,
-    type,
-    status = "active",
-  } = {
+  const { title, type, status } = {
     ...task,
-    status: "active", // default since others don't have status field
   };
 
   const badgeColor = "bg-blue-100 text-blue-800"; // fixed for "Others"
-  const statusColor = status === "active" ? "text-green-600" : "text-red-500";
+  const statusColor =
+    status === "completed" ? "text-green-600" : "text-yellow-500";
 
   return (
     <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow mb-2">

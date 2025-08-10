@@ -15,7 +15,6 @@ import {
   Users,
   Info,
   Layers,
-  Pencil,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { TLMUOthersTask } from "@/types/lmu/others.type";
@@ -105,6 +104,11 @@ const LmuOthersTaskDetails = () => {
       label: "Unit",
       value: task.unit,
       icon: <Layers className="w-5 h-5 text-yellow-500" />,
+    },
+    {
+      label: "Status",
+      value: task.status,
+      icon: <CircleDot className="w-5 h-5 text-gray-500" />,
     },
     {
       label: "Created At",
