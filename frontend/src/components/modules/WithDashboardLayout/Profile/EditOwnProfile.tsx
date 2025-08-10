@@ -119,7 +119,7 @@ const EditOwnProfile = () => {
       const res = await updateOwnProfile(form);
       if (res?.success) {
         toast.success("Profile updated successfully.");
-        router.push(`/${me?.role}/profile`);
+        router.push(`/${me?.role.toLocaleLowerCase()}/profile`);
       } else {
         const backendMsg =
           res?.message ||
@@ -179,7 +179,7 @@ const EditOwnProfile = () => {
       <div className="max-w-full mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
             Edit My Profile
           </h1>
           <Button

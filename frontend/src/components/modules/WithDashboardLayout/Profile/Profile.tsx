@@ -206,14 +206,16 @@ const Profile = () => {
       <div className="max-w-full mx-auto space-y-10">
         {/* Header + Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
             My Profile
           </h1>
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
               className="flex items-center gap-2 border-neutral-300 dark:border-neutral-700"
-              onClick={() => router.push(`/${me.role}/profile/edit`)}
+              onClick={() =>
+                router.push(`/${me.role.toLocaleLowerCase()}/profile/edit`)
+              }
             >
               <Pencil className="w-4 h-4" />
               Edit Profile
