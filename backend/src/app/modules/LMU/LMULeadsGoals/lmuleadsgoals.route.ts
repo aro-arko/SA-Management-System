@@ -28,7 +28,13 @@ router.get(
 
 router.get(
   '/:id',
-  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.lmuAdmin),
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+  ),
   lmuGoalsController.getLmuGoalById,
 );
 
