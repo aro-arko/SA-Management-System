@@ -91,8 +91,16 @@ export const lmuAdminNavMain = [
         url: "/lmuadmin/lmu-multitaskings",
       },
       {
+        title: "Create Multitasking",
+        url: "/lmuadmin/create-multitasking",
+      },
+      {
         title: "Others",
         url: "/lmuadmin/lmu-others",
+      },
+      {
+        title: "Create Others",
+        url: "/lmuadmin/create-others",
       },
     ],
   },
