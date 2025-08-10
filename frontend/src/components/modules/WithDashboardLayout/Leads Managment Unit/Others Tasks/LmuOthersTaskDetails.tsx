@@ -15,10 +15,13 @@ import {
   Users,
   Info,
   Layers,
+  Pencil,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { TLMUOthersTask } from "@/types/lmu/others.type";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button";
 
 const LmuOthersTaskDetails = () => {
   const { id } = useParams();
@@ -28,6 +31,7 @@ const LmuOthersTaskDetails = () => {
   const [task, setTask] = useState<TLMUOthersTask | null>(null);
   const [createdByName, setCreatedByName] = useState("");
   const [assignedNames, setAssignedNames] = useState<string[]>([]);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -73,33 +77,6 @@ const LmuOthersTaskDetails = () => {
         <div className="space-y-6 max-w-full mx-auto">
           <Skeleton className="h-10 w-2/3 mx-auto rounded-md" />
           <Skeleton className="h-6 w-28 mx-auto rounded-full" />
-
-          <div
-            className={`rounded-xl p-6 border ${
-              isDark
-                ? "bg-black/10 border-neutral-700"
-                : "bg-neutral-50 border-neutral-200"
-            }`}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`rounded-lg p-4 shadow-sm flex items-start gap-4 border ${
-                    isDark
-                      ? "bg-black/30 border-neutral-700"
-                      : "bg-white/80 border-neutral-200"
-                  }`}
-                >
-                  <Skeleton className="w-6 h-6 rounded-full" />
-                  <div className="space-y-2 w-full">
-                    <Skeleton className="h-4 w-1/3" />
-                    <Skeleton className="h-5 w-2/3" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -149,7 +126,9 @@ const LmuOthersTaskDetails = () => {
       value: task.multiTask ? (
         <Link
           className="text-blue-500 hover:underline"
-          href={`/coordinator/lmu-multitaskings/${task.multiTaskId}`}
+          href={`/${user?.role.toLocaleLowerCase()}/lmu-multitaskings/${
+            task.multiTaskId
+          }`}
         >
           Yes
         </Link>
@@ -172,7 +151,7 @@ const LmuOthersTaskDetails = () => {
   return (
     <div className={`min-h-screen px-6 py-10 rounded-xl ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
-        <div className="text-center">
+        <div className="text-center mx-auto">
           <h1 className="text-3xl font-bold">{task.title}</h1>
           <p className="mt-3">
             <span
@@ -185,8 +164,22 @@ const LmuOthersTaskDetails = () => {
               {task.type}
             </span>
           </p>
+
+          {user?.role?.toLowerCase() === "lmuadmin" && (
+            <div className="flex justify-center">
+              <Link href={`/lmuadmin/lmu-others/${id}/update`}>
+                <Button
+                  variant="outline"
+                  className="mt-4 flex items-center gap-2 px-6"
+                >
+                  Edit
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
+        {/* Info Cards */}
         <div
           className={`rounded-xl p-6 border ${
             isDark
@@ -210,7 +203,7 @@ const LmuOthersTaskDetails = () => {
           </div>
         </div>
 
-        {/* Assigned Manpower Section */}
+        {/* Assigned Members */}
         <div
           className={`rounded-xl p-6 border ${
             isDark
