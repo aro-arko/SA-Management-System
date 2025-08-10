@@ -67,7 +67,7 @@ export const lmumemberNavMain = [
     ],
   },
   {
-    title: "Data Entry Multitasking",
+    title: "Multitasking & Others",
     url: "#",
     icon: Layers,
     items: [
