@@ -40,7 +40,6 @@ export type TCreateDataEntryTask = {
   multiTask: boolean;
   multiTaskId?: string;
   assignedTo: string;
-  createdBy: string;
   dueDate: Date;
   schoolTeamTotalLeads: number;
   campaignId: string;

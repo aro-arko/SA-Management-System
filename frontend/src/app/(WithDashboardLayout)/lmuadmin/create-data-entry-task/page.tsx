@@ -1,7 +1,9 @@
+import CreateDataEntryTask from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Data Entry Tasks/CreateDataEntryTask";
+
 const CreateDataEntryTaskPage = () => {
   return (
     <div>
-      <h1>This is CreateDataEntryTaskPage component</h1>
+      <CreateDataEntryTask />
     </div>
   );
 };
