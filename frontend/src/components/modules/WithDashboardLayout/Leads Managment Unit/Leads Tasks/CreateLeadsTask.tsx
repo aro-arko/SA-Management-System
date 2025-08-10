@@ -573,8 +573,9 @@ const CreateLeadsTask = () => {
             <Button
               onClick={onSubmit}
               disabled={submitting}
+              variant="outline"
               className={clsx(
-                "rounded-xl",
+                "rounded-md",
                 isDark
                   ? "bg-white/10 hover:bg-white/20"
                   : "bg-neutral-900 hover:bg-neutral-800 text-white"
