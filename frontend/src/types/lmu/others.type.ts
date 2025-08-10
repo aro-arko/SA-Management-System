@@ -11,3 +11,11 @@ export type TLMUOthersTask = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TCreateLMUOthersTask = {
+  title: string;
+  details: string;
+  multiTask: boolean;
+  multiTaskId?: string;
+  assignedTo: string[];
+};
