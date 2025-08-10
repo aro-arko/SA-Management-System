@@ -68,8 +68,16 @@ export const lmuAdminNavMain = [
         url: "/lmuadmin/data-entry-tasks",
       },
       {
+        title: "Create Data Entry Task",
+        url: "/lmuadmin/create-data-entry-task",
+      },
+      {
         title: "Data Batches",
         url: "/lmuadmin/data-batches",
+      },
+      {
+        title: "Create Data Batch",
+        url: "/lmuadmin/create-data-batch",
       },
     ],
   },
