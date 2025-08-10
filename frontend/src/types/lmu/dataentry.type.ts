@@ -33,3 +33,21 @@ export type TDataEntryTask = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type TCreateDataEntryTask = {
+  title: string;
+  batchId?: string;
+  multiTask: boolean;
+  multiTaskId?: string;
+  assignedTo: string;
+  createdBy: string;
+  dueDate: Date;
+  schoolTeamTotalLeads: number;
+  campaignId: string;
+  highestQualification: string;
+  preferredProgram: string;
+  preferredIntake: string;
+  schoolLevel: string;
+  schoolName: string;
+  message?: string;
+};
