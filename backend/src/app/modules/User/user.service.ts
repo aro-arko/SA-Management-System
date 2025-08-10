@@ -164,7 +164,13 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Invalid task ID');
   }
 
-  const privilegedRoles = ['coordinator', 'head', 'lmuAdmin', 'lmuDataLeader'];
+  const privilegedRoles = [
+    'coordinator',
+    'head',
+    'lmuAdmin',
+    'lmuDataLeader',
+    'lmuMember',
+  ];
   const dataLeaderRole = 'lmuDataLeader';
 
   let category: string | undefined;

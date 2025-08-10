@@ -33,7 +33,13 @@ router.delete(
 // get all others tasks
 router.get(
   '/all',
-  auth(USER_ROLE.lmuAdmin, USER_ROLE.head, USER_ROLE.coordinator),
+  auth(
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.head,
+    USER_ROLE.coordinator,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
+  ),
   LMUOthersController.getAllOthersTasks,
 );
 
