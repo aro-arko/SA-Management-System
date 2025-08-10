@@ -31,6 +31,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 const DataBatchDetails = () => {
@@ -45,6 +46,7 @@ const DataBatchDetails = () => {
   // edit modal state
   const [open, setOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
+  const [active, setActive] = useState<boolean>(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -80,6 +82,7 @@ const DataBatchDetails = () => {
   const openEdit = () => {
     if (!batch) return;
     setNewTitle(batch.title || "");
+    setActive(Boolean(batch.isActive));
     setOpen(true);
   };
 
@@ -89,11 +92,14 @@ const DataBatchDetails = () => {
       return;
     }
     setSaving(true);
-    const payload: TUpdateDataBatch = { title: newTitle.trim() };
+    const payload: TUpdateDataBatch = {
+      title: newTitle.trim(),
+      isActive: active,
+    };
     const res = await updateDataBatch(payload, batch._id);
     if (res?.success) {
       toast.success(res?.message || "Data batch updated.");
-      setBatch({ ...batch, title: payload.title });
+      setBatch({ ...batch, title: payload.title, isActive: payload.isActive });
       setOpen(false);
     } else {
       toast.error(res?.message || "Failed to update data batch.");
@@ -116,7 +122,7 @@ const DataBatchDetails = () => {
               <Skeleton className="mx-auto h-8 w-64 rounded" />
               <Skeleton className="mx-auto h-5 w-24 rounded" />
             </div>
-            <div className="w-28">{/* keeps layout for edit btn spot */}</div>
+            <div className="w-28" />
           </div>
           <div
             className={`rounded-xl p-6 border shadow-sm ${
@@ -216,26 +222,24 @@ const DataBatchDetails = () => {
   return (
     <div className={`min-h-screen rounded-xl px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Header (centered horizontally at top, not screen-centered) */}
-          <div className="w-full">
-            <div className="mx-auto max-w-3xl flex flex-col items-center gap-3 text-center">
-              <h1 className="text-3xl font-bold">{batch.title}</h1>
+        {/* Header (centered horizontally at top) */}
+        <div className="w-full">
+          <div className="mx-auto max-w-3xl flex flex-col items-center gap-3 text-center">
+            <h1 className="text-3xl font-bold">{batch.title}</h1>
 
-              <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
-                {batch.type}
-              </span>
+            <span className="px-3 py-1 rounded-full text-sm font-mono bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-300 border border-green-200 dark:border-green-700">
+              {batch.type}
+            </span>
 
-              {canEdit && (
-                <Button
-                  onClick={openEdit}
-                  variant="outline"
-                  className={`${isDark ? "border-neutral-700" : ""} mt-2 px-6`}
-                >
-                  Edit
-                </Button>
-              )}
-            </div>
+            {canEdit && (
+              <Button
+                onClick={openEdit}
+                variant="outline"
+                className={`${isDark ? "border-neutral-700" : ""} mt-2 px-6`}
+              >
+                Edit
+              </Button>
+            )}
           </div>
         </div>
 
@@ -305,21 +309,36 @@ const DataBatchDetails = () => {
           <DialogHeader>
             <DialogTitle>Edit Data Batch</DialogTitle>
           </DialogHeader>
-          <div className="space-y-2">
-            <label htmlFor="batch-title" className="text-sm">
-              Title
-            </label>
-            <Input
-              id="batch-title"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="e.g., Updating data batch..."
-              disabled={saving}
-              className={
-                isDark ? "bg-black/40 border-neutral-700 text-white" : ""
-              }
-            />
+
+          <div className="space-y-3">
+            {/* Title */}
+            <div className="space-y-2">
+              <label htmlFor="batch-title" className="text-sm">
+                Title
+              </label>
+              <Input
+                id="batch-title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="e.g., Updating data batch..."
+                disabled={saving}
+                className={
+                  isDark ? "bg-black/40 border-neutral-700 text-white" : ""
+                }
+              />
+            </div>
+
+            {/* Active toggle */}
+            <div className="flex items-center justify-between py-1">
+              <span className="text-sm font-medium">Active</span>
+              <Switch
+                checked={active}
+                onCheckedChange={setActive}
+                disabled={saving}
+              />
+            </div>
           </div>
+
           <DialogFooter className="gap-2">
             <Button
               variant="outline"

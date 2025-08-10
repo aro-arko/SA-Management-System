@@ -19,4 +19,5 @@ export type TCreateDataBatch = {
 };
 export type TUpdateDataBatch = {
   title: string;
+  isActive: boolean;
 };

@@ -214,21 +214,18 @@ const LeadsGoalDetails = () => {
               {goal.type}
             </span>
           </p>
-          <div className="flex justify-end">
-            {user?.role === "lmuAdmin" && (
-              <Link href={`/lmuadmin/leads-goals/${goal._id}/update`}>
-                <Button
-                  variant="outline"
-                  className={`${
-                    isDark ? "border-neutral-700" : ""
-                  } cursor-pointer`}
-                >
-                  <Pencil />
-                  Edit Goal
-                </Button>
-              </Link>
-            )}
-          </div>
+          {user?.role === "lmuAdmin" && (
+            <Link href={`/lmuadmin/leads-goals/${goal._id}/update`}>
+              <Button
+                variant="outline"
+                className={`${
+                  isDark ? "border-neutral-700" : ""
+                } cursor-pointer mt-4 px-6`}
+              >
+                Edit Goal
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Main Info Cards */}
