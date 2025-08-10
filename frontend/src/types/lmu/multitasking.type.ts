@@ -11,3 +11,8 @@ export type TLMUMultitasking = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TCreateLMUMultitasking = {
+  title: string;
+  type: "whatsapp" | "calling" | "email" | "data-entry" | "others";
+};
