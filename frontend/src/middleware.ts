@@ -82,5 +82,9 @@ export const config = {
     // lmuadmin space
     "/lmuadmin",
     "/lmuadmin/:page*",
+
+    // lmudataleader
+    "/lmudataleader",
+    "/lmudataleader/:page*",
   ],
 };
