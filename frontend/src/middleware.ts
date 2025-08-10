@@ -18,21 +18,10 @@ declare module "jsonwebtoken" {
 const authRoutes = ["/login", "/register"];
 
 const roleBasedPrivateRoutes = {
-  coordinator: [
-    /^\/coordinator(?:\/.*)?$/,
-    /^\/coordinator-profile(?:\/.*)?$/,
-    /^\/change-password$/,
-  ],
-  head: [
-    /^\/head(?:\/.*)?$/,
-    /^\/head-profile(?:\/.*)?$/,
-    /^\/change-password$/,
-  ],
-  lmuAdmin: [
-    /^\/lmuadmin(?:\/.*)?$/,
-    /^\/lmuadmin-profile(?:\/.*)?$/,
-    /^\/change-password$/,
-  ],
+  coordinator: [/^\/coordinator(?:\/.*)?$/, /^\/change-password$/],
+  head: [/^\/head(?:\/.*)?$/, /^\/change-password$/],
+  lmuAdmin: [/^\/lmuadmin(?:\/.*)?$/, /^\/change-password$/],
+  lmuDataLeader: [/^\/lmudataleader(?:\/.*)?$/, /^\/change-password$/],
 } as const;
 
 type Role = keyof typeof roleBasedPrivateRoutes;
