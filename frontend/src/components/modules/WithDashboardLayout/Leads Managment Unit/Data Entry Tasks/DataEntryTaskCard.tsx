@@ -60,7 +60,7 @@ const DataEntryTaskCard = ({ task }: DataEntryTaskCardProps) => {
             icon={<School className="w-5 h-5 text-purple-500" />}
             label="Level"
             value={
-              <Badge className="capitalize text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 dark:text-white">
+              <Badge className="capitalize text-xs px-2 py-0.5 bg-gray-100 text-black dark:bg-gray-800 dark:text-white">
                 {schoolLevel}
               </Badge>
             }
