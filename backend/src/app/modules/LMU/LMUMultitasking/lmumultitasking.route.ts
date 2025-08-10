@@ -41,6 +41,9 @@ router.patch(
   '/apply-multitasking/:id',
   auth(
     USER_ROLE.head,
+    USER_ROLE.lmuAdmin,
+    USER_ROLE.lmuDataLeader,
+    USER_ROLE.lmuMember,
     USER_ROLE.emuAdmin,
     USER_ROLE.emuMember,
     USER_ROLE.dsmmAdmin,
