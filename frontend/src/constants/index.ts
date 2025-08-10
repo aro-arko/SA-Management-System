@@ -8,6 +8,8 @@ export const protectedRoutes = [
   "/lmuadmin/*",
   "/lmudataleader",
   "/lmudataleader/*",
+  "/lmumember",
+  "/lmumember/*",
   "/emuadmin",
   "/emuadmin/*",
   "/emumember",
