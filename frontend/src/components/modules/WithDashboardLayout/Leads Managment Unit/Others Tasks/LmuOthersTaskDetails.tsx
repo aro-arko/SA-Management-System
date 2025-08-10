@@ -1,10 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTheme } from "next-themes";
+import clsx from "clsx";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useUser } from "@/context/UserContext";
 import { TaskDetails, getUserNameById } from "@/services/UserService";
+import { deleteLmuOthersTask } from "@/services/LMUService/others tasks";
 import {
   Hash,
   Tags,
@@ -15,44 +28,54 @@ import {
   Users,
   Info,
   Layers,
+  AlertTriangle,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { TLMUOthersTask } from "@/types/lmu/others.type";
-import Link from "next/link";
-import { useUser } from "@/context/UserContext";
-import { Button } from "@/components/ui/button";
+import Swal from "sweetalert2";
 
 const LmuOthersTaskDetails = () => {
   const { id } = useParams();
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
+
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const [task, setTask] = useState<TLMUOthersTask | null>(null);
   const [createdByName, setCreatedByName] = useState("");
   const [assignedNames, setAssignedNames] = useState<string[]>([]);
-  const { user } = useUser();
+
+  // Delete confirm modal state
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const fetchTask = async () => {
       setLoading(true);
-      const res = await TaskDetails(id as string);
-      if (res?.success) {
-        setTask(res.data);
+      try {
+        const res = await TaskDetails(id as string);
+        if (res?.success) {
+          setTask(res.data);
 
-        const createdBy = await getUserNameById(res.data.createdBy);
-        setCreatedByName(createdBy?.data?.name || "Unknown");
+          const createdBy = await getUserNameById(res.data.createdBy);
+          setCreatedByName(createdBy?.data?.name || "Unknown");
 
-        const assignedNames = await Promise.all(
-          res.data.assignedTo.map(async (userId: string) => {
-            const r = await getUserNameById(userId);
-            return r?.data?.name || "Unknown";
-          })
-        );
-        setAssignedNames(assignedNames);
+          const names = await Promise.all(
+            res.data.assignedTo.map(async (userId: string) => {
+              const r = await getUserNameById(userId);
+              return r?.data?.name || "Unknown";
+            })
+          );
+          setAssignedNames(names);
+        } else {
+          setTask(null);
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchTask();
   }, [id]);
@@ -63,6 +86,41 @@ const LmuOthersTaskDetails = () => {
     : isDark
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-white text-black";
+
+  const onDeleteTask = async () => {
+    try {
+      setDeleting(true);
+      const res = await deleteLmuOthersTask(String(id));
+
+      if (res?.success) {
+        await Swal.fire({
+          title: "Deleted!",
+          text: res?.message || "Task has been deleted successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        });
+        window.history.back();
+      } else {
+        await Swal.fire({
+          title: "Failed",
+          text: res?.message || "Failed to delete task.",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      await Swal.fire({
+        title: "Error",
+        text: e?.message || "Failed to delete task.",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+      });
+    } finally {
+      setDeleting(false);
+      setOpenDelete(false);
+    }
+  };
 
   if (!mounted) {
     return (
@@ -152,9 +210,12 @@ const LmuOthersTaskDetails = () => {
       : []),
   ];
 
+  const isAdmin = user?.role?.toLowerCase() === "lmuadmin";
+
   return (
     <div className={`min-h-screen px-6 py-10 rounded-xl ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
+        {/* Header */}
         <div className="text-center mx-auto">
           <h1 className="text-3xl font-bold">{task.title}</h1>
           <p className="mt-3">
@@ -169,16 +230,31 @@ const LmuOthersTaskDetails = () => {
             </span>
           </p>
 
-          {user?.role?.toLowerCase() === "lmuadmin" && (
-            <div className="flex justify-center">
+          {isAdmin && (
+            <div className="mt-4 flex justify-center gap-3">
               <Link href={`/lmuadmin/lmu-others/${id}/update`}>
                 <Button
                   variant="outline"
-                  className="mt-4 flex items-center gap-2 px-6"
+                  className="px-6 flex items-center gap-2"
                 >
                   Edit
                 </Button>
               </Link>
+
+              <Button
+                variant="outline"
+                onClick={() => setOpenDelete(true)}
+                disabled={deleting}
+                className={clsx(
+                  "px-6 flex items-center gap-2 border",
+                  isDark
+                    ? "border-red-500/70 text-red-400 hover:bg-red-900/20"
+                    : "border-red-500 text-red-600 hover:bg-red-50"
+                )}
+                aria-busy={deleting}
+              >
+                {deleting ? "Deleting…" : "Delete"}
+              </Button>
             </div>
           )}
         </div>
@@ -236,6 +312,51 @@ const LmuOthersTaskDetails = () => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog (card style) */}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Delete Task?
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. The task and its details will be
+              permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDelete(false)}
+              className={isDark ? "border-neutral-700 text-neutral-300" : ""}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onDeleteTask}
+              disabled={deleting}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-red-600/80 hover:bg-red-600"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
