@@ -23,6 +23,7 @@ router.get(
     USER_ROLE.lmuAdmin,
     USER_ROLE.coordinator,
     USER_ROLE.head,
+    USER_ROLE.lmuMember,
   ),
   DataManagementController.getAllDataEntryTasks,
 );
