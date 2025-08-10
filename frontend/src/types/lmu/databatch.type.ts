@@ -17,3 +17,6 @@ export type TLMUDataBatch = {
 export type TCreateDataBatch = {
   title: string;
 };
+export type TUpdateDataBatch = {
+  title: string;
+};

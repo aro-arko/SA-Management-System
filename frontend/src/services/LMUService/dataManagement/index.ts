@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { TCreateDataBatch } from "@/types/lmu/databatch.type";
+import { TCreateDataBatch, TUpdateDataBatch } from "@/types/lmu/databatch.type";
 import { cookies } from "next/headers";
 
 // get all data entry tasks with pagination
@@ -73,6 +73,28 @@ export const createDataBatch = async (data: TCreateDataBatch) => {
       `${process.env.NEXT_PUBLIC_BASE_API}/lmu-data-batch/create`,
       {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+};
+
+// update data batch
+export const updateDataBatch = async (data: TUpdateDataBatch, id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/lmu-data-batch/update/${id}`,
+      {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
