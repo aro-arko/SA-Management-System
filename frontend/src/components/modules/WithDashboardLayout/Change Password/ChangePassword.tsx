@@ -94,9 +94,7 @@ const ChangePassword = () => {
     <div className={`min-h-screen px-4 py-10 sm:px-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight">
-            Change Password
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tight">Change Password</h1>
           <p className="text-sm text-muted-foreground mt-2">
             Keep your account secure by using a strong, unique password.
           </p>
