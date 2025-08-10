@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TaskDetails, getUserNameById } from "@/services/UserService";
@@ -25,6 +25,7 @@ import { applyLmuMultitasking } from "@/services/LMUService/multitaskings";
 
 const MultitaskingDetails = () => {
   const { id } = useParams();
+  const router = useRouter();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -111,6 +112,11 @@ const MultitaskingDetails = () => {
     : "bg-white text-black";
 
   const isDark = resolvedTheme === "dark";
+
+  const isAdminOrDataLeader = (() => {
+    const role = user?.role?.toLowerCase?.() || "";
+    return role === "lmuadmin" || role === "lmudataleader";
+  })();
 
   if (!mounted) {
     return (
@@ -272,46 +278,50 @@ const MultitaskingDetails = () => {
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
 
-          {user?.role.toLocaleLowerCase() !== "coordinator" ? (
-            task.status === "active" ? (
-              <Button
-                onClick={handleApply}
-                disabled={applying}
-                className={`mt-4 px-6 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors duration-200
-                  ${
-                    isDark
-                      ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
-                      : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
-                  }`}
-                aria-busy={applying}
-              >
-                {applying ? (
-                  <span className="inline-flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Applying…
-                  </span>
-                ) : (
-                  "Apply"
-                )}
-              </Button>
-            ) : (
-              <p className="mt-3 capitalize">
-                <span
-                  className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
-                    (task.status as string) === "active"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-                  }`}
-                >
-                  {task.status}
+          {isAdminOrDataLeader ? (
+            // Edit button for lmuAdmin / lmuDataLeader
+            <Button
+              onClick={() =>
+                router.push(`/lmuadmin/lmu-multitaskings/${id}/update`)
+              }
+              variant="outline"
+              className={`mt-4 px-6 py-2 rounded-md cursor-pointer text-sm font-medium  transition-colors duration-200
+                ${
+                  isDark
+                    ? "bg-yellow-600 hover:bg-yellow-500 text-white"
+                    : "bg-yellow-500 hover:bg-yellow-400 text-white"
+                }`}
+            >
+              Edit Now
+            </Button>
+          ) : task.status === "active" ? (
+            // Apply button for other roles when active
+            <Button
+              onClick={handleApply}
+              disabled={applying}
+              className={`mt-4 px-6 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors duration-200
+                ${
+                  isDark
+                    ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
+                    : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
+                }`}
+              aria-busy={applying}
+            >
+              {applying ? (
+                <span className="inline-flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Applying…
                 </span>
-              </p>
-            )
+              ) : (
+                "Apply"
+              )}
+            </Button>
           ) : (
-            <p className="mt-3">
+            // Status pill when not active
+            <p className="mt-3 capitalize">
               <span
                 className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
-                  task.status === "active"
+                  (task.status as string) === "active"
                     ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                     : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
                 }`}

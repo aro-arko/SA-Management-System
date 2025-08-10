@@ -1,0 +1,11 @@
+import UpdateMultitasking from "@/components/modules/WithDashboardLayout/Leads Managment Unit/Multitaskings/UpdateMultitasking";
+
+const UpdateLmuMultiaskingLmuAdminPage = () => {
+  return (
+    <div>
+      <UpdateMultitasking />
+    </div>
+  );
+};
+
+export default UpdateLmuMultiaskingLmuAdminPage;

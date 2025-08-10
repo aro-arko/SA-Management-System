@@ -16,3 +16,9 @@ export type TCreateLMUMultitasking = {
   title: string;
   type: "whatsapp" | "calling" | "email" | "data-entry" | "others";
 };
+
+export type TUpdateLMUMultitasking = {
+  title: string;
+  type: "whatsapp" | "calling" | "email" | "data-entry" | "others";
+  status: "active" | "inactive";
+};
