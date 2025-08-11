@@ -24,6 +24,7 @@ const roleBasedPrivateRoutes = {
   lmuAdmin: [/^\/lmuadmin(?:\/.*)?$/, /^\/change-password$/],
   lmuDataLeader: [/^\/lmudataleader(?:\/.*)?$/, /^\/change-password$/],
   lmuMember: [/^\/lmumember(?:\/.*)?$/, /^\/change-password$/],
+  emuAdmin: [/^\/emuadmin(?:\/.*)?$/, /^\/change-password$/],
 } as const;
 
 type Role = keyof typeof roleBasedPrivateRoutes;
@@ -81,5 +82,9 @@ export const config = {
     // lmumember
     "/lmumember",
     "/lmumember/:page*",
+
+    // emuadmin
+    "/emuadmin",
+    "/emuadmin/:page*",
   ],
 };
