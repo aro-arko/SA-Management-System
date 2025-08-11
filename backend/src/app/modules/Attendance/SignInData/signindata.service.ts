@@ -74,6 +74,12 @@ const signInAttendance = async (
     );
   }
 
+  if (event._id.toString() !== taskId) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Event doesn't match with attendance report",
+    );
+  }
   // 3. Check sign-in status
   const existingSignIn = await SignInDataModel.findOne({
     taskId,
