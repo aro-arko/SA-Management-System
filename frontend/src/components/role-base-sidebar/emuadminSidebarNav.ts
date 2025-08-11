@@ -1,4 +1,11 @@
-import { LayoutDashboard, Settings, HomeIcon, Calendar } from "lucide-react";
+import {
+  LayoutDashboard,
+  Settings,
+  HomeIcon,
+  Calendar,
+  Workflow,
+  Layers,
+} from "lucide-react";
 
 export const emuadminNavMain = [
   {
@@ -7,10 +14,25 @@ export const emuadminNavMain = [
     icon: HomeIcon,
   },
   {
-    title: "Dashboard",
-    url: "/emuadmin/dashboard",
+    title: "My Tasks",
+    url: "/emuadmin/my-tasks",
     icon: LayoutDashboard,
     isActive: true,
+  },
+  {
+    title: "Multitaskings",
+    url: "#",
+    icon: Workflow,
+    items: [
+      {
+        title: "LMU Multitaskings",
+        url: "/emuadmin/lmu-multitaskings",
+      },
+      {
+        title: "DSMM Multitaskings",
+        url: "/emuadmin/dsmm-multitaskings",
+      },
+    ],
   },
   {
     title: "Event Management Unit",
@@ -30,7 +52,7 @@ export const emuadminNavMain = [
   {
     title: "Multitasking & Others",
     url: "#",
-    icon: Calendar,
+    icon: Layers,
     items: [
       {
         title: "Mutitaskings",
