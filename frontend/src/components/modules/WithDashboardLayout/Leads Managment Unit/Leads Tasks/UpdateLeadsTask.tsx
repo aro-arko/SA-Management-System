@@ -292,6 +292,7 @@ const UpdateLeadsTask = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onResetToServer = () => {
     if (!task) return;
     setTitle(task.title || "");
