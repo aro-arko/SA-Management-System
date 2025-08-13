@@ -94,3 +94,28 @@ export const createEmuMultitasking = async (data: TCreateEMUMultitasking) => {
     throw new Error("Failed to create EMU multitasking");
   }
 };
+
+// update emu multitasking
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const updateEmuMultitasking = async (id: string, data: any) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/emu-multitaskings/update-multitasking/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error updating EMU multitasking:", error);
+    throw new Error("Failed to update EMU multitasking");
+  }
+};

@@ -19,3 +19,12 @@ export type TCreateEMUMultitasking = {
   startTime: Date | string;
   endTime: Date | string;
 };
+
+export type TUpdateEmuMultitasking = {
+  _id: string;
+  title: string;
+  eventDate: Date | string;
+  startTime: Date | string;
+  endTime: Date | string;
+  status: "active" | "inactive";
+};

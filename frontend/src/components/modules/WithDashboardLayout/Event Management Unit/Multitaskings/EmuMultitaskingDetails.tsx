@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -15,12 +16,16 @@ import {
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { getUserNameById } from "@/services/UserService";
-import { getEmuMultitaskingById } from "@/services/EMUService/multitaskings";
-import { applyEmuMultitasking } from "@/services/EMUService/multitaskings"; // <-- ensure this path matches where you exported applyEmuMultitasking
+import {
+  getEmuMultitaskingById,
+  applyEmuMultitasking,
+} from "@/services/EMUService/multitaskings";
 import { TEMUMultitasking } from "@/types/emu/multitasking.type";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Link from "next/link";
+import clsx from "clsx";
 
 const EmuMultitaskingDetails = () => {
   const { id } = useParams();
@@ -56,7 +61,6 @@ const EmuMultitaskingDetails = () => {
         // manpower
         if (Array.isArray(data.manpower) && data.manpower.length > 0) {
           const names = await Promise.all(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             data.manpower.map(async (mp: any) => {
               const userRes = await getUserNameById(mp.userId);
               return userRes?.data?.name || "Unknown";
@@ -96,7 +100,6 @@ const EmuMultitaskingDetails = () => {
       } else {
         toast.error(res?.message || "Failed to apply");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong while applying");
     } finally {
@@ -105,6 +108,9 @@ const EmuMultitaskingDetails = () => {
   };
 
   const isDark = resolvedTheme === "dark";
+  const isEmuAdmin =
+    typeof user?.role === "string" && user.role.toLowerCase() === "emuadmin";
+
   const bgClass = !mounted
     ? "bg-transparent"
     : isDark
@@ -177,24 +183,54 @@ const EmuMultitaskingDetails = () => {
     },
   ];
 
+  const statusPillCls = clsx(
+    "inline-block px-4 py-1 text-sm font-medium rounded-full mt-2",
+    task.status === "active"
+      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+      : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
+  );
+
   return (
     <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
       <div className="max-w-full mx-auto space-y-10">
+        {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
+          <p className="mt-3">
+            <span className={statusPillCls}>{task.status}</span>
+          </p>
 
-          {user?.role.toLocaleLowerCase() !== "coordinator" ? (
-            task.status === "active" ? (
+          {/* Action row: emuAdmin -> Edit, others -> Apply */}
+          <div className="mt-4 flex items-center justify-center">
+            {isEmuAdmin ? (
+              <Link href={`/emuadmin/emu-multitaskings/${id}/update`}>
+                <Button
+                  className={clsx(
+                    "px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200",
+                    isDark
+                      ? "bg-blue-600 hover:bg-blue-500 text-white"
+                      : "bg-blue-500 hover:bg-blue-400 text-white"
+                  )}
+                >
+                  Edit
+                </Button>
+              </Link>
+            ) : (
               <Button
                 onClick={handleApply}
-                disabled={applying}
-                className={`mt-4 px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-                  ${
-                    isDark
-                      ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
-                      : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
-                  }`}
+                disabled={applying || task.status !== "active"}
+                className={clsx(
+                  "px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200",
+                  isDark
+                    ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
+                    : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
+                )}
                 aria-busy={applying}
+                title={
+                  task.status !== "active"
+                    ? "Applications are closed for this multitasking"
+                    : undefined
+                }
               >
                 {applying ? (
                   <span className="inline-flex items-center gap-2">
@@ -205,32 +241,8 @@ const EmuMultitaskingDetails = () => {
                   "Apply"
                 )}
               </Button>
-            ) : (
-              <p className="mt-3 capitalize">
-                <span
-                  className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
-                    (task.status as string) === "active"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-                  }`}
-                >
-                  {task.status}
-                </span>
-              </p>
-            )
-          ) : (
-            <p className="mt-3">
-              <span
-                className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
-                  task.status === "active"
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                    : "bg-neutral-200 text-neutral-800 dark:bg-neutral-800/30 dark:text-neutral-300"
-                }`}
-              >
-                {task.status}
-              </span>
-            </p>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Info Section */}
