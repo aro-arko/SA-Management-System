@@ -101,3 +101,26 @@ export const updateFixedTimeEventById = async (
     throw new Error("Failed to update fixed time event");
   }
 };
+
+// event task delete
+export const deleteFixedTimeEventById = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/fixed-time-events/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting fixed time event:", error);
+    throw new Error("Failed to delete fixed time event");
+  }
+};

@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getUserNameById } from "@/services/UserService";
@@ -17,13 +17,28 @@ import {
   LogOut,
   Users,
   List,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
-import { getFixedTimeEventById } from "@/services/EMUService/fixedTimeEventManagement";
+import {
+  getFixedTimeEventById,
+  deleteFixedTimeEventById,
+} from "@/services/EMUService/fixedTimeEventManagement";
 import { TFixedTimeEvent } from "@/types/emu/fixedEvent.type";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import Swal from "sweetalert2";
+import clsx from "clsx";
 
 const EventTaskDetails = () => {
   const { id } = useParams();
@@ -41,6 +56,10 @@ const EventTaskDetails = () => {
   const [selectedManpowerNames, setSelectedManpowerNames] = useState<string[]>(
     []
   );
+
+  // delete dialog state
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const { user } = useUser();
 
@@ -60,8 +79,8 @@ const EventTaskDetails = () => {
         if (data.selectedManpower?.length) {
           const names = await Promise.all(
             data.selectedManpower.map(async (userId: string) => {
-              const user = await getUserNameById(userId);
-              return user?.data?.name || "Unknown";
+              const u = await getUserNameById(userId);
+              return u?.data?.name || "Unknown";
             })
           );
           setSelectedManpowerNames(names);
@@ -70,9 +89,9 @@ const EventTaskDetails = () => {
         if (data.signInData?.attendanceRecord?.length) {
           const signIns = await Promise.all(
             data.signInData.attendanceRecord.map(async (entry: any) => {
-              const user = await getUserNameById(entry.userId);
+              const u = await getUserNameById(entry.userId);
               return {
-                name: user?.data?.name || "Unknown",
+                name: u?.data?.name || "Unknown",
                 time: entry.signInTime
                   ? formatToMalaysiaTime(entry.signInTime)
                   : "N/A",
@@ -85,9 +104,9 @@ const EventTaskDetails = () => {
         if (data.signOutData?.attendanceRecord?.length) {
           const signOuts = await Promise.all(
             data.signOutData.attendanceRecord.map(async (entry: any) => {
-              const user = await getUserNameById(entry.userId);
+              const u = await getUserNameById(entry.userId);
               return {
-                name: user?.data?.name || "Unknown",
+                name: u?.data?.name || "Unknown",
                 time: entry.signInTime
                   ? formatToMalaysiaTime(entry.signInTime)
                   : "N/A",
@@ -103,12 +122,47 @@ const EventTaskDetails = () => {
     fetchTask();
   }, [id]);
 
+  const router = useRouter();
+
   const isDark = resolvedTheme === "dark";
   const bgClass = !mounted
     ? "bg-transparent"
     : isDark
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-white text-black";
+
+  const onDeleteTask = async () => {
+    try {
+      setDeleting(true);
+      const res = await deleteFixedTimeEventById(String(id));
+      if (res?.success) {
+        await Swal.fire({
+          title: "Deleted!",
+          text: res?.message || "Event task has been deleted successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        });
+        router.push("/emuadmin/event-tasks");
+      } else {
+        Swal.fire({
+          title: "Failed",
+          text: res?.message || "Failed to delete event task.",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+        });
+      }
+    } catch (e: any) {
+      Swal.fire({
+        title: "Error",
+        text: e?.message || "Failed to delete event task.",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+      });
+    } finally {
+      setDeleting(false);
+      setOpenDelete(false);
+    }
+  };
 
   if (!mounted) return <div className="min-h-screen bg-white dark:bg-black" />;
   if (loading)
@@ -189,6 +243,7 @@ const EventTaskDetails = () => {
   return (
     <div className={`min-h-screen px-6 py-10 ${bgClass} rounded-xl`}>
       <div className="max-w-full mx-auto space-y-10">
+        {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
           <p className="mt-2">
@@ -202,12 +257,28 @@ const EventTaskDetails = () => {
               {task.status}
             </span>
           </p>
+
           {user?.role === "emuAdmin" && (
-            <Link href={`/emuadmin/event-tasks/${task._id}/update`}>
-              <Button className="px-6 mt-4 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700">
-                Edit
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <Link href={`/emuadmin/event-tasks/${task._id}/update`}>
+                <Button className="px-6 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                  Edit
+                </Button>
+              </Link>
+
+              <Button
+                variant="outline"
+                onClick={() => setOpenDelete(true)}
+                className={clsx(
+                  "inline-flex items-center gap-2 rounded-md px-4 cursor-pointer",
+                  isDark ? "border-neutral-700" : ""
+                )}
+                aria-label="Delete event task"
+              >
+                <Trash2 className="w-4 h-4 text-red-500" />
+                Delete
               </Button>
-            </Link>
+            </div>
           )}
         </div>
 
@@ -349,6 +420,51 @@ const EventTaskDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal (emuAdmin only) */}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Delete Event Task?
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. The event task and its records will
+              be permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDelete(false)}
+              className={isDark ? "border-neutral-700 text-neutral-300" : ""}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onDeleteTask}
+              disabled={deleting}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-red-600/80 hover:bg-red-600"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
