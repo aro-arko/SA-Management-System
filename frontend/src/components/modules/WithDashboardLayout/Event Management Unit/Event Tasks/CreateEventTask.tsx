@@ -310,7 +310,7 @@ const CreateEventTask = () => {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g., Open Day Testing 3.0"
+            placeholder="e.g., Open Day Cycle 2.1"
             className={isDark ? "bg-black/40 border-neutral-700" : ""}
           />
         </div>

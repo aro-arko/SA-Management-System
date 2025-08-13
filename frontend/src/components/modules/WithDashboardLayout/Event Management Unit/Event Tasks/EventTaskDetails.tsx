@@ -16,10 +16,14 @@ import {
   LogIn,
   LogOut,
   Users,
+  List,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { getFixedTimeEventById } from "@/services/EMUService/fixedTimeEventManagement";
 import { TFixedTimeEvent } from "@/types/emu/fixedEvent.type";
+import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const EventTaskDetails = () => {
   const { id } = useParams();
@@ -37,6 +41,8 @@ const EventTaskDetails = () => {
   const [selectedManpowerNames, setSelectedManpowerNames] = useState<string[]>(
     []
   );
+
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -155,6 +161,20 @@ const EventTaskDetails = () => {
       icon: <Clock className="w-5 h-5 text-orange-400" />,
     },
     {
+      label: "MultiTask",
+      value: task.multiTask ? (
+        <Link
+          className="text-blue-500"
+          href={`/emuadmin/emu-multitaskings/${task._id}`}
+        >
+          {task.multiTaskId}
+        </Link>
+      ) : (
+        "-"
+      ),
+      icon: <List className="w-5 h-5 text-purple-400" />,
+    },
+    {
       label: "Created By",
       value: createdByName,
       icon: <User2 className="w-5 h-5 text-cyan-400" />,
@@ -173,7 +193,7 @@ const EventTaskDetails = () => {
           <h1 className="text-3xl font-bold">{task.title}</h1>
           <p className="mt-2">
             <span
-              className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
+              className={`inline-block px-4 mt-2 py-1 text-sm font-medium rounded-full ${
                 task.status === "completed"
                   ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                   : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
@@ -182,6 +202,16 @@ const EventTaskDetails = () => {
               {task.status}
             </span>
           </p>
+          {user?.role === "emuAdmin" && (
+            <Button
+              onClick={() => {
+                window.location.href = `/emuadmin/event-tasks/${task._id}/update`;
+              }}
+              className="px-6 mt-4 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Edit
+            </Button>
+          )}
         </div>
 
         {/* Info Cards */}
