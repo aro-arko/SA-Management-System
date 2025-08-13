@@ -56,7 +56,7 @@ export const emuadminNavMain = [
     items: [
       {
         title: "Mutitaskings",
-        url: "/emuadmin/multitaskings",
+        url: "/emuadmin/emu-multitaskings",
       },
       {
         title: "Create Multitasking",
