@@ -78,7 +78,7 @@ export const deleteHRFinanceTask = async (id: string) => {
 
   try {
     const res = fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/hr-finance-tasks/delete/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/hr-finance-tasks/delete-task/${id}`,
       {
         method: "DELETE",
         headers: {

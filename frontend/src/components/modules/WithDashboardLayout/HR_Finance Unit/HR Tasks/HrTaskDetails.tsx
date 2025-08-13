@@ -1,10 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import clsx from "clsx";
+import Swal from "sweetalert2";
+
 import { Skeleton } from "@/components/ui/skeleton";
-import { getUserNameById } from "@/services/UserService";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
 import {
   Calendar,
   Hash,
@@ -13,21 +27,34 @@ import {
   History,
   Clock,
   Users,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
+
 import { formatToMalaysiaTime } from "@/utils/formatDate";
+import { getUserNameById } from "@/services/UserService";
 import { THRFinanceTask } from "@/types/hr_finance/task.types";
-import { getHRFinanceTaskById } from "@/services/HR_FinanceService/HrTask";
+import {
+  getHRFinanceTaskById,
+  deleteHRFinanceTask,
+} from "@/services/HR_FinanceService/HrTask";
 import { useUser } from "@/context/UserContext";
 
 const HrTaskDetails = () => {
   const { id } = useParams();
+  const router = useRouter();
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
+
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [task, setTask] = useState<THRFinanceTask | null>(null);
   const [createdByName, setCreatedByName] = useState("");
   const [assignedToName, setAssignedToName] = useState("");
-  const { user } = useUser();
+
+  // delete dialog
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -36,14 +63,18 @@ const HrTaskDetails = () => {
       setLoading(true);
       const res = await getHRFinanceTaskById(id as string);
       if (res.success) {
-        const data = res.data;
+        const data = res.data as THRFinanceTask;
         setTask(data);
 
-        const created = await getUserNameById(data.createdBy);
-        setCreatedByName(created?.data?.name || "Unknown");
+        if (data.createdBy) {
+          const created = await getUserNameById(data.createdBy);
+          setCreatedByName(created?.data?.name || "Unknown");
+        } else setCreatedByName("Unknown");
 
-        const assigned = await getUserNameById(data.assignedTo);
-        setAssignedToName(assigned?.data?.name || "Unknown");
+        if (data.assignedTo) {
+          const assigned = await getUserNameById(data.assignedTo);
+          setAssignedToName(assigned?.data?.name || "Unknown");
+        } else setAssignedToName("Unknown");
       }
       setLoading(false);
     };
@@ -58,7 +89,11 @@ const HrTaskDetails = () => {
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-white text-black";
 
+  const roleSlug = (user?.role || "").toLowerCase();
+  const isHrFinanceAdmin = roleSlug === "hrfinanceadmin";
+
   if (!mounted) return <div className="min-h-screen bg-white dark:bg-black" />;
+
   if (loading)
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
@@ -125,11 +160,49 @@ const HrTaskDetails = () => {
     },
   ];
 
+  const onDeleteTask = async () => {
+    if (!task?._id) return;
+    try {
+      setDeleting(true);
+      const res = await deleteHRFinanceTask(task._id);
+      if (res?.success) {
+        await Swal.fire({
+          title: "Deleted!",
+          text:
+            res?.message || "HR/Finance task has been deleted successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        });
+        router.push(`/${roleSlug}/hr-tasks`);
+      } else {
+        await Swal.fire({
+          title: "Failed",
+          text: res?.message || "Failed to delete HR/Finance task.",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+        });
+      }
+    } catch (e: any) {
+      await Swal.fire({
+        title: "Error",
+        text: e?.message || "Failed to delete HR/Finance task.",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+      });
+    } finally {
+      setDeleting(false);
+      setOpenDelete(false);
+    }
+  };
+
   return (
     <div className={`min-h-screen px-6 py-10 ${bgClass} rounded-xl`}>
       <div className="max-w-full mx-auto space-y-10">
+        {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold capitalize">{task.title}</h1>
+          <h1 className="text-3xl font-bold capitalize break-words">
+            {task.title}
+          </h1>
           <p className="mt-2">
             <span
               className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${
@@ -143,8 +216,32 @@ const HrTaskDetails = () => {
               {task.status}
             </span>
           </p>
+
+          {isHrFinanceAdmin && (
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <Link href={`/${roleSlug}/hr-tasks/${task._id}/update`}>
+                <Button className="px-6 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                  Edit
+                </Button>
+              </Link>
+
+              <Button
+                variant="outline"
+                onClick={() => setOpenDelete(true)}
+                className={clsx(
+                  "inline-flex items-center gap-2 rounded-md px-4 cursor-pointer",
+                  isDark ? "border-neutral-700" : ""
+                )}
+                aria-label="Delete HR/Finance task"
+              >
+                <Trash2 className="w-4 h-4 text-red-500" />
+                Delete
+              </Button>
+            </div>
+          )}
         </div>
 
+        {/* Info Cards */}
         <div
           className={`rounded-xl p-6 border ${
             isDark
@@ -161,7 +258,7 @@ const HrTaskDetails = () => {
                 <div className="mt-1">{item.icon}</div>
                 <div>
                   <p className="text-xs text-muted-foreground">{item.label}</p>
-                  <p className="font-medium text-[15px] capitalize">
+                  <p className="font-medium text-[15px] capitalize break-words">
                     {item.value}
                   </p>
                 </div>
@@ -179,11 +276,56 @@ const HrTaskDetails = () => {
           }`}
         >
           <h2 className="text-lg font-semibold mb-4">Task Details</h2>
-          <p className="text-sm leading-6 text-muted-foreground">
+          <p className="text-sm leading-6 text-muted-foreground whitespace-pre-wrap">
             {task.details}
           </p>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Delete HR/Finance Task?
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. The task and its records will be
+              permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDelete(false)}
+              className={isDark ? "border-neutral-700 text-neutral-300" : ""}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onDeleteTask}
+              disabled={deleting}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-red-600/80 hover:bg-red-600"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
