@@ -1,13 +1,10 @@
 import {
-  Users,
   Settings,
   HomeIcon,
-  Calendar,
   CameraIcon,
-  Briefcase,
-  Users2,
   Workflow,
   Clipboard,
+  Layers,
 } from "lucide-react";
 
 export const dsmmadminNavMain = [
@@ -48,38 +45,24 @@ export const dsmmadminNavMain = [
         url: "/dsmmadmin/dsmm-tasks",
       },
       {
-        title: "Multitaskings",
+        title: "Create Dsmm Task",
+        url: "/dsmmadmin/create-dsmm-task",
+      },
+    ],
+  },
+
+  {
+    title: "Multitasking & Others",
+    url: "#",
+    icon: Layers,
+    items: [
+      {
+        title: "Mutitaskings",
         url: "/dsmmadmin/dsmm-multitaskings",
       },
-    ],
-  },
-  {
-    title: "HR & Finance Unit",
-    url: "#",
-    icon: Briefcase,
-    items: [
       {
-        title: "HR Tasks",
-        url: "/dsmmadmin/hr-tasks",
-      },
-      {
-        title: "New Applications",
-        url: "/dsmmadmin/hr-new-applications",
-      },
-    ],
-  },
-  {
-    title: "User Management",
-    url: "#",
-    icon: Users2,
-    items: [
-      {
-        title: "Users",
-        url: "/dsmmadmin/users",
-      },
-      {
-        title: "Create new User",
-        url: "/dsmmadmin/create-user",
+        title: "Create Multitasking",
+        url: "/dsmmadmin/create-dsmm-multitasking",
       },
     ],
   },

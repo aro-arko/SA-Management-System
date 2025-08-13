@@ -11,7 +11,7 @@ declare module "jsonwebtoken" {
       | "lmuMember"
       | "emuAdmin"
       | "emuMember"
-      | "dsmmMember"
+      | "dsmmAdmin"
       | "hrFinanceAdmin";
   }
 }
@@ -26,6 +26,7 @@ const roleBasedPrivateRoutes = {
   lmuMember: [/^\/lmumember(?:\/.*)?$/, /^\/change-password$/],
   emuAdmin: [/^\/emuadmin(?:\/.*)?$/, /^\/change-password$/],
   emuMember: [/^\/emumember(?:\/.*)?$/, /^\/change-password$/],
+  dsmmAdmin: [/^\/dsmmadmin(?:\/.*)?$/, /^\/change-password$/],
 } as const;
 
 type Role = keyof typeof roleBasedPrivateRoutes;
@@ -91,5 +92,9 @@ export const config = {
     // emumember
     "/emumember",
     "/emumember/:page*",
+
+    // emumember
+    "/dsmmadmin",
+    "/dsmmadmin/:page*",
   ],
 };
