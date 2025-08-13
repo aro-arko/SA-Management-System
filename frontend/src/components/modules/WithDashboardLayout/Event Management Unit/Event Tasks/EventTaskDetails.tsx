@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +19,9 @@ import {
   List,
   Trash2,
   AlertTriangle,
+  QrCode,
+  Copy,
+  Check,
 } from "lucide-react";
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import {
@@ -39,10 +42,14 @@ import {
 } from "@/components/ui/dialog";
 import Swal from "sweetalert2";
 import clsx from "clsx";
+import Image from "next/image";
 
 const EventTaskDetails = () => {
   const { id } = useParams();
+  const router = useRouter();
   const { resolvedTheme } = useTheme();
+  const { user } = useUser();
+
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [task, setTask] = useState<TFixedTimeEvent | null>(null);
@@ -57,11 +64,15 @@ const EventTaskDetails = () => {
     []
   );
 
-  // delete dialog state
+  // delete dialog
   const [openDelete, setOpenDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const { user } = useUser();
+  // QR dialogs
+  const [openQRIn, setOpenQRIn] = useState(false);
+  const [copiedIn, setCopiedIn] = useState(false);
+  const [openQROut, setOpenQROut] = useState(false);
+  const [copiedOut, setCopiedOut] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -70,7 +81,7 @@ const EventTaskDetails = () => {
       setLoading(true);
       const res = await getFixedTimeEventById(id as string);
       if (res.success) {
-        const data = res.data;
+        const data = res.data as TFixedTimeEvent;
         setTask(data);
 
         const createdUser = await getUserNameById(data.createdBy);
@@ -86,32 +97,46 @@ const EventTaskDetails = () => {
           setSelectedManpowerNames(names);
         }
 
-        if (data.signInData?.attendanceRecord?.length) {
+        if (
+          typeof data.signInData === "object" &&
+          data.signInData !== null &&
+          Array.isArray((data.signInData as any).attendanceRecord) &&
+          (data.signInData as any).attendanceRecord.length
+        ) {
           const signIns = await Promise.all(
-            data.signInData.attendanceRecord.map(async (entry: any) => {
-              const u = await getUserNameById(entry.userId);
-              return {
-                name: u?.data?.name || "Unknown",
-                time: entry.signInTime
-                  ? formatToMalaysiaTime(entry.signInTime)
-                  : "N/A",
-              };
-            })
+            (data.signInData as any).attendanceRecord.map(
+              async (entry: any) => {
+                const u = await getUserNameById(entry.userId);
+                return {
+                  name: u?.data?.name || "Unknown",
+                  time: entry.signInTime
+                    ? formatToMalaysiaTime(entry.signInTime)
+                    : "N/A",
+                };
+              }
+            )
           );
           setSignInNames(signIns);
         }
 
-        if (data.signOutData?.attendanceRecord?.length) {
+        if (
+          typeof data.signOutData === "object" &&
+          data.signOutData !== null &&
+          Array.isArray((data.signOutData as any).attendanceRecord) &&
+          (data.signOutData as any).attendanceRecord.length
+        ) {
           const signOuts = await Promise.all(
-            data.signOutData.attendanceRecord.map(async (entry: any) => {
-              const u = await getUserNameById(entry.userId);
-              return {
-                name: u?.data?.name || "Unknown",
-                time: entry.signInTime
-                  ? formatToMalaysiaTime(entry.signInTime)
-                  : "N/A",
-              };
-            })
+            (data.signOutData as any).attendanceRecord.map(
+              async (entry: any) => {
+                const u = await getUserNameById(entry.userId);
+                return {
+                  name: u?.data?.name || "Unknown",
+                  time: entry.signInTime
+                    ? formatToMalaysiaTime(entry.signInTime)
+                    : "N/A",
+                };
+              }
+            )
           );
           setSignOutNames(signOuts);
         }
@@ -122,14 +147,64 @@ const EventTaskDetails = () => {
     fetchTask();
   }, [id]);
 
-  const router = useRouter();
-
   const isDark = resolvedTheme === "dark";
   const bgClass = !mounted
     ? "bg-transparent"
     : isDark
     ? "bg-gradient-to-b from-[#000000] to-[#170303] text-white"
     : "bg-white text-black";
+
+  const origin =
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : "";
+
+  const isEmuAdmin = user?.role === "emuAdmin";
+
+  // Build URLs: /sign-in/<taskId>/<attendanceId> and /sign-out/<taskId>/<attendanceId>
+  const signInUrl = useMemo(() => {
+    if (!task) return "";
+    const attendanceId =
+      (task as any)?.signInData?._id || (task as any)?.signInData?.id || "";
+    if (!attendanceId) return "";
+    return `${origin}/sign-in/${task._id}/${attendanceId}`;
+  }, [task, origin]);
+
+  const signOutUrl = useMemo(() => {
+    if (!task) return "";
+    const attendanceId =
+      (task as any)?.signOutData?._id || (task as any)?.signOutData?.id || "";
+    if (!attendanceId) return "";
+    return `${origin}/sign-out/${task._id}/${attendanceId}`;
+  }, [task, origin]);
+
+  const qrInSrc = signInUrl
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
+        signInUrl
+      )}`
+    : "";
+
+  const qrOutSrc = signOutUrl
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
+        signOutUrl
+      )}`
+    : "";
+
+  const onCopyIn = async () => {
+    try {
+      await navigator.clipboard.writeText(signInUrl);
+      setCopiedIn(true);
+      setTimeout(() => setCopiedIn(false), 1200);
+    } catch {}
+  };
+
+  const onCopyOut = async () => {
+    try {
+      await navigator.clipboard.writeText(signOutUrl);
+      setCopiedOut(true);
+      setTimeout(() => setCopiedOut(false), 1200);
+    } catch {}
+  };
 
   const onDeleteTask = async () => {
     try {
@@ -165,6 +240,7 @@ const EventTaskDetails = () => {
   };
 
   if (!mounted) return <div className="min-h-screen bg-white dark:bg-black" />;
+
   if (loading)
     return (
       <div className={`min-h-screen px-6 py-10 ${bgClass}`}>
@@ -258,7 +334,7 @@ const EventTaskDetails = () => {
             </span>
           </p>
 
-          {user?.role === "emuAdmin" && (
+          {isEmuAdmin && (
             <div className="flex items-center justify-center gap-2 mt-4">
               <Link href={`/emuadmin/event-tasks/${task._id}/update`}>
                 <Button className="px-6 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700">
@@ -361,10 +437,37 @@ const EventTaskDetails = () => {
               <span className="flex items-center gap-2">
                 <LogIn className="w-5 h-5 text-green-500" /> Sign-In Attendance
               </span>
-              <span className="text-sm font-medium text-muted-foreground">
-                Total: {signInNames.length}
-              </span>
+
+              {/* Right side: QR (emuAdmin only) + pretty total pill */}
+              <div className="flex items-center gap-2">
+                {isEmuAdmin && signInUrl ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenQRIn(true)}
+                    className={clsx(isDark ? "border-neutral-700" : "")}
+                  >
+                    <QrCode className="w-4 h-4 mr-1.5" />
+                    Show QR
+                  </Button>
+                ) : null}
+
+                <span
+                  className={clsx(
+                    "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
+                    isDark
+                      ? "bg-white/10 text-white"
+                      : "bg-neutral-200 text-neutral-800"
+                  )}
+                  title="Total sign-ins"
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  {signInNames.length}
+                </span>
+              </div>
             </h2>
+
             {signInNames.length > 0 ? (
               <ul className="space-y-2">
                 {signInNames.map((entry, idx) => (
@@ -396,10 +499,36 @@ const EventTaskDetails = () => {
               <span className="flex items-center gap-2">
                 <LogOut className="w-5 h-5 text-red-500" /> Sign-Out Attendance
               </span>
-              <span className="text-sm font-medium text-muted-foreground">
-                Total: {signOutNames.length}
-              </span>
+
+              <div className="flex items-center gap-2">
+                {isEmuAdmin && signOutUrl ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenQROut(true)}
+                    className={clsx(isDark ? "border-neutral-700" : "")}
+                  >
+                    <QrCode className="w-4 h-4 mr-1.5" />
+                    Show QR
+                  </Button>
+                ) : null}
+
+                <span
+                  className={clsx(
+                    "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
+                    isDark
+                      ? "bg-white/10 text-white"
+                      : "bg-neutral-200 text-neutral-800"
+                  )}
+                  title="Total sign-outs"
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  {signOutNames.length}
+                </span>
+              </div>
             </h2>
+
             {signOutNames.length > 0 ? (
               <ul className="space-y-2">
                 {signOutNames.map((entry, idx) => (
@@ -421,7 +550,165 @@ const EventTaskDetails = () => {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal (emuAdmin only) */}
+      {/* Sign-In QR Modal (emuAdmin only) */}
+      <Dialog open={openQRIn} onOpenChange={setOpenQRIn}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl">Scan to Sign In</DialogTitle>
+            <DialogDescription>
+              Scanning this QR will open the attendance sign-in page.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col items-center gap-3 py-2">
+            {qrInSrc ? (
+              <Image
+                src={qrInSrc}
+                alt="Sign-in QR"
+                className="rounded-xl border"
+                width={200}
+                height={200}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Sign-in link not available.
+              </p>
+            )}
+
+            {signInUrl ? (
+              <div className="w-full">
+                <div className="text-xs mb-1 opacity-70">Direct link</div>
+                <div className="flex items-center gap-2">
+                  <input
+                    readOnly
+                    value={signInUrl}
+                    className={clsx(
+                      "w-full px-3 py-2 rounded-md border text-sm",
+                      isDark
+                        ? "bg-black/40 border-neutral-700"
+                        : "bg-white border-neutral-300"
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={onCopyIn}
+                  >
+                    {copiedIn ? (
+                      <Check className="w-4 h-4" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={() => setOpenQRIn(false)}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-white/10 hover:bg-white/20"
+                  : "bg-neutral-900 hover:bg-neutral-800 text-white"
+              )}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Sign-Out QR Modal (emuAdmin only) */}
+      <Dialog open={openQROut} onOpenChange={setOpenQROut}>
+        <DialogContent
+          className={clsx(
+            "sm:max-w-md rounded-2xl border",
+            isDark
+              ? "bg-black/80 border-neutral-700"
+              : "bg-white border-neutral-200"
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl">Scan to Sign Out</DialogTitle>
+            <DialogDescription>
+              Scanning this QR will open the attendance sign-out page.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col items-center gap-3 py-2">
+            {qrOutSrc ? (
+              <Image
+                src={qrOutSrc}
+                alt="Sign-out QR"
+                className="rounded-xl border"
+                width={200}
+                height={200}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Sign-out link not available.
+              </p>
+            )}
+
+            {signOutUrl ? (
+              <div className="w-full">
+                <div className="text-xs mb-1 opacity-70">Direct link</div>
+                <div className="flex items-center gap-2">
+                  <input
+                    readOnly
+                    value={signOutUrl}
+                    className={clsx(
+                      "w-full px-3 py-2 rounded-md border text-sm",
+                      isDark
+                        ? "bg-black/40 border-neutral-700"
+                        : "bg-white border-neutral-300"
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={onCopyOut}
+                  >
+                    {copiedOut ? (
+                      <Check className="w-4 h-4" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={() => setOpenQROut(false)}
+              className={clsx(
+                "rounded-xl",
+                isDark
+                  ? "bg-white/10 hover:bg-white/20"
+                  : "bg-neutral-900 hover:bg-neutral-800 text-white"
+              )}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
       <Dialog open={openDelete} onOpenChange={setOpenDelete}>
         <DialogContent
           className={clsx(
