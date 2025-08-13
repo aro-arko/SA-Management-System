@@ -1,9 +1,6 @@
 import {
-  Users,
   Settings,
   HomeIcon,
-  Calendar,
-  CameraIcon,
   Briefcase,
   Users2,
   Workflow,
