@@ -15,3 +15,12 @@ export type TFixedTimeEvent = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TCreateEventTask = {
+  title: string;
+  multiTask: boolean;
+  multiTaskId?: string;
+  eventDate: Date;
+  startTime: string;
+  endTime: string;
+};

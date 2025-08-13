@@ -1,5 +1,6 @@
 "use server";
 
+import { TCreateEventTask } from "@/types/emu/fixedEvent.type";
 import { cookies } from "next/headers";
 
 // get all fixed time events
@@ -44,5 +45,29 @@ export const getFixedTimeEventById = async (id: string) => {
   } catch (error) {
     console.error("Error fetching fixed time event by ID:", error);
     throw new Error("Failed to fetch fixed time event by ID");
+  }
+};
+
+// create event task
+export const createEventTask = async (data: TCreateEventTask) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/fixed-time-events/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating fixed time event:", error);
+    throw new Error("Failed to create fixed time event");
   }
 };
