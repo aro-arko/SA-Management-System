@@ -71,3 +71,26 @@ export const createDsmmTask = async (data: TCreateDsmmTask) => {
     throw new Error("Failed to create DSMM task");
   }
 };
+
+// export const delete dsmm task
+export const deleteDsmmTask = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/dsmmtask/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting DSMM task:", error);
+    throw new Error("Failed to delete DSMM task");
+  }
+};
