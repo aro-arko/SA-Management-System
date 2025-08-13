@@ -20,7 +20,12 @@ router.post(
 // get all fixed time events
 router.get(
   '/all',
-  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.emuAdmin),
+  auth(
+    USER_ROLE.coordinator,
+    USER_ROLE.head,
+    USER_ROLE.emuAdmin,
+    USER_ROLE.emuMember,
+  ),
   FixedTimeEventController.getAllFixedTimeEvents,
 );
 
