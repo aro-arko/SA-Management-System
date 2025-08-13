@@ -71,12 +71,19 @@ const updateEMUMultiTaskings = async (
 const applyEMUMultitasking = async (id: string, currentUser: JwtPayload) => {
   const { email } = currentUser;
 
-  const user = await User.findOne({ email }, { _id: 1 });
+  const user = await User.findOne({ email }, { _id: 1, unit: 1 });
 
   if (!user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
-      'You are not authorized to perform this actoin',
+      'You are not authorized to perform this action',
+    );
+  }
+
+  if (user.unit === 'EMU') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'EMU users cannot apply for EMU multitasking',
     );
   }
 
