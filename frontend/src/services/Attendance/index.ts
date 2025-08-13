@@ -1,7 +1,8 @@
 // signin
 export const signInAttendance = async (
   attendanceId: string,
-  eventId: string
+  eventId: string,
+  { email, password }: { email: string; password: string }
 ) => {
   try {
     const res = await fetch(
@@ -11,6 +12,7 @@ export const signInAttendance = async (
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ email, password }),
       }
     );
     return res.json();
