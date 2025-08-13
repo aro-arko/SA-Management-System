@@ -170,6 +170,10 @@ const getTaskDetails = async (currentUser: JwtPayload, taskId: string) => {
     'lmuAdmin',
     'lmuDataLeader',
     'lmuMember',
+    'emuAdmin',
+    'emuMember',
+    'dsmmAdmin',
+    'hrFinanceAdmin',
   ];
   const dataLeaderRole = 'lmuDataLeader';
 

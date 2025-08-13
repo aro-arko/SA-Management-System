@@ -40,6 +40,7 @@ const signOutAttendance = async (
   payLoad: { email: string; password: string },
 ) => {
   const { email, password } = payLoad;
+  const attendanceRecord = await SignOutDataModel.findById(id).lean();
 
   // 1. Find and validate user
   const user = await User.findOne({ email }).select('+password').lean();
@@ -78,6 +79,13 @@ const signOutAttendance = async (
     throw new AppError(
       httpStatus.FORBIDDEN,
       'User is not part of the event manpower',
+    );
+  }
+
+  if (attendanceRecord?.taskId?.toString() !== taskId) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Event doesn't match with attendance report",
     );
   }
 

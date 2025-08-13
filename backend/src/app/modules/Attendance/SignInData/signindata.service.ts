@@ -35,6 +35,8 @@ const signInAttendance = async (
 ) => {
   const { email, password } = payLoad;
 
+  const attendanceRecord = await SignInDataModel.findById(id).lean();
+
   // 1. Find and validate user
   const user = await User.findOne({ email }).select('+password').lean();
   if (!user) {
@@ -74,7 +76,7 @@ const signInAttendance = async (
     );
   }
 
-  if (event._id.toString() !== taskId) {
+  if (attendanceRecord?.taskId?.toString() !== taskId) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       "Event doesn't match with attendance report",
