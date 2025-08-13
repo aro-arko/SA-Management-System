@@ -49,8 +49,8 @@ export const hrfinanceadminNavMain = [
         url: "/hrfinanceadmin/hr-tasks",
       },
       {
-        title: "HR Tasks",
-        url: "/hrfinanceadmin/hr-tasks",
+        title: "Create Task",
+        url: "/hrfinanceadmin/create-hr-task",
       },
       {
         title: "New Applications",
