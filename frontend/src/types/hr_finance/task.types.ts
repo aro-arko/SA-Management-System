@@ -11,3 +11,10 @@ export type THRFinanceTask = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type TCreateHrFinanceTask = {
+  title: string;
+  details: string;
+  assignedTo: string;
+  dueDate: string | Date;
+};
