@@ -12,3 +12,10 @@ export type TEMUMultitasking = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TCreateEMUMultitasking = {
+  title: string;
+  eventDate: Date | string;
+  startTime: Date | string;
+  endTime: Date | string;
+};

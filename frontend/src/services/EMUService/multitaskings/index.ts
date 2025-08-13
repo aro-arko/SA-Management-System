@@ -1,5 +1,6 @@
 "use server";
 
+import { TCreateEMUMultitasking } from "@/types/emu/multitasking.type";
 import { cookies } from "next/headers";
 
 export const getEmuMultitaskings = async (query: string) => {
@@ -66,5 +67,30 @@ export const applyEmuMultitasking = async (id: string) => {
   } catch (error) {
     console.error("Error applying for EMU multitasking:", error);
     throw new Error("Failed to apply for EMU multitasking");
+  }
+};
+
+// create multitasking
+export const createEmuMultitasking = async (data: TCreateEMUMultitasking) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/emu-multitaskings/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+        cache: "no-store",
+      }
+    );
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error creating EMU multitasking:", error);
+    throw new Error("Failed to create EMU multitasking");
   }
 };

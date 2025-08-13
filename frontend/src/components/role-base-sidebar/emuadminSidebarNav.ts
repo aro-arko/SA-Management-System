@@ -60,7 +60,7 @@ export const emuadminNavMain = [
       },
       {
         title: "Create Multitasking",
-        url: "/emuadmin/create-event-task",
+        url: "/emuadmin/create-emu-multitasking",
       },
     ],
   },
