@@ -138,7 +138,10 @@ const EventTaskDetails = () => {
     },
     {
       label: "Event Date",
-      value: formatToMalaysiaTime(task.eventDate as unknown as string),
+      value: formatToMalaysiaTime(
+        task.eventDate as unknown as string,
+        "dd MMM yyyy (EEE)"
+      ),
       icon: <Calendar className="w-5 h-5 text-green-400" />,
     },
     {

@@ -20,7 +20,7 @@ export type TCreateEventTask = {
   title: string;
   multiTask: boolean;
   multiTaskId?: string;
-  eventDate: Date;
+  eventDate: Date | string;
   startTime: string;
   endTime: string;
 };
