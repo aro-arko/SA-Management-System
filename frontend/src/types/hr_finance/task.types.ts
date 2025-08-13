@@ -18,3 +18,11 @@ export type TCreateHrFinanceTask = {
   assignedTo: string;
   dueDate: string | Date;
 };
+
+export type TUpdateHrFinanceTask = {
+  title?: string;
+  details?: string;
+  assignedTo?: string;
+  dueDate?: string | Date;
+  status?: "in-progress" | "completed";
+};

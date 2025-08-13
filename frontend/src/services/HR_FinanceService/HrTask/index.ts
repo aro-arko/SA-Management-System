@@ -1,6 +1,9 @@
 "use server";
 
-import { TCreateHrFinanceTask } from "@/types/hr_finance/task.types";
+import {
+  TCreateHrFinanceTask,
+  TUpdateHrFinanceTask,
+} from "@/types/hr_finance/task.types";
 import { cookies } from "next/headers";
 
 export const getHRFinanceTasks = async (query: string) => {
@@ -92,5 +95,31 @@ export const deleteHRFinanceTask = async (id: string) => {
   } catch (error) {
     console.error("Error deleting HR Finance task:", error);
     throw new Error("Failed to delete HR Finance task");
+  }
+};
+
+// update hr task
+export const updateHrFinanceTask = async (
+  id: string,
+  data: TUpdateHrFinanceTask
+) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/hr-finance-tasks/update-task/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return (await res).json();
+  } catch (error) {
+    console.error("Error updating HR Finance task:", error);
+    throw new Error("Failed to update HR Finance task");
   }
 };
