@@ -55,6 +55,7 @@ export const TaskDetails = async (taskId: string) => {
 
 export const getAllUsers = async (query: string) => {
   const token = (await cookies()).get("accessToken")?.value;
+
   console.log(query);
   try {
     const res = await fetch(

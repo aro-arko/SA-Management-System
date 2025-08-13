@@ -203,14 +203,11 @@ const EventTaskDetails = () => {
             </span>
           </p>
           {user?.role === "emuAdmin" && (
-            <Button
-              onClick={() => {
-                window.location.href = `/emuadmin/event-tasks/${task._id}/update`;
-              }}
-              className="px-6 mt-4 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
-            >
-              Edit
-            </Button>
+            <Link href={`/emuadmin/event-tasks/${task._id}/update`}>
+              <Button className="px-6 mt-4 font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                Edit
+              </Button>
+            </Link>
           )}
         </div>
 

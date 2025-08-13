@@ -24,3 +24,14 @@ export type TCreateEventTask = {
   startTime: string;
   endTime: string;
 };
+
+export type TUpdateEventTask = {
+  title: string;
+  multiTask: boolean;
+  multiTaskId: string | undefined;
+  eventDate: string;
+  startTime: string;
+  endTime: string;
+  selectedManpower: string[];
+  status: "in-progress" | "completed";
+};
