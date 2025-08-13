@@ -12,3 +12,10 @@ export type TDSMMMultitasking = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TCreateDsmmMultitasking = {
+  title: string;
+  taskDate: Date | string;
+  startTime: Date | string;
+  endTime: Date | string;
+};

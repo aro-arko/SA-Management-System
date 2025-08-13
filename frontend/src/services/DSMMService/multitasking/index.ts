@@ -1,5 +1,6 @@
 "use server";
 
+import { TCreateDsmmMultitasking } from "@/types/dsmm/multitasking.type";
 import { cookies } from "next/headers";
 
 export const getDSMMMultitaskings = async (query: string) => {
@@ -66,5 +67,28 @@ export const applyDSMMMultitasking = async (id: string) => {
   } catch (error) {
     console.error("Error applying for DSMM multitasking:", error);
     throw new Error("Failed to apply for DSMM multitasking");
+  }
+};
+
+// create dsmm multitasking
+export const createDSMMMultitasking = async (data: TCreateDsmmMultitasking) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/dsmm-multitaskings/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return (await res).json();
+  } catch (error) {
+    console.error("Error creating DSMM multitasking:", error);
+    throw new Error("Failed to create DSMM multitasking");
   }
 };
