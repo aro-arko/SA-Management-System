@@ -8,6 +8,7 @@ import DSMMTaskCard from "./DSMMTaskCard";
 import Link from "next/link";
 import { TDSMMTask } from "@/types/dsmm/task.type";
 import { getDSMMTasks } from "@/services/DSMMService/dsmmtask";
+import { useUser } from "@/context/UserContext";
 
 const DSMMTasks = () => {
   const [tasks, setTasks] = useState<TDSMMTask[]>([]);
@@ -16,6 +17,7 @@ const DSMMTasks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 
@@ -94,7 +96,12 @@ const DSMMTasks = () => {
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => (
-              <Link href={`/coordinator/dsmm-tasks/${task._id}`} key={task._id}>
+              <Link
+                href={`/${user?.role.toLocaleLowerCase()}/dsmm-tasks/${
+                  task._id
+                }`}
+                key={task._id}
+              >
                 <DSMMTaskCard task={task} />
               </Link>
             ))}
