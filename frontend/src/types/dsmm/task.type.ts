@@ -15,3 +15,16 @@ export type TDSMMTask = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TCreateDsmmTask = {
+  title: string;
+  details: string;
+  multiTask: boolean;
+  multiTaskId?: string;
+  taskDate: Date | string;
+  startTime: Date | string;
+  endTime: Date | string;
+  selectedManpower: string[];
+  createdBy?: string;
+  status: "completed" | "in-progress";
+};

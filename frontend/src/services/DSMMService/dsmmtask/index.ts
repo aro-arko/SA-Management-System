@@ -1,5 +1,6 @@
 "use server";
 
+import { TCreateDsmmTask } from "@/types/dsmm/task.type";
 import { cookies } from "next/headers";
 
 export const getDSMMTasks = async (query: string) => {
@@ -44,5 +45,29 @@ export const getDSMMTaskById = async (taskId: string) => {
   } catch (error) {
     console.error("Error fetching DSMM task by ID:", error);
     throw new Error("Failed to fetch DSMM task by ID");
+  }
+};
+
+// create dsmm task
+export const createDsmmTask = async (data: TCreateDsmmTask) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/dsmmtask/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating DSMM task:", error);
+    throw new Error("Failed to create DSMM task");
   }
 };
