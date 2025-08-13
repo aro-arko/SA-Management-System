@@ -17,6 +17,7 @@ import {
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import { THRFinanceTask } from "@/types/hr_finance/task.types";
 import { getHRFinanceTaskById } from "@/services/HR_FinanceService/HrTask";
+import { useUser } from "@/context/UserContext";
 
 const HrTaskDetails = () => {
   const { id } = useParams();
@@ -26,6 +27,7 @@ const HrTaskDetails = () => {
   const [task, setTask] = useState<THRFinanceTask | null>(null);
   const [createdByName, setCreatedByName] = useState("");
   const [assignedToName, setAssignedToName] = useState("");
+  const { user } = useUser();
 
   useEffect(() => setMounted(true), []);
 

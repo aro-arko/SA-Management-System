@@ -71,3 +71,26 @@ export const createHRFinanceTask = async (data: TCreateHrFinanceTask) => {
     throw new Error("Failed to create HR Finance task");
   }
 };
+
+// delete hr task
+export const deleteHRFinanceTask = async (id: string) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/hr-finance-tasks/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return (await res).json();
+  } catch (error) {
+    console.error("Error deleting HR Finance task:", error);
+    throw new Error("Failed to delete HR Finance task");
+  }
+};
