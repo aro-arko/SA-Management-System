@@ -55,7 +55,7 @@ export default function MyTaskCard({ task }: { task: TMyTask }) {
             label="Type"
             value={
               <Badge className="capitalize text-xs px-2 py-0.5 bg-gray-100 text-purple-600 dark:bg-gray-800 dark:text-purple-400">
-                {type.replace("-", " ")}
+                {(type ?? "").replace(/-/g, " ") || "—"}
               </Badge>
             }
           />
@@ -66,10 +66,10 @@ export default function MyTaskCard({ task }: { task: TMyTask }) {
               <Badge
                 className={clsx(
                   "capitalize text-xs px-2 py-0.5",
-                  statusStyles[status] ?? "bg-gray-100 dark:bg-gray-800"
+                  statusStyles[String(status)] ?? "bg-gray-100 dark:bg-gray-800"
                 )}
               >
-                {status.replace("-", " ")}
+                {typeof status === "string" ? status.replace(/-/g, " ") : "—"}
               </Badge>
             }
           />

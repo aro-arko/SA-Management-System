@@ -7,7 +7,7 @@ import {
   Layers,
 } from "lucide-react";
 
-export const emuadminNavMain = [
+export const emumemberNavMain = [
   {
     title: "Home",
     url: "/",
