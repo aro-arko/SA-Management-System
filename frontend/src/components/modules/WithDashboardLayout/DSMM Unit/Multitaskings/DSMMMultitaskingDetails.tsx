@@ -24,6 +24,8 @@ import { applyDSMMMultitasking } from "@/services/DSMMService/multitasking";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Link from "next/link";
+import clsx from "clsx";
 
 const DSMMMultitaskingDetails = () => {
   const { id } = useParams();
@@ -146,17 +148,23 @@ const DSMMMultitaskingDetails = () => {
     },
     {
       label: "Task Date",
-      value: formatToMalaysiaTime(task.taskDate as unknown as string),
+      value: formatToMalaysiaTime(
+        task.taskDate as unknown as string,
+        "dd MMM yyyy"
+      ),
       icon: <Calendar className="w-5 h-5 text-green-400" />,
     },
     {
       label: "Start Time",
-      value: formatToMalaysiaTime(task.startTime as unknown as string),
+      value: formatToMalaysiaTime(
+        task.startTime as unknown as string,
+        "h:mm a"
+      ),
       icon: <Clock className="w-5 h-5 text-yellow-400" />,
     },
     {
       label: "End Time",
-      value: formatToMalaysiaTime(task.endTime as unknown as string),
+      value: formatToMalaysiaTime(task.endTime as unknown as string, "h:mm a"),
       icon: <Clock className="w-5 h-5 text-orange-400" />,
     },
     {
@@ -182,17 +190,34 @@ const DSMMMultitaskingDetails = () => {
         <div className="text-center">
           <h1 className="text-3xl font-bold">{task.title}</h1>
 
-          {user?.role.toLocaleLowerCase() !== "coordinator" ? (
+          {/* Action */}
+          {user?.role === "dsmmAdmin" ? (
+            // Admin sees Edit button (links to update page)
+            <Button
+              asChild
+              className={clsx(
+                "px-6 py-2 rounded-lg mt-4 text-sm font-medium transition-colors duration-200",
+                isDark
+                  ? "bg-blue-600 hover:bg-blue-500 text-white"
+                  : "bg-blue-500 hover:bg-blue-400 text-white"
+              )}
+            >
+              <Link href={`/dsmmadmin/dsmm-multitaskings/${task._id}/update`}>
+                Edit
+              </Link>
+            </Button>
+          ) : user?.role !== "coordinator" ? (
+            // Non-admin, non-coordinator users see Apply (if active) or status badge
             task.status === "active" ? (
               <Button
                 onClick={handleApply}
                 disabled={applying}
                 className={`mt-4 px-6 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-                  ${
-                    isDark
-                      ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
-                      : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
-                  }`}
+        ${
+          isDark
+            ? "bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/60 text-white"
+            : "bg-blue-500 hover:bg-blue-400 disabled:bg-blue-400/60 text-white"
+        }`}
                 aria-busy={applying}
               >
                 {applying ? (
@@ -218,6 +243,7 @@ const DSMMMultitaskingDetails = () => {
               </p>
             )
           ) : (
+            // Coordinator sees just the status badge
             <p className="mt-3">
               <span
                 className={`inline-block px-4 py-1 text-sm font-medium rounded-full ${

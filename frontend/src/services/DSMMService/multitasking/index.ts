@@ -92,3 +92,29 @@ export const createDSMMMultitasking = async (data: TCreateDsmmMultitasking) => {
     throw new Error("Failed to create DSMM multitasking");
   }
 };
+
+// update dsmm multitasking
+export const updateDSMMMultitasking = async (
+  id: string,
+  data: TCreateDsmmMultitasking
+) => {
+  const token = (await cookies()).get("accessToken")?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/dsmm-multitaskings/update-multitasking/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return (await res).json();
+  } catch (error) {
+    console.error("Error updating DSMM multitasking:", error);
+    throw new Error("Failed to update DSMM multitasking");
+  }
+};
