@@ -27,6 +27,7 @@ const roleBasedPrivateRoutes = {
   emuAdmin: [/^\/emuadmin(?:\/.*)?$/, /^\/change-password$/],
   emuMember: [/^\/emumember(?:\/.*)?$/, /^\/change-password$/],
   dsmmAdmin: [/^\/dsmmadmin(?:\/.*)?$/, /^\/change-password$/],
+  hrFinanceAdmin: [/^\/hrfinanceadmin(?:\/.*)?$/, /^\/change-password$/],
 } as const;
 
 type Role = keyof typeof roleBasedPrivateRoutes;
@@ -93,8 +94,12 @@ export const config = {
     "/emumember",
     "/emumember/:page*",
 
-    // emumember
+    // dsmmadmin
     "/dsmmadmin",
     "/dsmmadmin/:page*",
+
+    // hrFinanceAdmin
+    "/hrfinanceadmin",
+    "/hrfinanceadmin/:page*",
   ],
 };
