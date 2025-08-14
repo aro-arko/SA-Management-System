@@ -41,7 +41,6 @@ export const logout = async () => {
 };
 
 // change password
-// change password
 export const changePassword = async (data: {
   oldPassword: string;
   newPassword: string;
@@ -65,5 +64,24 @@ export const changePassword = async (data: {
     return json;
   } catch (err: any) {
     throw new Error(err?.message || "Failed to change password");
+  }
+};
+
+// forgot password
+export const forgotPassword = async (email: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/forgot-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+    return await res.json();
+  } catch (error: any) {
+    return Error(error);
   }
 };
