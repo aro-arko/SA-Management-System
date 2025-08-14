@@ -28,4 +28,11 @@ router.get(
   NewApplicationController.getApplicationDetails,
 );
 
+// update application status
+router.patch(
+  '/update/:id',
+  auth(USER_ROLE.hrFinanceAdmin),
+  NewApplicationController.updateApplicationStatus,
+);
+
 export const NewApplicationsRoutes = router;

@@ -67,8 +67,25 @@ const getApplicationDetails = async (id: string) => {
   return application;
 };
 
+// update application status
+const updateApplicationStatus = async (
+  id: string,
+  data: { isChecked: boolean },
+) => {
+  const application = await NewApplication.findByIdAndUpdate(id, data, {
+    new: true,
+  });
+
+  if (!application) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Application not found');
+  }
+
+  return application;
+};
+
 export const NewApplicationService = {
   applyNewApplication,
   getAllApplications,
+  updateApplicationStatus,
   getApplicationDetails,
 };

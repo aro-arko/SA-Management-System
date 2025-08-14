@@ -44,8 +44,24 @@ const getApplicationDetails = catchAsync(async (req, res) => {
   });
 });
 
+// update application status
+const updateApplicationStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+
+  const result = await NewApplicationService.updateApplicationStatus(id, data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Application status updated successfully',
+    data: result,
+  });
+});
+
 export const NewApplicationController = {
   applyNewApplication,
   getAllApplications,
   getApplicationDetails,
+  updateApplicationStatus,
 };

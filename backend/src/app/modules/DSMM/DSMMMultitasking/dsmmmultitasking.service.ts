@@ -27,6 +27,7 @@ const getDSMMMultitasking = async (query: Record<string, unknown>) => {
 
   const queryBuilder = new QueryBuilder(baseQuery, query)
     .search(['title'])
+    .filter()
     .sort()
     .paginate()
     .fields();
@@ -53,12 +54,19 @@ const updateDSMMMultitasking = async (
 const applyDSMMMultitasking = async (id: string, currentUser: JwtPayload) => {
   const { email } = currentUser;
 
-  const user = await User.findOne({ email }, { _id: 1 });
+  const user = await User.findOne({ email }, { _id: 1, unit: 1 });
 
   if (!user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
       'You are not authorized to perform this action',
+    );
+  }
+
+  if (user.unit === 'DSMM') {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'DSMM users cannot apply for DSMM multitasking',
     );
   }
 

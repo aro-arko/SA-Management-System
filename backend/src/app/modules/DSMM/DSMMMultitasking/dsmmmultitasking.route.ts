@@ -69,6 +69,7 @@ router.patch(
     USER_ROLE.lmuMember,
     USER_ROLE.emuAdmin,
     USER_ROLE.emuMember,
+    USER_ROLE.dsmmAdmin,
     USER_ROLE.hrFinanceAdmin,
   ),
   DSMMMultitaskingController.applyDSMMMultitasking,

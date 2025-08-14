@@ -19,7 +19,6 @@ const hrFinanceTaskSchema = new Schema<THRFinanceTask>(
     },
     details: {
       type: String,
-      required: true,
     },
     assignedTo: {
       type: Schema.Types.ObjectId,
