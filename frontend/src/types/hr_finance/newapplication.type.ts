@@ -14,3 +14,14 @@ export type TNewApplication = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type TApplicationFormData = {
+  fullName: string;
+  studentId: number;
+  expectedGraduationDate: Date | string;
+  email: string;
+  phoneNumber: number;
+  Faculty: string;
+  Major: string;
+  ResumeLink: string;
+};
