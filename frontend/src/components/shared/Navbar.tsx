@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  Menu,
+  X,
+  User as UserIcon,
+  LayoutDashboard,
+  LogOut,
+  ChevronDown,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -11,23 +18,47 @@ import darkLogo from "@/app/assets/images/sa sec logo dark.png";
 import lightLogo from "@/app/assets/images/sa sec logo.png";
 import { useTheme } from "next-themes";
 import { ModeToggle } from "./ThemeToggler/ThemeToggler";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useUser } from "@/context/UserContext";
+import { logout } from "@/services/AuthService";
+import { protectedRoutes } from "@/constants";
 
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Tasks & Events", href: "/tasks-events" },
   { name: "About", href: "/about" },
-  { name: "FAQ", href: "/faq" },
+  { name: "FAQs", href: "/faq" },
   { name: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { refreshUser, setUser } = useUser();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { user, setIsLoading } = useUser();
+  const roleSlug = (user?.role || "").toLowerCase();
+  const dashboardHref =
+    roleSlug === "coordinator"
+      ? "/coordinator/dashboard"
+      : `/${roleSlug}/my-tasks`;
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const isActive = (path: string) => pathname === path;
 
   useEffect(() => {
@@ -37,8 +68,30 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setMounted(true); // Fix hydration mismatch
+    setMounted(true);
   }, []);
+
+  const onLogout = async () => {
+    try {
+      await logout(); // deletes cookie on server
+    } finally {
+      // broadcast to the whole app
+      try {
+        new BroadcastChannel("auth").postMessage("logout");
+      } catch {}
+      try {
+        localStorage.setItem("auth:ping", String(Date.now()));
+      } catch {}
+
+      setUser(null);
+      await refreshUser();
+      router.refresh();
+
+      if (protectedRoutes.some((route) => pathname.match(route))) {
+        router.push("/");
+      }
+    }
+  };
 
   return (
     <nav
@@ -88,20 +141,70 @@ export default function Navbar() {
               <ModeToggle />
             </div>
 
-            <div className="hidden md:flex items-center space-x-2">
-              <Link
-                href="/login"
-                className="rounded-full px-4 py-2 text-sm font-medium border border-red-600 text-red-600 hover:bg-red-600/10"
-              >
-                Login
-              </Link>
-              <Link
-                href="/join-us"
-                className="rounded-full px-4 py-2 text-sm font-medium text-white bg-red-600 shadow hover:bg-red-700 transition"
-              >
-                Join Us
-              </Link>
-            </div>
+            {/* If NOT logged in → Login/Join */}
+            {!user && (
+              <div className="hidden md:flex items-center space-x-2">
+                <Link
+                  href="/login"
+                  className="rounded-full px-4 py-2 text-sm font-medium border border-red-600 text-red-600 hover:bg-red-600/10"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/join-us"
+                  className="rounded-full px-4 py-2 text-sm font-medium text-white bg-red-600 shadow hover:bg-red-700 transition"
+                >
+                  Join Us
+                </Link>
+              </div>
+            )}
+
+            {/* If logged in → Profile dropdown */}
+            {user && (
+              <div className="hidden md:flex items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="rounded-full px-3 py-2 h-9"
+                      aria-label="Account menu"
+                    >
+                      <UserIcon className="h-4 w-4 mr-2" />
+                      <span className="text-sm">Account</span>
+                      <ChevronDown className="ml-1 h-4 w-4 opacity-70" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 border border-neutral-200 dark:border-neutral-800"
+                  >
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-muted-foreground">
+                          {user.email}
+                        </span>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={dashboardHref}
+                        className="w-full flex items-center"
+                      >
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={onLogout} className="">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
 
             {/* Mobile toggle */}
             <div className="md:hidden">
@@ -148,21 +251,51 @@ export default function Navbar() {
                 </Link>
               ))}
 
-              <Link
-                href="/login"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full text-center rounded-full px-4 py-2 mt-2 text-base font-medium text-white bg-red-600 shadow hover:bg-red-700 transition"
-              >
-                Login
-              </Link>
+              {/* Mobile account section */}
+              {user ? (
+                <>
+                  <Link
+                    href={dashboardHref}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block w-full text-left rounded-md px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </span>
+                  </Link>
 
-              <Link
-                href="/join-us"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full text-center rounded-full px-4 py-2 text-base font-medium border border-red-600 text-red-600 hover:bg-red-600/10"
-              >
-                Join Us
-              </Link>
+                  <button
+                    onClick={async () => {
+                      setIsMobileMenuOpen(false);
+                      await onLogout();
+                    }}
+                    className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-red-600 hover:bg-red-600/10"
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <LogOut className="h-4 w-4" />
+                      Log out
+                    </span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block w-full text-center rounded-full px-4 py-2 mt-2 text-base font-medium text-white bg-red-600 shadow hover:bg-red-700 transition"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/join-us"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block w-full text-center rounded-full px-4 py-2 text-base font-medium border border-red-600 text-red-600 hover:bg-red-600/10"
+                  >
+                    Join Us
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
         )}

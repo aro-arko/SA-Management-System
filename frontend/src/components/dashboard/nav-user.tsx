@@ -1,6 +1,8 @@
 "use client";
 
 import { ChevronsUpDown, LogOut } from "lucide-react";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,10 +19,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+
 import { logout } from "@/services/AuthService";
 import { useUser } from "@/context/UserContext";
 import { protectedRoutes } from "@/constants";
-import { usePathname, useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -33,15 +35,39 @@ export function NavUser({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-
   const { isMobile } = useSidebar();
-  const { setIsLoading } = useUser();
-  const handleLogout = () => {
-    logout();
-    setIsLoading(true);
 
-    if (protectedRoutes.some((route) => pathname.match(route))) {
-      router.push("/");
+  // pull these from the (updated) UserProvider
+  const { setIsLoading, setUser, refreshUser } = useUser();
+
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await logout(); // server-side cookie delete
+
+      // broadcast to all tabs / components
+      try {
+        new BroadcastChannel("auth").postMessage("logout");
+      } catch {}
+      try {
+        localStorage.setItem("auth:ping", String(Date.now()));
+      } catch {}
+
+      // instant UI update in this tab
+      setUser(null);
+      await refreshUser();
+      router.refresh();
+
+      // if you're on a protected route, bounce to /
+      if (protectedRoutes.some((route) => pathname.match(route))) {
+        router.push("/");
+      }
+    } finally {
+      setIsLoading(false);
+      setLoggingOut(false);
     }
   };
 
@@ -53,10 +79,14 @@ export function NavUser({
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              aria-label="Account menu"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png"
+                  src={
+                    user.avatar ||
+                    "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png"
+                  }
                   alt={user.name}
                 />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
@@ -68,6 +98,7 @@ export function NavUser({
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
@@ -88,9 +119,10 @@ export function NavUser({
             </DropdownMenuLabel>
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleLogout()}>
+
+            <DropdownMenuItem onClick={handleLogout} disabled={loggingOut}>
               <LogOut />
-              Log out
+              {loggingOut ? "Logging out…" : "Log out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
