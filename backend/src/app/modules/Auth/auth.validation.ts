@@ -107,8 +107,21 @@ const changePasswordValidation = z.object({
   }),
 });
 
+const forgotPasswordValidationSchema = z.object({
+  body: z.object({
+    email: z
+      .string({
+        invalid_type_error: 'Email must be a string',
+      })
+      .email({
+        message: 'Invalid email format',
+      }),
+  }),
+});
+
 export const authValidation = {
   registerValidation,
   loginValidation,
   changePasswordValidation,
+  forgotPasswordValidationSchema,
 };

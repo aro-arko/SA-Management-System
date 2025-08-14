@@ -5,6 +5,7 @@ import httpStatus from 'http-status';
 import { createToken } from './auth.utils';
 import config from '../../config';
 import { JwtPayload } from 'jsonwebtoken';
+import { sendEmail } from '../../utils/sendEmail';
 
 const createUser = async (payLoad: Partial<TUser>) => {
   const userData = { ...payLoad };
@@ -79,8 +80,40 @@ const changePassword = async (
   return user;
 };
 
+// forgot password
+const forgotPassword = async (email: string) => {
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  // checking if the user is active
+  const isActive = user.status === 'active';
+  if (!isActive) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User is not active');
+  }
+
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    '10m',
+  );
+
+  const resetUILink = `${config.reset_pass_ui_link}?email=${user.email}&token=${resetToken}`;
+
+  sendEmail(user.email, resetUILink);
+
+  console.log(resetUILink);
+};
+
 export const authService = {
   createUser,
   loginUser,
   changePassword,
+  forgotPassword,
 };
