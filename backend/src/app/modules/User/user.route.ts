@@ -107,7 +107,7 @@ router.get(
 // user update by admin
 router.patch(
   '/update/:id',
-  auth(USER_ROLE.coordinator, USER_ROLE.head),
+  auth(USER_ROLE.coordinator, USER_ROLE.head, USER_ROLE.hrFinanceAdmin),
   validateRequest(UserValidation.userUpdateValidation),
   UserController.userUpdate,
 );
