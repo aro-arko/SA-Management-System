@@ -85,3 +85,26 @@ export const forgotPassword = async (email: string) => {
     return Error(error);
   }
 };
+
+// services/AuthService.ts (or wherever you keep it)
+export const resetPassword = async (
+  data: { email: string; newPassword: string },
+  token: string
+) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/auth/reset-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return await res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
