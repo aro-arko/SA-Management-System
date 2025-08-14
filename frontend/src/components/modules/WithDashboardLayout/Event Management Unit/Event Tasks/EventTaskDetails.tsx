@@ -295,7 +295,9 @@ const EventTaskDetails = () => {
       value: task.multiTask ? (
         <Link
           className="text-blue-500"
-          href={`/emuadmin/emu-multitaskings/${task._id}`}
+          href={`/${user?.role.toLocaleLowerCase()}/emu-multitaskings/${
+            task.multiTaskId
+          }`}
         >
           {task.multiTaskId}
         </Link>
