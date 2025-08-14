@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,13 +14,28 @@ import {
 import { formatToMalaysiaTime } from "@/utils/formatDate";
 import clsx from "clsx";
 import { TNewApplication } from "@/types/hr_finance/newapplication.type";
+import { useUser } from "@/context/UserContext";
+import { useState, useMemo } from "react";
 
-const NewApplicationCard = ({
-  application,
-}: {
+type Props = {
   application: TNewApplication;
-}) => {
+  /**
+   * Called when the status dropdown is changed by an hrFinanceAdmin.
+   * next === "Reviewed" corresponds to isChecked=true; "Pending" => false.
+   * Provide this from the parent to persist changes.
+   */
+  onChangeStatus?: (
+    id: string | undefined,
+    next: "Reviewed" | "Pending"
+  ) => void;
+};
+
+const NewApplicationCard = ({ application, onChangeStatus }: Props) => {
+  const { user } = useUser();
+  const isHRAdmin = (user?.role || "").toLowerCase() === "hrfinanceadmin";
+
   const {
+    _id,
     fullName,
     studentId,
     email,
@@ -30,9 +46,17 @@ const NewApplicationCard = ({
     expectedGraduationDate,
     createdAt,
     isChecked,
-  } = application;
+  } = application as any;
 
-  const statusColor = isChecked
+  // local controlled value for the dropdown; defaults from isChecked
+  const [statusValue, setStatusValue] = useState<"Reviewed" | "Pending">(
+    isChecked ? "Reviewed" : "Pending"
+  );
+
+  // keep pill color in sync with local dropdown state for instant UX feedback
+  const isReviewed = useMemo(() => statusValue === "Reviewed", [statusValue]);
+
+  const statusColor = isReviewed
     ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
     : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
 
@@ -40,19 +64,43 @@ const NewApplicationCard = ({
     <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="px-4 py-4 text-[15px] space-y-3">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="font-bold text-lg flex items-center gap-2">
             <User className="w-5 h-5 text-blue-500" />
             {fullName}
           </div>
-          <span
-            className={clsx(
-              "text-sm px-3 py-1 rounded-full font-medium",
-              statusColor
+
+          <div className="flex items-center gap-3">
+            <span
+              className={clsx(
+                "text-sm px-3 py-1 rounded-full font-medium whitespace-nowrap",
+                statusColor
+              )}
+            >
+              {statusValue}
+            </span>
+
+            {isHRAdmin && (
+              <select
+                value={statusValue}
+                onChange={(e) => {
+                  const next = e.target.value as "Reviewed" | "Pending";
+                  setStatusValue(next);
+                  onChangeStatus?.(_id, next);
+                }}
+                className={clsx(
+                  "text-sm px-3 py-1 rounded-md border",
+                  "bg-white dark:bg-black",
+                  "border-gray-300 dark:border-neutral-700"
+                )}
+                aria-label="Change status"
+                title="Change status"
+              >
+                <option value="Pending">Pending</option>
+                <option value="Reviewed">Reviewed</option>
+              </select>
             )}
-          >
-            {isChecked ? "Reviewed" : "Pending"}
-          </span>
+          </div>
         </div>
 
         {/* Info grid */}
