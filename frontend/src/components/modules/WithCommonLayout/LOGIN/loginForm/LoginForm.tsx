@@ -26,6 +26,8 @@ import Link from "next/link";
 import loginImage from "@/app/assets/images/login/login.png";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { useUser } from "@/context/UserContext";
+import { IUser } from "@/types/users/user.type";
 
 export default function LoginForm() {
   const form = useForm({
@@ -40,6 +42,8 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");
 
+  const { setUser, refreshUser } = useUser();
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       const res = await loginUser(data);
@@ -53,16 +57,18 @@ export default function LoginForm() {
           secure: process.env.NODE_ENV === "production",
         });
 
-        const user = jwtDecode(res.data.accessToken) as { role: string };
+        const decoded = jwtDecode(res.data.accessToken) as Partial<IUser>;
+        setUser(decoded as IUser);
 
+        await refreshUser();
+
+        const role = (decoded?.role || "").toString();
         if (redirect) {
           router.push(redirect);
+        } else if (role === "coordinator") {
+          router.push(`/coordinator/dashboard`);
         } else {
-          if (user.role === "coordinator") {
-            router.push(`/${user.role}/dashboard`);
-          } else {
-            router.push(`/${user.role.toLocaleLowerCase()}/my-tasks`);
-          }
+          router.push(`/${role.toLowerCase()}/my-tasks`);
         }
       } else {
         toast.error(res?.message || "Login failed.");
