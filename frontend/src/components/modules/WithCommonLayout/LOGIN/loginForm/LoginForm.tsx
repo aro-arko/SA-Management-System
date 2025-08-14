@@ -148,6 +148,7 @@ export default function LoginForm() {
                         type="email"
                         placeholder="Enter your email"
                         className="bg-transparent"
+                        autoComplete="username"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 text-sm" />
@@ -167,12 +168,24 @@ export default function LoginForm() {
                         type="password"
                         placeholder="Enter your password"
                         className="bg-transparent"
+                        autoComplete="current-password"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 text-sm" />
                   </FormItem>
                 )}
               />
+
+              {/* Forgot password link */}
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm font-medium text-red-600 hover:text-red-700 hover:underline focus:underline focus:outline-none"
+                  aria-label="Forgot your password? Reset it"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
               <Button
                 type="submit"
