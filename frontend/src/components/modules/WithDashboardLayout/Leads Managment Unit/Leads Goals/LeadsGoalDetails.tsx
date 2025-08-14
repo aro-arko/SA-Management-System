@@ -15,7 +15,6 @@ import {
   ListChecks,
   User,
   Calendar,
-  Pencil,
 } from "lucide-react";
 import { TLmuGoal } from "@/types/lmu/goal.type";
 import Link from "next/link";
