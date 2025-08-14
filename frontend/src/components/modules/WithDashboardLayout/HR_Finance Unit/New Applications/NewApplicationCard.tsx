@@ -2,6 +2,8 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label as UILabel } from "@/components/ui/label";
 import {
   User,
   Calendar,
@@ -15,22 +17,24 @@ import { formatToMalaysiaTime } from "@/utils/formatDate";
 import clsx from "clsx";
 import { TNewApplication } from "@/types/hr_finance/newapplication.type";
 import { useUser } from "@/context/UserContext";
-import { useState, useMemo } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { toast } from "sonner";
+import { updateApplicationStatus } from "@/services/HR_FinanceService/New Application";
 
 type Props = {
   application: TNewApplication;
-  /**
-   * Called when the status dropdown is changed by an hrFinanceAdmin.
-   * next === "Reviewed" corresponds to isChecked=true; "Pending" => false.
-   * Provide this from the parent to persist changes.
-   */
+  onToggleChecked?: (id: string | undefined, checked: boolean) => void;
   onChangeStatus?: (
     id: string | undefined,
     next: "Reviewed" | "Pending"
   ) => void;
 };
 
-const NewApplicationCard = ({ application, onChangeStatus }: Props) => {
+const NewApplicationCard = ({
+  application,
+  onToggleChecked,
+  onChangeStatus,
+}: Props) => {
   const { user } = useUser();
   const isHRAdmin = (user?.role || "").toLowerCase() === "hrfinanceadmin";
 
@@ -48,17 +52,43 @@ const NewApplicationCard = ({ application, onChangeStatus }: Props) => {
     isChecked,
   } = application as any;
 
-  // local controlled value for the dropdown; defaults from isChecked
-  const [statusValue, setStatusValue] = useState<"Reviewed" | "Pending">(
-    isChecked ? "Reviewed" : "Pending"
+  const [checked, setChecked] = useState<boolean>(!!isChecked);
+  const [isPending, startTransition] = useTransition();
+
+  const statusText = useMemo(
+    () => (checked ? "Reviewed" : "Pending"),
+    [checked]
   );
 
-  // keep pill color in sync with local dropdown state for instant UX feedback
-  const isReviewed = useMemo(() => statusValue === "Reviewed", [statusValue]);
-
-  const statusColor = isReviewed
+  const statusColor = checked
     ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
     : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
+
+  const handleToggle = (next: boolean) => {
+    // optimistic update
+    const prev = checked;
+    setChecked(next);
+
+    startTransition(async () => {
+      try {
+        const res = await updateApplicationStatus(String(_id), {
+          isChecked: next,
+        });
+        if (!res?.success)
+          throw new Error(res?.message || "Failed to update status");
+
+        // optional callbacks for parent
+        onToggleChecked?.(_id, next);
+        onChangeStatus?.(_id, next ? "Reviewed" : "Pending");
+
+        toast.success(next ? "Marked as reviewed." : "Marked as pending.");
+      } catch (err: any) {
+        // rollback on error
+        setChecked(prev);
+        toast.error(err?.message || "Failed to update status.");
+      }
+    });
+  };
 
   return (
     <Card className="w-full border rounded-lg bg-white/80 dark:bg-black/30 shadow-sm hover:shadow-md transition-shadow">
@@ -77,28 +107,24 @@ const NewApplicationCard = ({ application, onChangeStatus }: Props) => {
                 statusColor
               )}
             >
-              {statusValue}
+              {statusText}
             </span>
 
             {isHRAdmin && (
-              <select
-                value={statusValue}
-                onChange={(e) => {
-                  const next = e.target.value as "Reviewed" | "Pending";
-                  setStatusValue(next);
-                  onChangeStatus?.(_id, next);
-                }}
-                className={clsx(
-                  "text-sm px-3 py-1 rounded-md border",
-                  "bg-white dark:bg-black",
-                  "border-gray-300 dark:border-neutral-700"
-                )}
-                aria-label="Change status"
-                title="Change status"
-              >
-                <option value="Pending">Pending</option>
-                <option value="Reviewed">Reviewed</option>
-              </select>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id={`reviewed-${_id ?? "app"}`}
+                  checked={checked}
+                  onCheckedChange={handleToggle}
+                  disabled={isPending}
+                />
+                <UILabel
+                  htmlFor={`reviewed-${_id ?? "app"}`}
+                  className="text-sm"
+                >
+                  {isPending ? "Saving…" : "Mark as reviewed"}
+                </UILabel>
+              </div>
             )}
           </div>
         </div>
