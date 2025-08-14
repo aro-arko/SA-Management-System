@@ -1,3 +1,4 @@
+import AppError from '../../errors/AppError';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendReponse';
 import { authService } from './auth.service';
@@ -58,9 +59,28 @@ const forgotPassword = catchAsync(async (req, res) => {
   });
 });
 
+// reset password
+const resetPassword = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Something went wrong!');
+  }
+
+  const result = await authService.resetPassword(req.body, token);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password reset successfully',
+    data: result,
+  });
+});
+
 export const authController = {
   createUser,
   loginUser,
   changePassword,
   forgotPassword,
+  resetPassword,
 };

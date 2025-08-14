@@ -6,6 +6,7 @@ import { createToken } from './auth.utils';
 import config from '../../config';
 import { JwtPayload } from 'jsonwebtoken';
 import { sendEmail } from '../../utils/sendEmail';
+import jwt from 'jsonwebtoken';
 
 const createUser = async (payLoad: Partial<TUser>) => {
   const userData = { ...payLoad };
@@ -107,6 +108,7 @@ const forgotPassword = async (email: string) => {
   const resetUILink = `${config.reset_pass_ui_link}?email=${user.email}&token=${resetToken}`;
 
   try {
+    console.log(resetUILink);
     await sendEmail(user.email, resetUILink);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
@@ -118,9 +120,44 @@ const forgotPassword = async (email: string) => {
   }
 };
 
+// reset password
+const resetPassword = async (
+  payLoad: { email: string; newPassword: string },
+  token: string,
+) => {
+  const user = await User.findOne({ email: payLoad.email });
+  if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  if (user.status !== 'active') {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User is not active');
+  }
+
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+
+  if (payLoad.email !== decoded.email) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'You are not allowed to reset this password',
+    );
+  }
+
+  const updated = await User.findOneAndUpdate(
+    { email: decoded.email, role: decoded.role },
+    { password: payLoad.newPassword },
+    { new: true },
+  );
+
+  if (!updated) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found for update');
+  }
+};
+
 export const authService = {
   createUser,
   loginUser,
+  resetPassword,
   changePassword,
   forgotPassword,
 };

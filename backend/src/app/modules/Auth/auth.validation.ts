@@ -119,9 +119,32 @@ const forgotPasswordValidationSchema = z.object({
   }),
 });
 
+const resetPasswordValidationSchema = z.object({
+  body: z.object({
+    email: z
+      .string({
+        invalid_type_error: 'Email must be a string',
+      })
+      .email({
+        message: 'Invalid email format',
+      }),
+    newPassword: z
+      .string({
+        invalid_type_error: 'New password must be a string',
+      })
+      .min(6, {
+        message: 'New password must be at least 6 characters long',
+      })
+      .max(100, {
+        message: 'New password must be at most 32 characters long',
+      }),
+  }),
+});
+
 export const authValidation = {
   registerValidation,
   loginValidation,
   changePasswordValidation,
   forgotPasswordValidationSchema,
+  resetPasswordValidationSchema,
 };
