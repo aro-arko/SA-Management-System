@@ -106,9 +106,16 @@ const forgotPassword = async (email: string) => {
 
   const resetUILink = `${config.reset_pass_ui_link}?email=${user.email}&token=${resetToken}`;
 
-  sendEmail(user.email, resetUILink);
-
-  console.log(resetUILink);
+  try {
+    await sendEmail(user.email, resetUILink);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    // console.error('Email sending failed:', err);
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to send email',
+    );
+  }
 };
 
 export const authService = {
